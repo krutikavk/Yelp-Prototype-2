@@ -7,6 +7,7 @@ const autoIncrement = require('mongoose-sequence')(mongoose);
 const Schema = mongoose.Schema;
 
 const custSchema = new Schema({
+  cid: Number,
   cemail: { type: String },
   cpassword: { type: String },
   cname: { type: String },

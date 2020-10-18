@@ -40,6 +40,7 @@ const customersRouter = require('./routes/customers');
 
 app.use('/customers', customersRouter);
 
+/*
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404));
@@ -55,5 +56,6 @@ app.use((err, req, res) => {
   res.status(err.status || 500);
   res.render('error');
 });
+*/
 
 module.exports = app;
