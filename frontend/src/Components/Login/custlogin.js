@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import '../../App.css';
 import axios from 'axios';
 import cookie from 'react-cookies';
+import jwt_decode from 'jwt-decode';
 
 //use react-router-dom ONLY
 //see Marko Perendio comment about using react-router-dom
@@ -11,7 +12,7 @@ import {connect} from 'react-redux';
 import {update, login, logout, customerLogin} from '../../_actions'
 import Navbar from '../Navbar/navbar';
 
-
+//const jwt_decode = require('jwt-decode');
 
 
 const validEmail = RegExp('\\S+\@\\S+\.\\S+')
@@ -34,6 +35,7 @@ class custLogin extends Component {
       password: '',
       loginOption: '',
       authFlag: false,
+      token: '',
       errors: {
         email: '',
         password: '',
@@ -100,7 +102,13 @@ class custLogin extends Component {
       .then(response => {
         console.log("Status Code : ",response.status);
         if(response.status === 200){
-          console.log("Login authorized")
+          console.log('Login authorized');
+          console.log('Token: ', response.data);
+          this.setState({
+              token: response.data,
+              authFlag : true
+          })
+          /*
           console.log(response.data[0]);
           console.log("cjoined: ", response.data[0].cjoined)
           //call props action
@@ -119,6 +127,7 @@ class custLogin extends Component {
           this.setState({
               authFlag : true
           })
+          */
         }
       }).catch(err =>{
         alert("Incorrect credentials")
@@ -133,15 +142,30 @@ class custLogin extends Component {
 
     let redirectVar = null;
     /*
-    if(cookie.load('cookie')){
-      console.log(cookie)
-      redirectVar = <Redirect to= "/userdash"/>
-    } 
-    */
     console.log(this.props.isLogged)
     if(this.props.isLogged === true) {
       //This will be changed to Search page
       redirectVar = <Redirect to= "/customer/profile"/>
+    }
+    */
+
+
+    if (this.state.token.length > 0) {
+      localStorage.setItem("token", this.state.token);
+
+      var decoded = jwt_decode(this.state.token.split(' ')[1]);
+      localStorage.setItem("cid", decoded.cid);
+      localStorage.setItem("cemail", decoded.cemail);
+      localStorage.setItem("cpassword", decoded.cpassword);
+      localStorage.setItem("cname", decoded.cname);
+      localStorage.setItem("cphone", decoded.cphone);
+      localStorage.setItem("cabout", decoded.cabout);
+      localStorage.setItem("cjoined", decoded.cjoined);
+      localStorage.setItem("cphoto", decoded.cphoto);
+      localStorage.setItem("cfavrest", decoded.cfavrest);
+      localStorage.setItem("cfavcuisine", decoded.cfavcuisine);
+      
+      redirectVar = <Redirect to="/customer/profile" />
     }
 
     const errors = this.state.errors;
@@ -151,7 +175,7 @@ class custLogin extends Component {
       <div>
         <Navbar/>
         <div>
-          {redirectVar} 
+          {redirectVar}
           <div className="card col-12 col-lg-4 login-card mt-2 hv-center" >
 
           <br/>

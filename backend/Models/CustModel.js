@@ -1,14 +1,11 @@
 const mongoose = require('mongoose');
 // Outdated package mongoose-auto-increment, use mongoose-sequence instead
-// const autoIncrement = require('mongoose-auto-increment');
-const autoIncrement = require('mongoose-sequence')(mongoose);
-// const { mongoDB } = require('./config');
-// eslint-disable-next-line prefer-destructuring
-const Schema = mongoose.Schema;
+//const autoIncrement = require('mongoose-sequence')(mongoose);
+
+const { Schema } = mongoose;
 
 const custSchema = new Schema({
-  cid: Number,
-  cemail: { type: String },
+  cemail: { type: String, unique: true, DropDups: true },
   cpassword: { type: String },
   cname: { type: String },
   cphone: { type: Number },
@@ -25,5 +22,5 @@ const custSchema = new Schema({
 // for mongoose-auto-increment
 // custSchema.plugin(autoIncrement.plugin, 'customer');
 const custModel = mongoose.model('customer', custSchema);
-custSchema.plugin(autoIncrement, { inc_field: 'cid' });
+//custSchema.plugin(autoIncrement, { inc_field: '_id' });
 module.exports = custModel;

@@ -1,8 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const { mongoDB } = require('../Utils/config');
+const jwt = require('jsonwebtoken');
+const { mongoDB, secret } = require('../Utils/config');
 const Customers = require('../Models/CustModel');
-const bcrypt = require('bcrypt');
+
+//const bcrypt = require('bcrypt');
 
 const router = express.Router();
 
@@ -51,8 +53,8 @@ router.post('/', (request, response) => {
       response.writeHead(400, {
         'Content-Type': 'text/plain',
       });
-      console.log('Book ID already exists');
-      response.end('Book ID already exists');
+      console.log('Email ID already registered');
+      response.end('Email ID already registered');
     } else {
       newCustomer.save((err, data) => {
         if (err) {
@@ -69,6 +71,46 @@ router.post('/', (request, response) => {
           response.end('Successfully added customer to database');
         }
       });
+    }
+  });
+});
+
+// Get customer object using email ID--OR Login
+router.post('/login', (request, response) => {
+  console.log('\nEndpoint GET: customer using email id');
+  console.log('Req Body: ', request.body);
+  Customers.findOne({ cemail: request.body.cemail }, (error, customer) => {
+    if (error) {
+      response.writeHead(500, {
+        'Content-Type': 'text/plain',
+      });
+      console.log('Error in finding customer with email ID');
+      response.end('Error in finding customer with email ID');
+    } else if (customer) {
+      const payload = {
+        cid: customer._id,
+        cemail: customer.username,
+        cpassword: customer.password,
+        cname: customer.cname,
+        cphone: customer.cphone,
+        cabout: customer.cabout,
+        cjoined: customer.cjoined,
+        cphoto: customer.cphoto,
+        cfavrest: customer.cfavrest,
+        cfavcuisine: customer.favcuisine,
+      };
+      const token = jwt.sign(payload, secret, {
+        expiresIn: 1008000,
+      });
+
+      response.status(200).end('JWT ' + token);
+      console.log('Login successful', customer);
+    } else {
+      response.writeHead(400, {
+        'Content-Type': 'text/plain',
+      });
+      console.log('Customer not found');
+      response.end('Customer not found');
     }
   });
 });
