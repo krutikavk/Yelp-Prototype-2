@@ -98,7 +98,8 @@ class custLogin extends Component {
     //set the with credentials to true
     axios.defaults.withCredentials = true;
     //make a post request with the user data
-    axios.post('http://localhost:3001/customers/login', data)
+    let url = process.env.REACT_APP_BACKEND + '/customers/login';
+    axios.post(url, data)
       .then(response => {
         console.log("Status Code : ",response.status);
         if(response.status === 200){

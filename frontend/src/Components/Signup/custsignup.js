@@ -102,7 +102,8 @@ class Custsignup extends Component {
     //set the with credentials to true
     axios.defaults.withCredentials = true;
     //make a post request with the user data
-    axios.post('http://localhost:3001/customers', data)
+    let url = process.env.REACT_APP_BACKEND + '/customers';
+    axios.post(url, data)
       .then(response => {
 
         console.log("Status Code : ",response.status);
@@ -238,64 +239,6 @@ class Custsignup extends Component {
           </form>
         </div>
       </div>
-
-
-
-
-
-
-      /*
-
-	    <div>
-
-        {redirectVar}
-
-        <div class="container">
-            <form onSubmit={this.registerCustomer} >
-                <div class="login-form">
-                    <div class="main-div">
-                        <div class="panel">
-                            <p>Customer Signup</p>  
-                        </div>
-                        <div class="form-group">
-                            <input onChange = {this.cnameChangeHandler} 
-                            type="text"  
-                            name="cname" 
-                            class="form-control"
-                            placeholder="Name"
-                            required/>
-                            {errors.cname.length > 0 && 
-                            <span>{errors.cname}</span>}
-                        </div>
-                        
-                        <div class="form-group">
-                            <input onChange = {this.cemailChangeHandler} 
-                            type="text"  
-                            name="cemail" 
-                            class="form-control"
-                            placeholder="Email ID"
-                            required/>
-                            {errors.cemail.length > 0 && 
-                            <span>{errors.cemail}</span>}
-                        </div>
-                        <div class="form-group">
-                            <input onChange = {this.cpasswordChangeHandler} 
-                            type="password" 
-                            name="cpassword" 
-                            class="form-control"
-                            placeholder="Password"
-                            required/>
-                            {errors.cpassword.length > 0 && 
-                            <span>{errors.cpassword}</span>}
-                        </div>
-                        
-                        <button disabled={! validateForm(this.state.errors)} class="btn btn-danger">Sign Up</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-      </div>
-      */
     )	
   }
 
