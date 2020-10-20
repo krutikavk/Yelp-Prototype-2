@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const { mongoDB, secret } = require('../Utils/config');
 const Customers = require('../Models/CustModel');
 
-//const bcrypt = require('bcrypt');
+// const bcrypt = require('bcrypt');
 
 const router = express.Router();
 
