@@ -1,25 +1,20 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import '../../App.css';
 import axios from 'axios';
-import {connect} from 'react-redux';
-import {update} from '../../_actions'
-import {login} from '../../_actions';
-import {Redirect, Link} from 'react-router-dom';
-import profilepicture from './profile-picture.png';
+import { connect } from 'react-redux';
+import { Redirect, Link } from 'react-router-dom';
+import { update } from '../../_actions';
 import Review from '../Reviews/displayreview';
 import Navbar from '../Navbar/navbar';
 
-
-const validText = RegExp('[A-Za-z0-9]+')
+const validText = RegExp('[A-Za-z0-9]+');
 
 class DisplayProfile extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
-      reviews: []
-    }
-
+      reviews: [],
+    };
   }
 
   componentWillMount() {

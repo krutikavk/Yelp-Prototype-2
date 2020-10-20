@@ -5,6 +5,7 @@ import {Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {update, login, logout, customerLogin} from '../../_actions';
 import Navbar from '../Navbar/navbar';
+import jwt_decode from 'jwt-decode';
 
 const validText = RegExp('[A-Za-z0-9]+')
 // eslint-disable-next-line no-useless-escape
@@ -27,6 +28,7 @@ class Custsignup extends Component {
 	  cemail: '',
 	  cpassword: '',
 	  isAdded: false,
+    token: '',
 	  errors: {
   		cname: '',
   		cemail: '',
@@ -105,23 +107,35 @@ class Custsignup extends Component {
 
         console.log("Status Code : ",response.status);
         if(response.status === 200){
-          console.log('Customer added')
-          this.props.update('CID', response.data[0].cid)
-          this.props.update('CEMAIL', response.data[0].cemail)
-          this.props.update('CPASSWORD', response.data[0].cpassword)
-          this.props.update('CNAME', response.data[0].cname)
-          this.props.update('CPHONE', response.data[0].cphone)
-          this.props.update('CABOUT', response.data[0].cabout)
-          this.props.update('CJOINED', response.data[0].cjoined)
-          this.props.update('CPHOTO', response.data[0].cphoto)
-          this.props.update('CFAVREST', response.data[0].cfavrest)
-          this.props.update('CFAVCUISINE', response.data[0].cfavcuisine)
-          this.props.login()
-          this.props.customerLogin()
-          //This is no longer needed, state error only needed
+          console.log('Customer added');
+          console.log('Token: ', response.data);
+
+          //Set state first and then decode the token or else the page breaks!
           this.setState({
+            token: response.data,
             isAdded : true
           })
+          var decoded = jwt_decode(this.state.token.split(' ')[1]);
+          console.log('decoded: ', decoded);
+
+          this.props.update('CID', decoded.cid)
+          this.props.update('CEMAIL', decoded.cemail)
+          this.props.update('CPASSWORD', decoded.cpassword)
+          this.props.update('CNAME', decoded.cname)
+          this.props.update('CPHONE', decoded.cphone)
+          this.props.update('CABOUT', decoded.cabout)
+          this.props.update('CJOINED', decoded.cjoined)
+          this.props.update('CPHOTO', decoded.cphoto)
+          this.props.update('CFAVREST', decoded.cfavrest)
+          this.props.update('CFAVCUISINE', decoded.cfavcuisine)
+          console.log("Before: ", this.props.isLogged)
+          console.log("After: ", this.props.isLogged)
+
+          this.props.login()   //this will update isLogged = true
+          this.props.customerLogin()
+          
+          //This is no longer needed, state error only needed
+          
         }
       }).catch(err =>{
         this.setState({
@@ -138,9 +152,29 @@ class Custsignup extends Component {
   render() {
   	let redirectVar = null;
     console.log("islogged props: ", this.props.isLogged)
+    /*
     if(this.props.isLogged === true && this.props.whoIsLogged === false) {
       redirectVar = <Redirect to= "/customer/profile"/>
     }
+    */
+    if (this.state.token.length > 0) {
+      localStorage.setItem("token", this.state.token);
+
+      var decoded = jwt_decode(this.state.token.split(' ')[1]);
+      localStorage.setItem("cid", decoded.cid);
+      localStorage.setItem("cemail", decoded.cemail);
+      localStorage.setItem("cpassword", decoded.cpassword);
+      localStorage.setItem("cname", decoded.cname);
+      localStorage.setItem("cphone", decoded.cphone);
+      localStorage.setItem("cabout", decoded.cabout);
+      localStorage.setItem("cjoined", decoded.cjoined);
+      localStorage.setItem("cphoto", decoded.cphoto);
+      localStorage.setItem("cfavrest", decoded.cfavrest);
+      localStorage.setItem("cfavcuisine", decoded.cfavcuisine);
+      
+      redirectVar = <Redirect to="/customer/profile" />
+    }
+
     const errors = this.state.errors;
 
 	  return (

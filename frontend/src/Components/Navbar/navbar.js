@@ -12,7 +12,7 @@ class Navbar extends Component {
   }
 
 
-  handleLogout = () => {
+  handleLogout = (event) => {
       //cookie.remove('cookie', { path: '/' })
       this.props.update('CID', '')
       this.props.update('CEMAIL', '')

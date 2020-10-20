@@ -33,13 +33,18 @@ router.get('/', (req, res) => {
 
 // signup
 router.post('/', (request, response) => {
+  const now = new Date();
+  const jsonDate = now.toJSON();
+  const joined = new Date(jsonDate);
   console.log('\nEndpoint POST: customer signup');
   console.log('Req Body: ', request.body);
+  console.log(joined);
 
   const newCustomer = new Customers({
     cemail: request.body.cemail,
     cpassword: request.body.cpassword,
     cname: request.body.cname,
+    cjoined: joined,
   });
 
   Customers.findOne({ cemail: request.body.cemail }, (error, customer) => {
@@ -68,7 +73,41 @@ router.post('/', (request, response) => {
             'Content-Type': 'text/plain',
           });
           console.log('Successfully added customer to database');
-          response.end('Successfully added customer to database');
+          Customers.findOne({ cemail: request.body.cemail }, (e, cust) => {
+            if (e) {
+              response.writeHead(500, {
+                'Content-Type': 'text/plain',
+              });
+              console.log('Error in finding customer with email ID');
+              response.end('Error in finding customer with email ID');
+            } else if (cust) {
+              const payload = {
+                // eslint-disable-next-line no-underscore-dangle
+                cid: cust._id,
+                cemail: cust.username,
+                cpassword: cust.password,
+                cname: cust.cname,
+                cphone: cust.cphone,
+                cabout: cust.cabout,
+                cjoined: cust.cjoined,
+                cphoto: cust.cphoto,
+                cfavrest: cust.cfavrest,
+                cfavcuisine: cust.favcuisine,
+              };
+              const token = jwt.sign(payload, secret, {
+                expiresIn: 1008000,
+              });
+              console.log('Login successful token:', token);
+              response.status(200).end(`JWT ${token}`);
+            } else {
+              response.writeHead(400, {
+                'Content-Type': 'text/plain',
+              });
+              console.log('Customer not found');
+              response.end('Customer not found');
+            }
+          });
+          // response.end('Successfully added customer to database');
         }
       });
     }
@@ -88,6 +127,7 @@ router.post('/login', (request, response) => {
       response.end('Error in finding customer with email ID');
     } else if (customer) {
       const payload = {
+        // eslint-disable-next-line no-underscore-dangle
         cid: customer._id,
         cemail: customer.username,
         cpassword: customer.password,
@@ -102,8 +142,7 @@ router.post('/login', (request, response) => {
       const token = jwt.sign(payload, secret, {
         expiresIn: 1008000,
       });
-
-      response.status(200).end('JWT ' + token);
+      response.status(200).end(`JWT ${token}`);
       console.log('Login successful', customer);
     } else {
       response.writeHead(400, {
