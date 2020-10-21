@@ -1,11 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const { mongoDB, secret } = require('../Utils/config');
-const Customers = require('../Models/CustModel');
 const bcrypt = require('bcrypt');
+const { mongoDB, secret } = require('../Utils/config');
+const { checkAuth, auth } = require('../Utils/passport');
+const Customers = require('../Models/CustModel');
 
-// const bcrypt = require('bcrypt');
+auth();
 
 const router = express.Router();
 
@@ -27,9 +28,22 @@ mongoose.connect(mongoDB, options, (err, res) => {
 });
 
 // get all customers
-router.get('/', (req, res) => {
-  console.log('Hit customers');
-  res.send('Get all customers');
+router.get('/', checkAuth, (request, response) => {
+  console.log('Hit get all customers');
+  Customers.find({}, (error, results) => {
+    if (error) {
+      response.writeHead(400, {
+        'Content-Type': 'text/plain',
+      });
+      response.end('Error fetching customers');
+    } else {
+      console.log('Sending 200');
+      response.writeHead(200, {
+        'Content-Type': 'application/json',
+      });
+      response.end(JSON.stringify(results));
+    }
+  });
 });
 
 // signup
@@ -114,7 +128,7 @@ router.post('/', (request, response) => {
   });
 });
 
-// Get customer object using email ID--OR Login
+// Login
 router.post('/login', (request, response) => {
   console.log('\nEndpoint GET: customer using email id');
   console.log('Req Body: ', request.body);
@@ -160,5 +174,8 @@ router.post('/login', (request, response) => {
     }
   });
 });
+
+
+
 
 module.exports = router;

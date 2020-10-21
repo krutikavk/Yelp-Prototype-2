@@ -1,7 +1,7 @@
 'use strict';
 
-const { JwtStrategy } = require('passport-jwt');
-const { ExtractJwt } = require('passport-jwt');
+const JwtStrategy = require('passport-jwt').Strategy;
+const ExtractJwt = require('passport-jwt').ExtractJwt;
 const passport = require('passport');
 const { secret } = require('./config');
 const Customers = require('../Models/CustModel');
@@ -20,9 +20,9 @@ function auth() {
           return callback(err, false);
         }
         if (results) {
-          callback(null, results);
+          return callback(null, results);
         } else {
-          callback(null, false);
+          return callback(null, false);
         }
       });
     }),
