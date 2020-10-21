@@ -2,6 +2,18 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
+const Dishes = new Schema({
+  dname: String,
+  dingredients: String,
+  dprice: Number,
+  dcategory: {
+    type: String,
+    enum: ['Appetizer', 'Salad', 'Main Course', 'Dessert', 'Beverage'],
+    default: 'Main Course',
+  },
+  durl: String,
+});
+
 const restSchema = new Schema({
   remail: { type: String, unique: true, DropDups: true },
   rpassword: { type: String },
@@ -15,17 +27,7 @@ const restSchema = new Schema({
   raddress: { type: String },
   rcuisine: { type: String },
   rdelivery: { type: String },
-  rdish: [{
-    dname: String,
-    dingredients: String,
-    dprice: Number,
-    dcategory: {
-      type: String,
-      enum: ['Appetizer', 'Salad', 'Main Course', 'Dessert', 'Beverage'],
-      default: 'Main Course',
-    },
-    durl: String,
-  }],
+  rdish: [Dishes],
   rhours: {
     sunday: Boolean,
     monday: Boolean,
@@ -38,6 +40,7 @@ const restSchema = new Schema({
     endTime: String,
   },
   rrating: { type: Number, default: 0 },
+  events: [{ type: String }],
 },
 {
   versionKey: false,

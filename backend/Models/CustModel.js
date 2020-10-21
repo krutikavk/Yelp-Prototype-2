@@ -13,9 +13,7 @@ const custSchema = new Schema({
   cfavrest: { type: String },
   cfavcuisine: { type: String },
   // add registered events here
-  events: [{
-    type: String,
-  }],
+  events: [{ tpe: String }],
 },
 {
   versionKey: false,

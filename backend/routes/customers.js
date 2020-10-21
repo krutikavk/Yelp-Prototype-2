@@ -28,7 +28,7 @@ mongoose.connect(mongoDB, options, (err, res) => {
 });
 
 // get all customers
-router.get('/', checkAuth, (request, response) => {
+router.get('/', (request, response) => {
   console.log('Hit get all customers');
   Customers.find({}, (error, results) => {
     if (error) {
@@ -175,7 +175,109 @@ router.post('/login', (request, response) => {
   });
 });
 
+// Get one customer
+router.get('/:cid', (request, response) => {
+  console.log('\nEndpoint GET: Get a customer');
+  Customers.findById(request.params.cid, (error, customer) => {
+    if (error) {
+      response.writeHead(500, {
+        'Content-Type': 'text/plain',
+      });
+      console.log('Error in finding customer with ID');
+      response.end('Error in finding customer with ID');
+    } else if (customer) {
+      console.log('Sending 200');
+      response.writeHead(200, {
+        'Content-Type': 'application/json',
+      });
+      response.end(JSON.stringify(customer));
+    } else {
+      response.writeHead(400, {
+        'Content-Type': 'text/plain',
+      });
+      console.log('Customer not found');
+      response.end('Customer not found');
+    }
+  });
+});
 
+// Update customer profile--works
+router.put('/:cid', (request, response) => {
+  console.log('\nEndpoint PUT: Customer fields update');
+  const data = {
+    cemail: request.body.cemail,
+    cname: request.body.cname,
+    cphone: request.body.cphone,
+    cabout: request.body.cabout,
+    cphoto: request.body.cphoto,
+    cfavrest: request.body.cfavrest,
+    cfavcuisine: request.body.cfavcuisine,
+  };
+  Customers.findByIdAndUpdate(request.params.cid, data, (error, customer) => {
+    if (error) {
+      response.writeHead(500, {
+        'Content-Type': 'text/plain',
+      });
+      console.log('Error in finding customer with ID');
+      response.end('Error in finding customer with ID');
+    } else if (customer) {
+      console.log('Sending 200');
+      response.writeHead(200, {
+        'Content-Type': 'text/plain',
+      });
+      response.end('Customer updated');
+    } else {
+      response.writeHead(400, {
+        'Content-Type': 'text/plain',
+      });
+      console.log('Customer not found');
+      response.end('Customer not found');
+    }
+  });
+});
 
+// Update customer password
+router.put('/:cid/password', (request, response) => {
+  console.log('\nEndpoint PUT: customer password update');
+  bcrypt.hash(request.body.cpassword, 10, (e, hash) => {
+    const data = {
+      cpassword: hash,
+    };
+    Customers.findByIdAndUpdate(request.params.cid, data, (error, customer) => {
+      if (error) {
+        response.writeHead(500, {
+          'Content-Type': 'text/plain',
+        });
+        console.log('Error in finding customer with ID');
+        response.end('Error in finding customer with ID');
+      } else if (customer) {
+        console.log('Sending 200');
+        response.writeHead(200, {
+          'Content-Type': 'text/plain',
+        });
+        response.end('Customer password updated');
+      } else {
+        response.writeHead(400, {
+          'Content-Type': 'text/plain',
+        });
+        console.log('Customer not found');
+        response.end('Customer not found');
+      }
+    });
+  });
+});
+
+/*
+router.post('/:cid/orders', (request, response) => {
+  console.log('Endpoint POST: Place an new order');
+  console.log('Request Body: ', request.body);
+
+  const now = new Date();
+  const jsonDate = now.toJSON();
+  const then = new Date(jsonDate);
+  console.log(then);
+});
+
+*/
 
 module.exports = router;
