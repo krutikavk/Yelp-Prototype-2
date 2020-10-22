@@ -69,6 +69,10 @@ class restLogin extends Component {
           //1. Update props
           //2. then update state so that when page redirects using token,
           // it will have rid available from redux state
+          var decoded = jwt_decode(response.data.split(' ')[1]);
+          //call props action
+          console.log('Decoded token: ', decoded);
+          console.log('Token: ', response.data);
           this.props.update('RID', decoded.rid)
           this.props.update('REMAIL', decoded.remail)
           this.props.update('RPASSWORD', decoded.rpassword)
@@ -93,22 +97,8 @@ class restLogin extends Component {
               token: response.data,
               authFlag : true
           })
-          var decoded = jwt_decode(this.state.token.split(' ')[1]);
-          //call props action
-          console.log('Decoded token: ', decoded);
-          console.log('Token: ', response.data);
-          
-          
-          var decoded = jwt_decode(this.state.token.split(' ')[1]);
-          //call props action
-          console.log('Decoded token: ', decoded);
-
           //weird--restaurant login works here
-          //this.props.restaurantLogin()
-          
-          
-          
-          
+          //this.props.restaurantLogin()          
         }
       }).catch(err =>{
         this.setState({

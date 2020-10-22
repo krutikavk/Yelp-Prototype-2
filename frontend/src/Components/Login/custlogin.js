@@ -47,6 +47,7 @@ class custLogin extends Component {
     this.submitLogin = this.submitLogin.bind(this);
   }
 
+
   loginOptionHandler = (event) => {
     this.setState({
       loginOption: event.target.value
