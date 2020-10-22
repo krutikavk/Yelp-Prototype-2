@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const aws = require('aws-sdk');
 const cors = require('cors');
+const customersRouter = require('./routes/customers');
+const restaurantsRouter = require('./routes/restaurants');
 require('dotenv').config();
 
 // use cors to allow cross origin resource sharing
@@ -37,10 +39,8 @@ app.use((req, res, next) => {
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Add routes here
-
-const customersRouter = require('./routes/customers');
-
 app.use('/customers', customersRouter);
+app.use('/restaurants', restaurantsRouter);
 
 aws.config.update({
   region: process.env.region, // Put your aws region here

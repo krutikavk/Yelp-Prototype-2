@@ -106,6 +106,7 @@ router.post('/', (request, response) => {
                   cphoto: cust.cphoto,
                   cfavrest: cust.cfavrest,
                   cfavcuisine: cust.favcuisine,
+                  events: [...cust.events],
                 };
                 const token = jwt.sign(payload, secret, {
                   expiresIn: 1008000,
@@ -120,7 +121,6 @@ router.post('/', (request, response) => {
                 response.end('Customer not found');
               }
             });
-            // response.end('Successfully added customer to database');
           }
         });
       }
@@ -130,7 +130,7 @@ router.post('/', (request, response) => {
 
 // Login
 router.post('/login', (request, response) => {
-  console.log('\nEndpoint GET: customer using email id');
+  console.log('\nEndpoint POST: customer login');
   console.log('Req Body: ', request.body);
   Customers.findOne({ cemail: request.body.cemail }, (error, customer) => {
     if (error) {

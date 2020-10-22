@@ -14,6 +14,7 @@ const Dishes = new Schema({
   durl: String,
 });
 
+// Can add non-essential fields to meta: {} later on
 const restSchema = new Schema({
   remail: { type: String, unique: true, DropDups: true },
   rpassword: { type: String },
@@ -21,7 +22,6 @@ const restSchema = new Schema({
   rphone: { type: Number },
   rabout: { type: String },
   rphoto: [{ type: String }],
-  rlocation: { type: String },
   ratitude: { type: Number },
   rlongitude: { type: Number },
   raddress: { type: String },
@@ -29,15 +29,15 @@ const restSchema = new Schema({
   rdelivery: { type: String },
   rdish: [Dishes],
   rhours: {
-    sunday: Boolean,
-    monday: Boolean,
-    tuesday: Boolean,
-    wednesday: Boolean,
-    thursday: Boolean,
-    friday: Boolean,
-    saturday: Boolean,
-    startTime: String,
-    endTime: String,
+    sunday: { type: Boolean, default: true },
+    monday: { type: Boolean, default: true },
+    tuesday: { type: Boolean, default: true },
+    wednesday: { type: Boolean, default: true },
+    thursday: { type: Boolean, default: true },
+    friday: { type: Boolean, default: true },
+    saturday: { type: Boolean, default: true },
+    startTime: { type: String, default: '09:00 hrs' },
+    endTime: { type: String, default: '21:00 hrs' },
   },
   rrating: { type: Number, default: 0 },
   events: [{ type: String }],
