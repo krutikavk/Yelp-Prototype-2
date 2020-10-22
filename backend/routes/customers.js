@@ -28,7 +28,7 @@ mongoose.connect(mongoDB, options, (err, res) => {
 });
 
 // get all customers
-router.get('/', (request, response) => {
+router.get('/', checkAuth, (request, response) => {
   console.log('Hit get all customers');
   Customers.find({}, (error, results) => {
     if (error) {
@@ -106,7 +106,7 @@ router.post('/', (request, response) => {
                   cphoto: cust.cphoto,
                   cfavrest: cust.cfavrest,
                   cfavcuisine: cust.favcuisine,
-                  events: [...cust.events],
+                  cevents: [...cust.cevents],
                 };
                 const token = jwt.sign(payload, secret, {
                   expiresIn: 1008000,
@@ -155,6 +155,7 @@ router.post('/login', (request, response) => {
             cphoto: customer.cphoto,
             cfavrest: customer.cfavrest,
             cfavcuisine: customer.favcuisine,
+            cevents: [...customer.cevents],
           };
           const token = jwt.sign(payload, secret, {
             expiresIn: 1008000,

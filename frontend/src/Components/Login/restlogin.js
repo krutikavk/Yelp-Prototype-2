@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import '../../App.css';
 import axios from 'axios';
+import jwt_decode from 'jwt-decode';
 //use react-router-dom ONLY
 //see Marko Perendio comment about using react-router-dom
 //Refer: https://stackoverflow.com/questions/55552147/invariant-failed-you-should-not-use-route-outside-a-router
@@ -15,10 +16,10 @@ class restLogin extends Component {
     super(props);
 
     this.state = {
-
       email: '',
       password: '',
       loginOption: '',
+      token: '',
       authFlag: false,
     };
 
@@ -57,38 +58,59 @@ class restLogin extends Component {
     //set the with credentials to true
     axios.defaults.withCredentials = true;
     //make a post request with the user data
-    axios.post('http://localhost:3001/restaurants/login', data)
+    let url = process.env.REACT_APP_BACKEND + '/restaurants/login';
+    axios.post(url, data)
       .then(response => {
         console.log("Status Code : ",response.status);
         console.log("login here")
         if(response.status === 200){
-          console.log("Login authorized")
-          //call props action
-  
-          //weird--restaurant login works here
-          this.props.restaurantLogin()
-          this.props.update('RID', response.data[0].rid)
-          this.props.update('REMAIL', response.data[0].remail)
-          this.props.update('RPASSWORD', response.data[0].rpassword)
-          this.props.update('RNAME', response.data[0].rname)
-          this.props.update('RPHONE', response.data[0].rphone)
-          this.props.update('RABOUT', response.data[0].rabout)
-          this.props.update('RPHOTO', response.data[0].rphoto)
-          this.props.update('RLOCATION', response.data[0].rlocation)
-          this.props.update('RLATITUDE', response.data[0].rlatitude)
-          this.props.update('RLONGITUDE', response.data[0].rlongitude)
-          this.props.update('RADDRESS', response.data[0].raddress)
-          this.props.update('RCUISINE', response.data[0].rcuisine)
-          this.props.update('RDELIVERY', response.data[0].rdelivery)
+          console.log('Login authorized');
+
+          //1. Update props
+          //2. then update state so that when page redirects using token,
+          // it will have rid available from redux state
+          this.props.update('RID', decoded.rid)
+          this.props.update('REMAIL', decoded.remail)
+          this.props.update('RPASSWORD', decoded.rpassword)
+          this.props.update('RNAME', decoded.rname)
+          this.props.update('RPHONE', decoded.rphone)
+          this.props.update('RABOUT', decoded.rabout)
+          this.props.update('RPHOTO', decoded.rphoto)
+          this.props.update('RLATITUDE', decoded.rlatitude)
+          this.props.update('RLONGITUDE', decoded.rlongitude)
+          this.props.update('RADDRESS', decoded.raddress)
+          this.props.update('RCUISINE', decoded.rcuisine)
+          this.props.update('RDELIVERY', decoded.rdelivery)
+          this.props.update('RDISH', decoded.rdish)
+          this.props.update('RHOURS', decoded.rhours)
+          this.props.update('RRATING', decoded.rrating)
+          this.props.update('REVENTS', decoded.revents)
           this.props.login()
+
           //weird--dosnt work here
-          //this.props.restaurantLogin()
+          this.props.restaurantLogin()
           this.setState({
+              token: response.data,
               authFlag : true
           })
+          var decoded = jwt_decode(this.state.token.split(' ')[1]);
+          //call props action
+          console.log('Decoded token: ', decoded);
+          console.log('Token: ', response.data);
+          
+          
+          var decoded = jwt_decode(this.state.token.split(' ')[1]);
+          //call props action
+          console.log('Decoded token: ', decoded);
+
+          //weird--restaurant login works here
+          //this.props.restaurantLogin()
+          
+          
+          
+          
         }
       }).catch(err =>{
-        console.log("login there")
         this.setState({
             authFlag : false
         })
@@ -99,10 +121,35 @@ class restLogin extends Component {
     //redirect based on successful login
 
     let redirectVar = null;
+    /*
     console.log("whoislogged: ", this.props.whoIsLogged)
     if(this.state.authFlag === true) {
       redirectVar = <Redirect to= "/restaurant"/>
       //redirectVar = <Redirect to= "/events/add"/>
+    }
+    */
+    if (this.state.token.length > 0) {
+      localStorage.setItem("token", this.state.token);
+      var decoded = jwt_decode(this.state.token.split(' ')[1]);
+
+      localStorage.setItem('rid', decoded.rid)
+      localStorage.setItem('remail', decoded.remail)
+      localStorage.setItem('rpassword', decoded.rpassword)
+      localStorage.setItem('rname', decoded.rname)
+      localStorage.setItem('rphone', decoded.rphone)
+      localStorage.setItem('rabout', decoded.rabout)
+      localStorage.setItem('rphoto', decoded.rphoto)
+      localStorage.setItem('rlatitude', decoded.rlatitude)
+      localStorage.setItem('rlongitude', decoded.rlongitude)
+      localStorage.setItem('raddress', decoded.raddress)
+      localStorage.setItem('rcuisine', decoded.rcuisine)
+      localStorage.setItem('rdelivery', decoded.rdelivery)
+      localStorage.setItem('rdish', decoded.rdish)
+      localStorage.setItem('rhours', decoded.rhours)
+      localStorage.setItem('rrating', decoded.rrating)
+      localStorage.setItem('revents', decoded.revents)
+      
+      redirectVar = <Redirect to="/restaurant" />
     }
 
     return(
@@ -159,6 +206,7 @@ class restLogin extends Component {
 const mapStateToProps = (state) => {
     return {
       //Restaurant props
+      /*
       rid: state.restProfile.rid,
       remail: state.restProfile.remail,
       rpassword: state.restProfile.rpassword,
@@ -172,6 +220,25 @@ const mapStateToProps = (state) => {
       raddress: state.restProfile.raddress,
       rcuisine: state.restProfile.rcuisine,
       rdelivery: state.restProfile.rdelivery,
+      isLogged: state.isLogged.isLoggedIn,
+      whoIsLogged: state.whoIsLogged.whoIsLoggedIn,
+      */
+      rid: state.restProfile.rid,
+      remail: state.restProfile.remail,
+      rpassword: state.restProfile.rpassword,
+      rname: state.restProfile.rname,
+      rphone: state.restProfile.rphone,
+      rabout: state.restProfile.rabout,
+      rphoto: [...state.restProfile.rphoto],
+      rlatitude: state.restProfile.rlatitude,
+      rlongitude: state.restProfile.rlongitude,
+      raddress: state.restProfile.raddress,
+      rcuisine: state.restProfile.rcuisine,
+      rdelivery: state.restProfile.rdelivery,
+      rdish: state.restProfile.rdish,
+      rhours: {...state.restProfile.hours},
+      rrating: state.restProfile.rrating,
+      revents: state.restProfile.revents,
       isLogged: state.isLogged.isLoggedIn,
       whoIsLogged: state.whoIsLogged.whoIsLoggedIn,
     }

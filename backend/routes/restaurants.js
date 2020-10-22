@@ -123,7 +123,7 @@ router.post('/', (request, response) => {
                   rphone: rest.rphone,
                   rabout: rest.rabout,
                   rphoto: [...rest.rphoto],
-                  ratitude: rest.rlatitude,
+                  rlatitude: rest.rlatitude,
                   rlongitude: rest.rlatitude,
                   raddress: rest.raddress,
                   rcuisine: rest.rcuisine,
@@ -131,7 +131,7 @@ router.post('/', (request, response) => {
                   rdish: [...rest.rdish],
                   rhours: rest.hours,
                   rrating: rest.rrating,
-                  events: [...rest.events],
+                  revents: [...rest.revents],
                 };
                 const token = jwt.sign(payload, secret, {
                   expiresIn: 1008000,
@@ -177,7 +177,7 @@ router.post('/login', (request, response) => {
             rphone: restaurant.rphone,
             rabout: restaurant.rabout,
             rphoto: [...restaurant.rphoto],
-            ratitude: restaurant.rlatitude,
+            rlatitude: restaurant.rlatitude,
             rlongitude: restaurant.rlatitude,
             raddress: restaurant.raddress,
             rcuisine: restaurant.rcuisine,
@@ -185,13 +185,13 @@ router.post('/login', (request, response) => {
             rdish: [...restaurant.rdish],
             rhours: restaurant.hours,
             rrating: restaurant.rrating,
-            events: [...restaurant.events],
+            revents: [...restaurant.revents],
           };
           const token = jwt.sign(payload, secret, {
             expiresIn: 1008000,
           });
           response.status(200).end(`JWT ${token}`);
-          console.log('Login successful', restaurant);
+          console.log('Login successful', payload);
         } else {
           console.log('Incorrect login');
           response.status(404).send('Incorrect login');
@@ -216,7 +216,7 @@ router.put('/:rid', (request, response) => {
     rphone: request.body.rphone,
     rabout: request.body.rabout,
     rphoto: [...request.body.rphoto],
-    ratitude: request.body.rlatitude,
+    rlatitude: request.body.rlatitude,
     rlongitude: request.body.rlatitude,
     raddress: request.body.raddress,
     rcuisine: request.body.rcuisine,
@@ -224,7 +224,7 @@ router.put('/:rid', (request, response) => {
     rdish: [...request.body.rdish],
     rhours: request.body.hours,
     rrating: request.body.rrating,
-    events: [...request.body.events],
+    revents: [...request.body.revents],
   };
   Restaurants.findByIdAndUpdate(request.params.rid, data, (error, restaurant) => {
     if (error) {

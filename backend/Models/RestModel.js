@@ -22,7 +22,7 @@ const restSchema = new Schema({
   rphone: { type: Number },
   rabout: { type: String },
   rphoto: [{ type: String }],
-  ratitude: { type: Number },
+  rlatitude: { type: Number },
   rlongitude: { type: Number },
   raddress: { type: String },
   rcuisine: { type: String },
@@ -40,7 +40,7 @@ const restSchema = new Schema({
     endTime: { type: String, default: '21:00 hrs' },
   },
   rrating: { type: Number, default: 0 },
-  events: [{ type: String }],
+  revents: [{ type: String }],
 },
 {
   versionKey: false,
