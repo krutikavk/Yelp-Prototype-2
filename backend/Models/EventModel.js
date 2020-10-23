@@ -14,9 +14,7 @@ const eventSchema = new Schema({
   rid: { type: String },
   rname: { type: String },
   // customers enrolling for event
-  ecustomers: [{
-    cid: String,
-  }],
+  ecustomers: [{ type: String }],
 },
 {
   versionKey: false,

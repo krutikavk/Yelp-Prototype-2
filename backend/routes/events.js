@@ -28,6 +28,7 @@ mongoose.connect(mongoDB, options, (err, res) => {
 });
 
 router.post('/', (request, response) => {
+  const temp = [...request.body.ecustomers];
   const newEvent = new Events({
     ename: request.body.ename,
     edescription: request.body.edescription,
@@ -38,12 +39,14 @@ router.post('/', (request, response) => {
     edate: request.body.edate,
     rid: request.body.rid,
     rname: request.body.rname,
-    ecustomers: [...request.body.ecustomers],
+    ecustomers: temp,
   });
 
   console.log('Endpoint POST: Add event');
   console.log('Request Body: ', request.body);
   console.log('data incoming: ', newEvent);
+  console.log('ecustomers type: ', Array.isArray(request.body.ecustomers));
+  console.log('temp:', temp);
   Events.findOne({ ename: request.body.ename }, (error, event) => {
     if (error) {
       response.writeHead(500, {
