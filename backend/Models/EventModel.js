@@ -8,11 +8,13 @@ const eventSchema = new Schema({
   eaddress: { type: String },
   elatitude: { type: Number },
   elongitude: { type: Number },
-  edate: { type: Date },
+  edate: { type: Number },
+  ephoto: { type: String },
   // May need entire rest object
   rid: { type: String },
+  rname: { type: String },
   // customers enrolling for event
-  customers: [{
+  ecustomers: [{
     cid: String,
   }],
 },
