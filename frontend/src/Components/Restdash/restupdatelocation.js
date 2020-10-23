@@ -219,7 +219,7 @@ const mapStateToProps = (state) => {
       raddress: state.restProfile.raddress,
       rcuisine: state.restProfile.rcuisine,
       rdelivery: state.restProfile.rdelivery,
-      rdish: [...state.restProfile.rdish],
+      rdish: JSON.parse(JSON.stringify(state.restProfile.rdish)),
       rhours: {...state.restProfile.hours},
       rrating: state.restProfile.rrating,
       revents: [...state.restProfile.revents],

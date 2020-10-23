@@ -213,6 +213,7 @@ const mapStateToProps = (state) => {
       isLogged: state.isLogged.isLoggedIn,
       whoIsLogged: state.whoIsLogged.whoIsLoggedIn,
       */
+      
       rid: state.restProfile.rid,
       remail: state.restProfile.remail,
       rpassword: state.restProfile.rpassword,
@@ -225,10 +226,10 @@ const mapStateToProps = (state) => {
       raddress: state.restProfile.raddress,
       rcuisine: state.restProfile.rcuisine,
       rdelivery: state.restProfile.rdelivery,
-      rdish: state.restProfile.rdish,
+      rdish: JSON.parse(JSON.stringify(state.restProfile.rdish)),
       rhours: {...state.restProfile.hours},
       rrating: state.restProfile.rrating,
-      revents: state.restProfile.revents,
+      revents: [...state.restProfile.revents],
       isLogged: state.isLogged.isLoggedIn,
       whoIsLogged: state.whoIsLogged.whoIsLoggedIn,
     }

@@ -131,13 +131,14 @@ router.post('/', (request, response) => {
                   rcuisine: rest.rcuisine,
                   rdelivery: rest.rdelivery,
                   rdish: [...rest.rdish],
-                  rhours: rest.hours,
+                  rhours: { ...rest.rhours },
                   rrating: rest.rrating,
                   revents: [...rest.revents],
                 };
                 const token = jwt.sign(payload, secret, {
                   expiresIn: 1008000,
                 });
+                console.log('hours: ', rest.rhours);
                 console.log('Login successful token:', token);
                 response.status(200).end(`JWT ${token}`);
               } else {
