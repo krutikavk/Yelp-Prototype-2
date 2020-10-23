@@ -111,6 +111,7 @@ class Restupdateinfo extends Component {
       console.error('Invalid form')
     }
     const data = {
+      /*
       remail: this.props.remail,
       rname: this.props.rname,
       rphone : this.state.rphone,
@@ -122,23 +123,26 @@ class Restupdateinfo extends Component {
       rcuisine: this.state.rcuisine,
       rdelivery: this.state.rdelivery,
       rid: this.props.rid
+      */
+      remail: this.props.remail,
+      rname: this.props.rname,
+      rphone: this.state.rphone,
+      rabout: this.state.rabout,
+      rphoto: this.props.rphoto,
+      rlatitude: this.props.rlatitude,
+      rlongitude: this.props.rlongitude,
+      raddress: this.state.address,
+      rcuisine: this.state.rcuisine,
+      rdelivery: this.state.rdelivery,
+      rdish: this.props.rdish,
+      rhours: this.props.hours,
+      rrating: this.props.rrating,
+      revents: this.props.revents,
     }
 
-    /*
-    request.body.remail,
-    request.body.rname,
-    request.body.rphone,
-    request.body.rabout,
-    request.body.rlocation,
-    request.body.rlatitude,
-    request.body.rlongitude,
-    request.body.raddress,
-    request.body.rcuisine,
-    request.body.rdelivery,
-    request.params.rid
-    */
-
-    let endpoint = 'http://localhost:3001/restaurants/' + this.props.rid;
+    let endpoint = process.env.REACT_APP_BACKEND + '/restaurants/' + this.props.rid;
+    console.log('rid:', this.props.rid)
+    console.log('remail:', this.props.remail)
     console.log('update endpoint: ', endpoint)
 
     axios.put(endpoint, data)
@@ -193,7 +197,7 @@ class Restupdateinfo extends Component {
         {redirectVar}
         <Navbar/>
         <div className="card col-12 col-lg-4 login-card mt-2 hv-center" >
-          <form>
+
             <div className="col d-flex justify-content-center rounded-0">
 
             <div className="card-header">
@@ -247,7 +251,7 @@ class Restupdateinfo extends Component {
               <div className="col-md-12 text-center">
               <button disabled={! validateForm(this.state.errors)} id="btnLogin" className="btn btn-success btn-lg" onClick={this.submitChange}>Submit</button>
             </div>
-          </form>
+
         </div>
       </div>
 
@@ -260,6 +264,7 @@ class Restupdateinfo extends Component {
 const mapStateToProps = (state) => {
     return {
       //Restaurant props
+      /*
       rid: state.restProfile.rid,
       remail: state.restProfile.remail,
       rpassword: state.restProfile.rpassword,
@@ -273,6 +278,26 @@ const mapStateToProps = (state) => {
       raddress: state.restProfile.raddress,
       rcuisine: state.restProfile.rcuisine,
       rdelivery: state.restProfile.rdelivery,
+      isLogged: state.isLogged.isLoggedIn,
+      whoIsLogged: state.whoIsLogged.whoIsLoggedIn,
+      */
+
+      rid: state.restProfile.rid,
+      remail: state.restProfile.remail,
+      rpassword: state.restProfile.rpassword,
+      rname: state.restProfile.rname,
+      rphone: state.restProfile.rphone,
+      rabout: state.restProfile.rabout,
+      rphoto: [...state.restProfile.rphoto],
+      rlatitude: state.restProfile.rlatitude,
+      rlongitude: state.restProfile.rlongitude,
+      raddress: state.restProfile.raddress,
+      rcuisine: state.restProfile.rcuisine,
+      rdelivery: state.restProfile.rdelivery,
+      rdish: [...state.restProfile.rdish],
+      rhours: {...state.restProfile.hours},
+      rrating: state.restProfile.rrating,
+      revents: [...state.restProfile.revents],
       isLogged: state.isLogged.isLoggedIn,
       whoIsLogged: state.whoIsLogged.whoIsLoggedIn,
     }

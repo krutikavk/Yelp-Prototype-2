@@ -47,7 +47,6 @@ class custLogin extends Component {
     this.submitLogin = this.submitLogin.bind(this);
   }
 
-
   loginOptionHandler = (event) => {
     this.setState({
       loginOption: event.target.value
@@ -147,6 +146,9 @@ class custLogin extends Component {
       redirectVar = <Redirect to= "/customer/profile"/>
     }
     */
+
+
+
 
 
     if (this.state.token.length > 0) {

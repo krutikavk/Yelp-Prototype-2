@@ -3,6 +3,7 @@ import '../../App.css';
 import axios from 'axios';
 import {Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
+import jwt_decode from 'jwt-decode';
 import {update, login, logout, restaurantLogin} from '../../_actions';
 import Navbar from '../Navbar/navbar';
 
@@ -26,6 +27,7 @@ class Restsignup extends Component {
       rname: '',
       remail: '',
       rpassword: '',
+      token: '',
       isAdded: false,
       errors: {
         rname: '',
@@ -96,59 +98,42 @@ class Restsignup extends Component {
       rpassword: this.state.rpassword,
     }
 
-
-
     axios.defaults.withCredentials = true;
     //make a post request with the user data
-    axios.post('http://localhost:3001/restaurants', data)
+    let url = process.env.REACT_APP_BACKEND + '/restaurants';
+    axios.post(url, data)
       .then(response => {
 
         console.log("Status Code : ",response.status);
         if(response.status === 200){
           console.log('Restaurant added')
-
-          
-          //This is no longer needed, state error only needed
-
-          let url = 'http://localhost:3001/restaurants/' + response.data[0].rid + '/hours';
-          this.props.update('RID', response.data[0].rid)
-          this.props.update('REMAIL', response.data[0].remail)
-          this.props.update('RPASSWORD', response.data[0].rpassword)
-          this.props.update('RNAME', response.data[0].rname)
-          this.props.update('RPHONE', response.data[0].rphone)
-          this.props.update('RABOUT', response.data[0].rabout)
-          this.props.update('RPHOTO', response.data[0].rphoto)
-          this.props.update('RLOCATION', response.data[0].rlocation)
-          this.props.update('RLATITUDE', response.data[0].rlatitude)
-          this.props.update('RLONGITUDE', response.data[0].rlongitude)
-          this.props.update('RADDRESS', response.data[0].raddress)
-          this.props.update('RCUISINE', response.data[0].rcuisine)
-          this.props.update('RDELIVERY', response.data[0].rdelivery)
-
+          var decoded = jwt_decode(response.data.split(' ')[1]);
+          //call props action
+          console.log('Decoded token: ', decoded);
+          console.log('Token: ', response.data);
+          this.props.update('RID', decoded.rid)
+          this.props.update('REMAIL', decoded.remail)
+          this.props.update('RPASSWORD', decoded.rpassword)
+          this.props.update('RNAME', decoded.rname)
+          this.props.update('RPHONE', decoded.rphone)
+          this.props.update('RABOUT', decoded.rabout)
+          this.props.update('RPHOTO', decoded.rphoto)
+          this.props.update('RLATITUDE', decoded.rlatitude)
+          this.props.update('RLONGITUDE', decoded.rlongitude)
+          this.props.update('RADDRESS', decoded.raddress)
+          this.props.update('RCUISINE', decoded.rcuisine)
+          this.props.update('RDELIVERY', decoded.rdelivery)
+          this.props.update('RDISH', decoded.rdish)
+          this.props.update('RHOURS', decoded.rhours)
+          this.props.update('RRATING', decoded.rrating)
+          this.props.update('REVENTS', decoded.revents)
           this.props.login()
           this.props.restaurantLogin()
 
           this.setState({
-            isAdded : true
-          })
-
-          axios.post(url, {rid: response.data[0].rid})
-            .then (response => {
-
-              console.log("updated hours code : ",response.status);
-              if(response.status === 200){
-
-                console.log("Updated hours for restaurant")
-                
-
-              }
-
-            }).catch(err => {
-
-            });
-
-          //add hours to restaurant
-          
+              token: response.data,
+              isAdded : true
+          })      
         }
       }).catch(err =>{
           this.setState({
@@ -158,22 +143,38 @@ class Restsignup extends Component {
       });
   }
 
-  
-  
-
 	render (){
-
     let redirectVar = null;
     /*
     if(cookie.load('cookie')){
       console.log(cookie)
       redirectVar = <Redirect to= "/userdash"/>
     } */
-    console.log("islogged props: ", this.props.isLogged)
-    console.log("whoIsLogged props: ", this.props.whoIsLogged)
-    if(this.props.isLogged === true && this.props.whoIsLogged === true) {
+
+    if (this.state.token.length > 0) {
+      localStorage.setItem("token", this.state.token);
+      var decoded = jwt_decode(this.state.token.split(' ')[1]);
+
+      localStorage.setItem('rid', decoded.rid)
+      localStorage.setItem('remail', decoded.remail)
+      localStorage.setItem('rpassword', decoded.rpassword)
+      localStorage.setItem('rname', decoded.rname)
+      localStorage.setItem('rphone', decoded.rphone)
+      localStorage.setItem('rabout', decoded.rabout)
+      localStorage.setItem('rphoto', decoded.rphoto)
+      localStorage.setItem('rlatitude', decoded.rlatitude)
+      localStorage.setItem('rlongitude', decoded.rlongitude)
+      localStorage.setItem('raddress', decoded.raddress)
+      localStorage.setItem('rcuisine', decoded.rcuisine)
+      localStorage.setItem('rdelivery', decoded.rdelivery)
+      localStorage.setItem('rdish', decoded.rdish)
+      localStorage.setItem('rhours', decoded.rhours)
+      localStorage.setItem('rrating', decoded.rrating)
+      localStorage.setItem('revents', decoded.revents)
       redirectVar = <Redirect to= "/restaurant/updateinfo"/>
     }
+
+
     const errors = this.state.errors;
 
     return (
@@ -248,6 +249,8 @@ class Restsignup extends Component {
 //importedname: state.reducer.statenames
 const mapStateToProps = (state) => {
     return {
+
+      /*
       rid: state.restProfile.rid,
       remail: state.restProfile.remail,
       rpassword: state.restProfile.rpassword,
@@ -263,7 +266,26 @@ const mapStateToProps = (state) => {
       rdelivery: state.restProfile.rdelivery,
       isLogged: state.isLogged.isLoggedIn,
       whoIsLogged: state.whoIsLogged.whoIsLoggedIn,
+      */
 
+      rid: state.restProfile.rid,
+      remail: state.restProfile.remail,
+      rpassword: state.restProfile.rpassword,
+      rname: state.restProfile.rname,
+      rphone: state.restProfile.rphone,
+      rabout: state.restProfile.rabout,
+      rphoto: state.restProfile.rphoto,
+      rlatitude: state.restProfile.rlatitude,
+      rlongitude: state.restProfile.rlongitude,
+      raddress: state.restProfile.raddress,
+      rcuisine: state.restProfile.rcuisine,
+      rdelivery: state.restProfile.rdelivery,
+      rdish: state.restProfile.rdish,
+      rhours: {...state.restProfile.hours},
+      rrating: state.restProfile.rrating,
+      revents: state.restProfile.revents,
+      isLogged: state.isLogged.isLoggedIn,
+      whoIsLogged: state.whoIsLogged.whoIsLoggedIn,
     }
 }
 

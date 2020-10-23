@@ -15,6 +15,7 @@ const options = {
   useUnifiedTopology: true,
   poolSize: 500,
   bufferMaxEntries: 0,
+  useFindAndModify: false,
 };
 
 // eslint-disable-next-line no-unused-vars
@@ -117,6 +118,7 @@ router.post('/', (request, response) => {
               } else if (rest) {
                 const payload = {
                   // eslint-disable-next-line no-underscore-dangle
+                  rid: rest._id,
                   remail: rest.remail,
                   rpassword: rest.rpassword,
                   rname: rest.rname,
@@ -210,21 +212,22 @@ router.post('/login', (request, response) => {
 // Update profile
 router.put('/:rid', (request, response) => {
   console.log('\nEndpoint PUT: Restaurant fields update');
+  console.log('\nEndpoint PUT: Restaurant fields update', request.params.rid, 'xxxxx');
   const data = {
     remail: request.body.remail,
     rname: request.body.rname,
     rphone: request.body.rphone,
     rabout: request.body.rabout,
-    rphoto: [...request.body.rphoto],
+    rphoto: request.body.rphoto,
     rlatitude: request.body.rlatitude,
     rlongitude: request.body.rlatitude,
     raddress: request.body.raddress,
     rcuisine: request.body.rcuisine,
     rdelivery: request.body.rdelivery,
-    rdish: [...request.body.rdish],
+    rdish: request.body.rdish,
     rhours: request.body.hours,
     rrating: request.body.rrating,
-    revents: [...request.body.revents],
+    revents: request.body.revents,
   };
   Restaurants.findByIdAndUpdate(request.params.rid, data, (error, restaurant) => {
     if (error) {

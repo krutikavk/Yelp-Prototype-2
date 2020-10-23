@@ -5,7 +5,7 @@ const initialRestProfile = {
   rname: '',
   rphone: '',
   rabout: '',
-  rphoto: [],
+  rphoto: ['abc', 'def', 'efg'],
   rlatitude: '',
   rlongitude: '',
   raddress: '',
@@ -240,8 +240,6 @@ const restReducer = (state = initialRestProfile, action) => {
 
         case 'RPHOTO': {
           // eslint-disable-next-line prefer-const
-          let newrphoto = [...state.rphoto];
-          newrphoto.push(action.payload);
           return {
             /*
             rid: state.rid,
@@ -264,7 +262,7 @@ const restReducer = (state = initialRestProfile, action) => {
             rname: state.rname,
             rphone: state.rphone,
             rabout: state.rabout,
-            rphoto: [...newrphoto],
+            rphoto: [...action.payload],
             rlatitude: state.rlatitude,
             rlongitude: state.rlongitude,
             raddress: state.raddress,

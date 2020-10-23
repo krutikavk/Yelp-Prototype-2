@@ -43,10 +43,11 @@ class Restupdatelocation extends Component {
         //Update restaurant location
 
 
-        let endpoint = 'http://localhost:3001/restaurants/' + this.props.rid;
+        let endpoint = process.env.REACT_APP_BACKEND + '/restaurants/' + this.props.rid;
         console.log('update restaurant endpoint: ', endpoint)
 
         const data = {
+          /*
           remail: this.props.remail,
           rname: this.props.rname,
           rphone : this.props.rphone,
@@ -58,21 +59,23 @@ class Restupdatelocation extends Component {
           rcuisine: this.props.rcuisine,
           rdelivery: this.props.rdelivery,
           rid: this.props.rid
-        }
+          */
 
-        /*
-        remail: this.props.remail,
-      rname: this.props.rname,
-      rphone : this.state.rphone,
-      rabout : this.state.rabout,
-      rlocation: this.props.rlocation,
-      rlatitude: this.props.rlatitude,
-      rlongitude: this.props.rlongitude,
-      raddress: this.props.raddress,
-      rcuisine: this.state.rcuisine,
-      rdelivery: this.state.rdelivery,
-      rid: this.props.rid
-      */
+          remail: this.props.remail,
+          rname: this.props.rname,
+          rphone: this.props.rphone,
+          rabout: this.props.rabout,
+          rphoto: [...this.props.rphoto],
+          rlatitude: latLng.lat,
+          rlongitude: latLng.lng,
+          raddress: this.state.address,
+          rcuisine: this.props.rcuisine,
+          rdelivery: this.props.rdelivery,
+          rdish: [...this.props.rdish],
+          rhours: this.props.hours,
+          rrating: this.props.rrating,
+          revents: [...this.props.revents],
+        }
 
         axios.put(endpoint, data)
           .then(response => {
@@ -187,6 +190,7 @@ class Restupdatelocation extends Component {
 const mapStateToProps = (state) => {
     return {
       //Restaurant props
+      /*
       rid: state.restProfile.rid,
       remail: state.restProfile.remail,
       rpassword: state.restProfile.rpassword,
@@ -199,6 +203,26 @@ const mapStateToProps = (state) => {
       raddress: state.restProfile.raddress,
       rcuisine: state.restProfile.rcuisine,
       rdelivery: state.restProfile.rdelivery,
+      isLogged: state.isLogged.isLoggedIn,
+      whoIsLogged: state.whoIsLogged.whoIsLoggedIn,
+      */
+
+      rid: state.restProfile.rid,
+      remail: state.restProfile.remail,
+      rpassword: state.restProfile.rpassword,
+      rname: state.restProfile.rname,
+      rphone: state.restProfile.rphone,
+      rabout: state.restProfile.rabout,
+      rphoto: [...state.restProfile.rphoto],
+      rlatitude: state.restProfile.rlatitude,
+      rlongitude: state.restProfile.rlongitude,
+      raddress: state.restProfile.raddress,
+      rcuisine: state.restProfile.rcuisine,
+      rdelivery: state.restProfile.rdelivery,
+      rdish: [...state.restProfile.rdish],
+      rhours: {...state.restProfile.hours},
+      rrating: state.restProfile.rrating,
+      revents: [...state.restProfile.revents],
       isLogged: state.isLogged.isLoggedIn,
       whoIsLogged: state.whoIsLogged.whoIsLoggedIn,
     }
