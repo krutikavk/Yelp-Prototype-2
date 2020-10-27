@@ -27,6 +27,7 @@ mongoose.connect(mongoDB, options, (err, res) => {
   }
 });
 
+// Add event
 router.post('/', (request, response) => {
   const temp = [...request.body.ecustomers];
   const newEvent = new Events({
@@ -105,6 +106,69 @@ router.post('/', (request, response) => {
           });
         }
       });
+    }
+  });
+});
+
+// Get all events
+router.get('/', (request, response) => {
+  console.log('Endpoint GET: Get all events');
+  console.log('Request Body: ', request.body);
+  Events.find({}, (error, result) => {
+    if (error) {
+      response.writeHead(500, {
+        'Content-Type': 'text/plain',
+      });
+      console.log('Error in saving new event');
+      response.end('Error in saving new event');
+    } else {
+      response.writeHead(200, {
+        'Content-Type': 'application/json',
+      });
+      response.end(JSON.stringify(result));
+    }
+  });
+});
+
+// Get particular event
+router.get('/:eid', (request, response) => {
+  console.log('Endpoint GET: Get particular event');
+  console.log('Request Body: ', request.body);
+
+  Events.findById(request.params.eid, (error, event) => {
+    if (error) {
+      response.writeHead(500, {
+        'Content-Type': 'text/plain',
+      });
+      console.log('Error getting event');
+      response.end('Error getting event');
+    } else {
+      response.writeHead(200, {
+        'Content-Type': 'application/json',
+      });
+      console.log('Event found: ', event);
+      response.end(JSON.stringify(event));
+    }
+  });
+});
+
+// Get all events by a restaurant
+router.get('/restaurants/:rid', (request, response) => {
+  console.log('Endpoint GET: Get all events by a restaurant');
+  console.log('Request Body: ', request.body);
+
+  Events.find({ rid: request.params.rid }, (error, result) => {
+    if (error) {
+      response.writeHead(500, {
+        'Content-Type': 'text/plain',
+      });
+      console.log('Error in saving new event');
+      response.end('Error in saving new event');
+    } else {
+      response.writeHead(200, {
+        'Content-Type': 'application/json',
+      });
+      response.end(JSON.stringify(result));
     }
   });
 });

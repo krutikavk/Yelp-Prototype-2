@@ -14,6 +14,8 @@ const custSchema = new Schema({
   cfavcuisine: { type: String },
   // add registered events here
   cevents: [{ type: String }],
+  cfollowers: [{ type: String }],
+  cfollowing: [{ type: String }],
 },
 {
   versionKey: false,

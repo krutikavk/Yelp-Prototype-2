@@ -107,6 +107,7 @@ router.post('/', (request, response) => {
                   cfavrest: cust.cfavrest,
                   cfavcuisine: cust.favcuisine,
                   cevents: [...cust.cevents],
+                  cfollowers: [...cust.cfollowers],
                 };
                 const token = jwt.sign(payload, secret, {
                   expiresIn: 1008000,
@@ -156,6 +157,7 @@ router.post('/login', (request, response) => {
             cfavrest: customer.cfavrest,
             cfavcuisine: customer.favcuisine,
             cevents: [...customer.cevents],
+            cfollowers: [...customer.cfollowers],
           };
           const token = jwt.sign(payload, secret, {
             expiresIn: 1008000,
@@ -265,6 +267,94 @@ router.put('/:cid/password', (request, response) => {
         response.end('Customer not found');
       }
     });
+  });
+});
+
+/*
+function addFollower(cid1, cid2) {
+  Customers.findById(cid1, (error, customer1) => {
+    if (error) return false;
+    console.log('Customer followers:', customer1.cfollowers);
+    customer1.cfollowers.push(cid2);
+    customer1.save (err => {
+      if (err) return false;
+      return true;
+    });
+  });
+}
+
+//customer2 is following customer1
+//Add customer1 to customer2's following
+function addFollowing(cid1, cid2) {
+   Customers.findById(cid2, (error, customer2) => {
+    if(error) return false;
+    console.log('Customer following:', customer2.cfollowing)
+    customer2.cfollowing.push(cid1);
+    customer2.save(err => {
+      if(err) return false;
+      return true;
+    })
+  })
+}
+*/
+
+// Follow another customer
+// request.params.cid follows customer in request.body
+router.post('/:cid/follow', (request, response) => {
+  console.log('\nEndpoint POST: customer follow');
+  Customers.findById(request.params.cid, (error, customer1) => {
+    if (error) {
+      response.writeHead(500, {
+        'Content-Type': 'text/plain',
+      });
+      console.log('Error in finding customer with ID');
+      response.end('Error in finding customer with ID');
+    } else if (customer1) {
+      Customers.findById(request.body.cid, (err, customer2) => {
+        if (error) {
+          response.writeHead(500, {
+            'Content-Type': 'text/plain',
+          });
+          console.log('Error in finding customer with ID');
+          response.end('Error in finding customer with ID');
+        }
+        // console.log('Customer following:', customer2.cfollowing);
+        customer2.cfollowers.push(request.params.cid);
+        customer2.save((er) => {
+          if (er) {
+            // Customer 2 found
+            response.writeHead(500, {
+              'Content-Type': 'text/plain',
+            });
+            console.log('Error in finding customer with ID');
+            response.end('Error in finding customer with ID');
+          } else {
+            customer1.cfollowing.push(request.body.cid);
+            customer1.save((e) => {
+              if (e) {
+                response.writeHead(500, {
+                  'Content-Type': 'text/plain',
+                });
+                console.log('Error in finding customer with ID');
+                response.end('Error in finding customer with ID');
+              } else {
+                response.writeHead(200, {
+                  'Content-Type': 'text/plain',
+                });
+                console.log('Operation completed');
+                response.end('Operation completed');
+              }
+            });
+          }
+        });
+      });
+    } else {
+      response.writeHead(400, {
+        'Content-Type': 'text/plain',
+      });
+      console.log('Customer not found');
+      response.end('Customer not found');
+    }
   });
 });
 
