@@ -22,15 +22,9 @@ const orderSchema = new Schema({
   },
   otime: Date,
   oaddress: String,
-  dishes: [{
+  odishes: [{
     dname: String,
-    dingredients: String,
     dprice: Number,
-    dcategory: {
-      type: String,
-      enum: ['Appetizer', 'Salad', 'Main Course', 'Dessert', 'Beverage'],
-      default: 'Main Course',
-    },
     durl: String,
     dquantity: Number,
   }],

@@ -2,18 +2,6 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
-const Dishes = new Schema({
-  dname: String,
-  dingredients: String,
-  dprice: Number,
-  dcategory: {
-    type: String,
-    enum: ['Appetizer', 'Salad', 'Main Course', 'Dessert', 'Beverage'],
-    default: 'Main Course',
-  },
-  durl: String,
-});
-
 // Can add non-essential fields to meta: {} later on
 const restSchema = new Schema({
   remail: { type: String, unique: true, DropDups: true },
@@ -27,7 +15,7 @@ const restSchema = new Schema({
   raddress: { type: String },
   rcuisine: { type: String },
   rdelivery: { type: String },
-  rdish: [Dishes],
+  rdish: [{ type: String }],
   rhours: {
     sunday: { type: Boolean, default: true },
     monday: { type: Boolean, default: true },
