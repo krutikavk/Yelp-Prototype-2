@@ -12,8 +12,8 @@ const custSchema = new Schema({
   cphoto: { type: String },
   cfavrest: { type: String },
   cfavcuisine: { type: String },
-  // add registered events here
-  cevents: [{ type: String }],
+  // add registered events here--not needed anymore
+  // cevents: [{ type: String }],
   cfollowers: [{ type: String }],
   cfollowing: [{ type: String }],
 },

@@ -28,7 +28,7 @@ mongoose.connect(mongoDB, options, (err, res) => {
 });
 
 // get all customers
-router.get('/', checkAuth, (request, response) => {
+router.get('/', (request, response) => {
   console.log('Hit get all customers');
   Customers.find({}, (error, results) => {
     if (error) {

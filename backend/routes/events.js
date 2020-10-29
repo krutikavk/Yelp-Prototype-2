@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const { mongoDB, secret } = require('../Utils/config');
 const { checkAuth, auth } = require('../Utils/passport');
 const Events = require('../Models/EventModel');
+const Customers = require('../Models/CustModel');
 
 auth();
 
@@ -29,7 +30,7 @@ mongoose.connect(mongoDB, options, (err, res) => {
 
 // Add event
 router.post('/', (request, response) => {
-  const temp = [...request.body.ecustomers];
+  const temp = (request.body.ecustomers) ? [...request.body.ecustomers] : [];
   const newEvent = new Events({
     ename: request.body.ename,
     edescription: request.body.edescription,
@@ -172,5 +173,49 @@ router.get('/restaurants/:rid', (request, response) => {
     }
   });
 });
+
+// Get all events customer is registered for
+router.get('/customers/:cid', (request, response) => {
+  console.log('Endpoint GET: All events customer is attending');
+  console.log('Request Body: ', request.body);
+  Events.find({}, (error, events) => {
+    if (error) {
+      response.writeHead(500, {
+        'Content-Type': 'text/plain',
+      });
+      console.log('Error getting events');
+      response.end('Error getting events');
+    } else if (events) {
+      // eslint-disable-next-line prefer-const
+      let eventArr = [];
+      events.forEach((item) => {
+        console.log(item);
+        if (item.ecustomers.includes(request.params.cid)) {
+          console.log('here');
+          eventArr.push(item);
+        }
+      });
+      console.log('eventarr: ', eventArr);
+      response.writeHead(200, {
+        'Content-Type': 'application/json',
+      });
+      response.end(JSON.stringify(eventArr));
+    } else {
+      response.writeHead(500, {
+        'Content-Type': 'text/plain',
+      });
+      console.log('Error getting events');
+      response.end('Error getting events');
+    }
+  });
+});
+
+/*
+// Register a customer for an event
+router.post('/:eid/customers', (request, response) => {
+  console.log('Endpoint POST: Register customer for event');
+  console.log('Request Body: ', request.body);
+});
+*/
 
 module.exports = router;
