@@ -10,7 +10,7 @@ import Navbar from '../Navbar/navbar';
 
 import { RestaurantListingsProvider, RestaurantListingsConsumer } from '../../_context/restaurantListingsProvider';
 import Restaurant from './restaurantcard';
-import MapSection from '../Map/map';
+import MapSection from '../Map/map.jsx';
 import RestFilter from '../Filter/restaurantfilter';
 
 // eslint-disable-next-line react/prefer-stateless-function
@@ -43,45 +43,53 @@ class SearchRestResults extends Component {
 
     const url = `${process.env.REACT_APP_BACKEND}/restaurants`;
     axios.get(url)
-      .then(response => {
-        if(response.status === 200){
-          //When results return multiple rows, rowdatapacket object needs to be converted to JSON object again 
-          //use JSON.parse(JSON.stringify()) to convert back to JSON object
-          let locations = [];
-          response.data.forEach(item => {
-            let location = {
-              name: item.rname,
-              lat: item.rlatitude,
-              lng: item.rlongitude
-            }
-            locations.push(location)
-          });
-
-          let pins = {
-            restaurants: locations
-          }
+      .then((response) => {
+        if (response.status === 200) {
           this.props.loadRestaurants(3, response.data);
-          /*
-          this.setState({ 
-            restaurantListings: response.data, 
-          })
-          */
         }
-      }).catch(err =>{
-          console.log("No response")
-    });
-
-    return;
+      }).catch((err) => {
+        console.log('No response');
+      });
   }
 
   render() {
     let redirectVar = null;
     // Accessing props from Navbar as this.props.location.state.xxx
     console.log('Passed props', this.props);
+    let locations = [];
+    this.props.restDisp.displayRestArr.forEach((item) => {
+      let location = {
+        name: item.rname,
+        lat: item.rlatitude,
+        lng: item.rlongitude,
+      };
+      locations.push(location);
+    });
+
+    // eslint-disable-next-line prefer-const
+    let pins = {
+      restaurants: locations,
+    };
+
     return (
 
       <div>
-        Searched restaurants
+        <div className="left-half">
+          <ul>
+            {this.props.restDisp.displayRestArr.map((listing) => (
+              <div>
+                <Restaurant restaurant={listing} />
+              </div>
+            ))}
+          </ul>
+        </div>
+        <div className="right-half">
+          <div className="map">
+            <div className="google-map">
+              <MapSection location={pins} zoomLevel={17} />
+            </div>
+          </div>
+        </div>
       </div>
 
     /*

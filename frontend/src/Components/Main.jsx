@@ -56,7 +56,6 @@ class Main extends Component {
           <Route exact path='/restaurant/dashboard' component={Restdash} />
           <Route exact path='/dishes' component={dishes} />
           <Route exact path='/dishes/add' component={dishesadd} />
-          <Route exact path='/restaurants' component={restaurants} />
           <Route path='/cart' component={cart} />
           <Route exact path='/restaurant' component={restaurant} />
           <Route path='/orders' component={orders} />
