@@ -26,3 +26,9 @@ export const updateCart = (infield, payload) => ({
   field: infield,
   payload,
 });
+
+export const loadRestaurants = (countPerPage, payload) => ({
+  type: 'LOAD_DATA',
+  countPerPage,
+  payload,
+});

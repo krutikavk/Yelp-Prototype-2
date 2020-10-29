@@ -226,7 +226,7 @@ router.put('/:rid', (request, response) => {
     rcuisine: request.body.rcuisine,
     rdelivery: request.body.rdelivery,
     rdish: request.body.rdish,
-    rhours: request.body.hours,
+    rhours: request.body.rhours,
     rrating: request.body.rrating,
     revents: request.body.revents,
   };

@@ -9,7 +9,7 @@ import {
   geocodeByPlaceId,
   getLatLng,
 } from 'react-places-autocomplete';
-import SearchRestResults from '../Restaurants/searchRestResults';
+import SearchRestResults from '../Restaurants/searchRestResults.jsx';
 import Navbar from '../Navbar/navbar';
 
 
