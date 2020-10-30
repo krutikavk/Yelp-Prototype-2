@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import {
-  update, login, logout, loadRestaurants, filterRestaurantByDelivery, filterRestaurantByLocation, loadNewPage
+  update, login, logout, loadRestaurants, filterRestaurantByDelivery, filterRestaurantByLocation, loadNewPage, loadExactPage
 } from '../../_actions';
 // import Navbar from '../Navbar/navbar';
 // import { RestaurantListingsProvider, RestaurantListingsConsumer } from '../../_context/restaurantListingsProvider';
@@ -62,9 +62,6 @@ class SearchRestResults extends Component {
 
   methodHandler = (event) => {
     console.log("selected", event.target.value)
-
-    
-
     this.props.filterRestaurantByDelivery(event.target.value);
     this.setState({
       method: event.target.value
@@ -121,10 +118,13 @@ class SearchRestResults extends Component {
     const pageNumbers = [];
 
     let renderPageNumbers = null;
-    const numberOfPages = Math.ceil(this.props.restDisp.filteredRestArr.length/this.props.restDisp.countPerPage);
+    
+    const numberOfPages = Math.ceil(this.props.restDisp.filteredRestArr.length / this.props.restDisp.countPerPage);
     for(let i = 1; i <= numberOfPages; i++) {
       pageNumbers.push(i);
     }
+
+    console.log('pageNumbers: ', pageNumbers);
     renderPageNumbers = pageNumbers.map((number) => {
       return (
         <li key={number}
@@ -136,6 +136,7 @@ class SearchRestResults extends Component {
         </li>
       )
     })
+    
 
     // eslint-disable-next-line prefer-const
     let locations = [];
@@ -210,7 +211,11 @@ class SearchRestResults extends Component {
             )}
           </PlacesAutocomplete>
         </div>
-        {renderPageNumbers}
+        <ul id="page-numbers">
+          <li onClick={this.prevPageHandler}>Prev</li>
+          {renderPageNumbers}
+          <li onClick={this.nextPageHandler}>Next</li>
+        </ul>
         <div className="left-half">
           <ul>
             {this.props.restDisp.displayRestArr.map((listing) => (
@@ -313,6 +318,7 @@ function mapDispatchToProps(dispatch) {
     filterRestaurantByDelivery: (payload) => dispatch(filterRestaurantByDelivery(payload)),
     filterRestaurantByLocation: (nbrLatitude, nbrLongitude) => dispatch(filterRestaurantByLocation(nbrLatitude, nbrLongitude)),
     loadNewPage: (payload) => dispatch(loadNewPage(payload)),
+    loadExactPage: (payload) => dispatch(loadExactPage(payload)),
   };
 }
 

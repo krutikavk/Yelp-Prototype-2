@@ -20,6 +20,8 @@ const restaurantDisplayReducer = (state = initialRestState, action) => {
         restArr: [...action.payload],
         filteredRestArr: [...action.payload],
         displayRestArr: [...action.payload].slice(0, action.countPerPage),
+        countPerPage: action.countPerPage,
+        currentPage: 1
         // displayRestArr: [...action.payload],
       };
     }
@@ -69,15 +71,15 @@ const restaurantDisplayReducer = (state = initialRestState, action) => {
 
     case 'LOAD_NEW_PAGE': {
       if (state.currentPage + action.payload.page < 1 ||
-        state.currentPage + action.payload.page > Math.ceil(state.filteredArray.length/state.countPerPage)) {
+        state.currentPage + action.payload.page > Math.ceil(state.filteredRestArr.length / state.countPerPage)) {
         return state;
       }
-
+      console.log('action.payload.page: ', action.payload.page);
       let newState = { ...state };
-      newState.currentPage += action.payload.page;
+      newState.currentPage += (+action.payload.page);
       const upperBound = newState.currentPage * newState.countPerPage;
       const lowerBound = upperBound - newState.countPerPage;
-      newState.displayRestArr = [...newState.filtered].slice(lowerBound, upperBound);
+      newState.displayRestArr = [...newState.filteredRestArr].slice(lowerBound, upperBound);
 
       /*
       let newState = { ...state };
@@ -87,11 +89,15 @@ const restaurantDisplayReducer = (state = initialRestState, action) => {
       newState.displayRestArr = [...newState.filtered].slice(lowerBound, upperBound);
       */
       return newState;
-      
     }
 
     case 'LOAD_EXACT_PAGE': {
-      return state;
+      let newState = { ...state };
+      newState.currentPage = action.payload;
+      const upperBound = newState.currentPage * newState.countPerPage;
+      const lowerBound = upperBound - newState.countPerPage;
+      newState.displayRestArr = [...newState.filteredRestArr].slice(lowerBound, upperBound);
+      return newState;
     }
 
     default: {
