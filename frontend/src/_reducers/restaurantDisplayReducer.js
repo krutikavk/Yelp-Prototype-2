@@ -3,8 +3,8 @@ const initialRestState = {
   filteredRestArr: [],
   displayRestArr: [],
   // add currently applied filters here--use in case of radio buttons for multiple filters
-  appliedRestFilters: [],
-  countPerPage: 2,
+  //appliedRestFilters: [],
+  countPerPage: 0,
   currentPage: 0,
   filterDeliveryMethod: '',
   filterLatitude: '',
@@ -19,8 +19,8 @@ const restaurantDisplayReducer = (state = initialRestState, action) => {
         ...state,
         restArr: [...action.payload],
         filteredRestArr: [...action.payload],
-        //displayRestArr: [...action.payload].slice(0, action.countPerPage),
-        displayRestArr: [...action.payload],
+        displayRestArr: [...action.payload].slice(0, action.countPerPage),
+        // displayRestArr: [...action.payload],
       };
     }
 
@@ -31,15 +31,18 @@ const restaurantDisplayReducer = (state = initialRestState, action) => {
       let filtered = newState.filteredRestArr;
       if (action.payload !== 'All') {
         filtered = filtered.filter((item) => item.rdelivery === action.payload);
-        newState.displayRestArr = [...filtered].slice(0, action.countPerPage);
+        newState.displayRestArr = [...filtered].slice(0, newState.countPerPage);
       } else {
         filtered = [...newState.restArr];
-        newState.displayRestArr = [...filtered];
+        newState.currentPage = 1;
+        newState.countPerPage = action.countPerPage;
+        newState.displayRestArr = [...filtered].slice(0, newState.countPerPage);
       }
       return newState;
     }
 
     case 'FILTER_BY_LOCATION': {
+      // eslint-disable-next-line prefer-const
       let newState = { ...state };
       console.log('action: ', action);
       let filtered = newState.filteredRestArr;
@@ -56,11 +59,21 @@ const restaurantDisplayReducer = (state = initialRestState, action) => {
         Math.sqrt(
           ((b.rlatitude - action.nbrLatitude) * (b.rlatitude - action.nbrLatitude)) +
           ((b.rlongitude - action.nbrLongitude) * (b.rlongitude - action.nbrLongitude))
-        ) ? -1 : 1
-      );
-      console.log('filtered after', filtered);
-      //newState.displayRestArr = [...filtered].slice(0, action.countPerPage);
-      newState.displayRestArr = [...filtered];
+        ) ? -1 : 1);
+      newState.currentPage = 1;
+      newState.countPerPage = action.countPerPage;
+      newState.displayRestArr = [...filtered].slice(0, newState.countPerPage);
+      // newState.displayRestArr = [...filtered];
+      return newState;
+    }
+
+    case 'LOAD_NEW_PAGE': {
+      let newState = { ...state };
+      newState.currentPage = action.payload;
+      const upperBound = newState.currentPage * newState.countPerPage;
+      const lowerBound = upperBound - newState.countPerPage;
+      newState.displayRestArr = [...newState.filtered].slice(lowerBound, upperBound);
+
       return newState;
     }
 

@@ -43,3 +43,7 @@ export const filterRestaurantByLocation = (nbrLatitude, nbrLongitude) => ({
   nbrLatitude,
   nbrLongitude,
 });
+
+export const loadNewPage = (payload) => ({
+  type: 'LOAD_NEW_PAGE',
+});
