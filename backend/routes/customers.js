@@ -73,6 +73,7 @@ router.post('/', (request, response) => {
         response.writeHead(400, {
           'Content-Type': 'text/plain',
         });
+        console.log('customer: ', customer);
         console.log('Email ID already registered');
         response.end('Email ID already registered');
       } else {
@@ -106,7 +107,7 @@ router.post('/', (request, response) => {
                   cphoto: cust.cphoto,
                   cfavrest: cust.cfavrest,
                   cfavcuisine: cust.favcuisine,
-                  cevents: [...cust.cevents],
+                  // cevents: [...cust.cevents],
                   cfollowers: [...cust.cfollowers],
                 };
                 const token = jwt.sign(payload, secret, {
@@ -156,7 +157,7 @@ router.post('/login', (request, response) => {
             cphoto: customer.cphoto,
             cfavrest: customer.cfavrest,
             cfavcuisine: customer.favcuisine,
-            cevents: [...customer.cevents],
+            // cevents: [...customer.cevents],
             cfollowers: [...customer.cfollowers],
           };
           const token = jwt.sign(payload, secret, {

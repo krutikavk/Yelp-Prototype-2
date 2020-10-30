@@ -221,7 +221,7 @@ router.put('/:rid', (request, response) => {
     rabout: request.body.rabout,
     rphoto: request.body.rphoto,
     rlatitude: request.body.rlatitude,
-    rlongitude: request.body.rlatitude,
+    rlongitude: request.body.rlongitude,
     raddress: request.body.raddress,
     rcuisine: request.body.rcuisine,
     rdelivery: request.body.rdelivery,

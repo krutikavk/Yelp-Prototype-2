@@ -17,7 +17,7 @@ const restSchema = new Schema({
   rdelivery: {
     type: String,
     enum: ['Curbside pickup', 'Yelp Delivery', 'Dine In'],
-    default: 'Curbside Pickup',
+    default: 'Curbside pickup',
   },
   rdish: [{ type: String }],
   rhours: {

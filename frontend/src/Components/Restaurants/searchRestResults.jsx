@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import {
-  update, login, logout, loadRestaurants, filterRestaurantByDelivery
+  update, login, logout, loadRestaurants, filterRestaurantByDelivery, filterRestaurantByLocation
 } from '../../_actions';
 // import Navbar from '../Navbar/navbar';
 // import { RestaurantListingsProvider, RestaurantListingsConsumer } from '../../_context/restaurantListingsProvider';
@@ -71,11 +71,7 @@ class SearchRestResults extends Component {
           nbrLatitude : latLng.lat,
           nbrLongitude : latLng.lng,
         })
-
-        setTimeout(() => {
-          //this.props.updateFilter(this.state)
-        }, 0);
-
+        this.props.filterRestaurantByLocation(latLng.lat, latLng.lng);
       })
       .catch(error => console.error('Error', error));
   }
@@ -274,6 +270,7 @@ function mapDispatchToProps(dispatch) {
     logout: () => dispatch(logout()),
     loadRestaurants: (countPerPage, payload) => dispatch(loadRestaurants(countPerPage, payload)),
     filterRestaurantByDelivery: (payload) => dispatch(filterRestaurantByDelivery(payload)),
+    filterRestaurantByLocation: (nbrLatitude, nbrLongitude) => dispatch(filterRestaurantByLocation(nbrLatitude, nbrLongitude)),
   };
 }
 

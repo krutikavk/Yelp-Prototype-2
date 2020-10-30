@@ -38,7 +38,8 @@ export const filterRestaurantByDelivery = (payload) => ({
   payload,
 });
 
-export const filterRestaurantByLocation = (payload) => ({
+export const filterRestaurantByLocation = (nbrLatitude, nbrLongitude) => ({
   type: 'FILTER_BY_LOCATION',
-  payload,
+  nbrLatitude,
+  nbrLongitude,
 });
