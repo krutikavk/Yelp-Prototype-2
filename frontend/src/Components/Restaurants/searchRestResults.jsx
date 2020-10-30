@@ -4,38 +4,84 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import {
-  update, login, logout, loadRestaurants,
+  update, login, logout, loadRestaurants, filterRestaurantByDelivery
 } from '../../_actions';
-import Navbar from '../Navbar/navbar';
-
-import { RestaurantListingsProvider, RestaurantListingsConsumer } from '../../_context/restaurantListingsProvider';
+// import Navbar from '../Navbar/navbar';
+// import { RestaurantListingsProvider, RestaurantListingsConsumer } from '../../_context/restaurantListingsProvider';
 import Restaurant from './restaurantcard';
-import MapSection from '../Map/map.jsx';
+import MapSection from '../Map/map';
 import RestFilter from '../Filter/restaurantfilter';
+import PlacesAutocomplete from 'react-places-autocomplete';
+import {
+  geocodeByAddress,
+  geocodeByPlaceId,
+  getLatLng,
+} from 'react-places-autocomplete';
 
 // eslint-disable-next-line react/prefer-stateless-function
 class SearchRestResults extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      method: '',
+      methodStates: ['All', 'Curbside pickup', 'Yelp Delivery', 'Dine In'],
+      nbrAddress: '',
+      nbrLatitude: '',
+      nbrLongitude: '',
+    };
+
+    this.methodHandler = this.methodHandler.bind(this);
+
+    this.handleSelectAddress = this.handleSelectAddress.bind(this);
+    this.handleAddressChange = this.handleAddressChange.bind(this);
+  }
+
+  handleAddressChange = (address) => {
+    this.setState({
+      nbrAddress: address
+    })
+  }
+
+  methodHandler = (event) => {
+    console.log("selected", event.target.value)
+
+    
+
+    this.props.filterRestaurantByDelivery(event.target.value);
+    this.setState({
+      method: event.target.value
+    })
+    /*
+    setTimeout(() => {
+      this.props.updateFilter(this.state)
+    }, 0);
+    */
+  }
+
+  handleSelectAddress = address => {
+    this.setState({nbrAddress : address});
+    console.log(address);
+
+    geocodeByAddress(address)
+      .then(results => getLatLng(results[0]))
+      .then(latLng => {
+        console.log('Location found: ', latLng)
+
+        this.setState({
+          nbrLatitude : latLng.lat,
+          nbrLongitude : latLng.lng,
+        })
+
+        setTimeout(() => {
+          //this.props.updateFilter(this.state)
+        }, 0);
+
+      })
+      .catch(error => console.error('Error', error));
   }
 
   componentDidMount() {
-
     console.log('RestaurantListingsProvider props: ', this.props);
-
-  /*
-    if (this.props.searchBy === 'Cuisine' && this.props.cuisineType !== '') {
-      console.log("Search by cuisine: ", this.props.cuisineType)
-      this.getRestaurantByCuisine(this.props.cuisineType);
-    } else if(this.props.searchBy === 'Delivery Type' && this.props.deliveryType !== ''){
-      this.getRestaurantByDtype(this.props.deliveryType);
-    } else if (this.props.searchBy === 'Dish Name' && this.props.searchTxt !== '') {
-      this.getRestaurantByDname(this.props.searchTxt)
-    } else {
-      this.getAllRestaurants();
-    }
-
-    */
     this.getAllRestaurants();
   }
 
@@ -56,8 +102,11 @@ class SearchRestResults extends Component {
     let redirectVar = null;
     // Accessing props from Navbar as this.props.location.state.xxx
     console.log('Passed props', this.props);
+    // eslint-disable-next-line prefer-const
     let locations = [];
+    // eslint-disable-next-line react/destructuring-assignment, react/prop-types
     this.props.restDisp.displayRestArr.forEach((item) => {
+      // eslint-disable-next-line prefer-const
       let location = {
         name: item.rname,
         lat: item.rlatitude,
@@ -67,13 +116,64 @@ class SearchRestResults extends Component {
     });
 
     // eslint-disable-next-line prefer-const
-    let pins = {
+    const pins = {
       restaurants: locations,
     };
 
     return (
 
       <div>
+        <div class="form-inline">
+          <label for="ooption" style={{color:"black"}}>Filter by Service: </label>
+          <select class="form-control" id="ooption" onChange = {this.methodHandler}>>
+            <option value = {this.state.method}> Choose...</option>
+            {this.state.methodStates.map(option => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+          
+          <PlacesAutocomplete
+          value={this.state.nbrAddress}
+          onChange={this.handleAddressChange}
+          onSelect={this.handleSelectAddress}
+          >
+            {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+              <div>
+                <input
+                  {...getInputProps({
+                  placeholder: 'Enter Neighborhood...',
+                  className: 'form-control mr-sm-0',
+                  })}
+                />
+                <div className="autocomplete-dropdown-container">
+                  {loading && <div>Loading...</div>}
+                  {suggestions.map(suggestion => {
+                    const className = suggestion.active
+                      ? 'suggestion-item--active'
+                      : 'suggestion-item';
+                    // inline style for demonstration purpose
+                    const style = suggestion.active
+                      ? { backgroundColor: '#000000', cursor: 'pointer' }
+                      : { backgroundColor: '#D3D3D3', cursor: 'pointer' };
+                    return (
+                      <div
+                        {...getSuggestionItemProps(suggestion, {
+                          className,
+                          style,
+                        })}
+                      >
+                        <span>{suggestion.description}</span>
+                      </div>
+                    );
+                
+                  })}
+                </div>
+              </div>
+            )}
+          </PlacesAutocomplete>
+        </div>
         <div className="left-half">
           <ul>
             {this.props.restDisp.displayRestArr.map((listing) => (
@@ -152,7 +252,7 @@ class SearchRestResults extends Component {
       </div>
 
       */
-    )
+    );
   }
 }
 
@@ -173,6 +273,7 @@ function mapDispatchToProps(dispatch) {
     login: () => dispatch(login()),
     logout: () => dispatch(logout()),
     loadRestaurants: (countPerPage, payload) => dispatch(loadRestaurants(countPerPage, payload)),
+    filterRestaurantByDelivery: (payload) => dispatch(filterRestaurantByDelivery(payload)),
   };
 }
 

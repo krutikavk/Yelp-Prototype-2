@@ -73,7 +73,6 @@ class RestFilter extends Component {
   render() {
     return (
       <div>
-
         <div class="form-inline">
           <label for="ooption" style={{color:"black"}}>Filter by Service: </label>
           <select class="form-control" id="ooption" onChange = {this.methodHandler}>>

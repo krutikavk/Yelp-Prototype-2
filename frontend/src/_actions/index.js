@@ -32,3 +32,13 @@ export const loadRestaurants = (countPerPage, payload) => ({
   countPerPage,
   payload,
 });
+
+export const filterRestaurantByDelivery = (payload) => ({
+  type: 'FILTER_BY_DELIVERY',
+  payload,
+});
+
+export const filterRestaurantByLocation = (payload) => ({
+  type: 'FILTER_BY_LOCATION',
+  payload,
+});

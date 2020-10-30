@@ -14,7 +14,11 @@ const restSchema = new Schema({
   rlongitude: { type: Number },
   raddress: { type: String },
   rcuisine: { type: String },
-  rdelivery: { type: String },
+  rdelivery: {
+    type: String,
+    enum: ['Curbside pickup', 'Yelp Delivery', 'Dine In'],
+    default: 'Curbside Pickup',
+  },
   rdish: [{ type: String }],
   rhours: {
     sunday: { type: Boolean, default: true },
