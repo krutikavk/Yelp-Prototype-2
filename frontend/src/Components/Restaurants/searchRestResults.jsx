@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import {
-  update, login, logout, loadRestaurants, filterRestaurantByDelivery, filterRestaurantByLocation
+  update, login, logout, loadRestaurants, filterRestaurantByDelivery, filterRestaurantByLocation, loadNewPage
 } from '../../_actions';
 // import Navbar from '../Navbar/navbar';
 // import { RestaurantListingsProvider, RestaurantListingsConsumer } from '../../_context/restaurantListingsProvider';
@@ -28,18 +28,36 @@ class SearchRestResults extends Component {
       nbrAddress: '',
       nbrLatitude: '',
       nbrLongitude: '',
+      restFetched: false,
     };
 
     this.methodHandler = this.methodHandler.bind(this);
 
     this.handleSelectAddress = this.handleSelectAddress.bind(this);
     this.handleAddressChange = this.handleAddressChange.bind(this);
+
+    //Pagination handlers
+    this.nextPageHandler = this.nextPageHandler.bind(this);
+    this.prevPageHandler = this.prevPageHandler.bind(this);
+    this.goToPageHandler = this.goToPageHandler.bind(this);
   }
 
   handleAddressChange = (address) => {
     this.setState({
       nbrAddress: address
     })
+  }
+
+  nextPageHandler = () => {
+    this.props.loadNewPage({page: 1})
+  }
+
+  prevPageHandler = () => {
+    this.props.loadNewPage({page: -1})
+  }
+
+  goToPageHandler = (event) => {
+    this.props.loadExactPage(event.target.id);
   }
 
   methodHandler = (event) => {
@@ -88,6 +106,9 @@ class SearchRestResults extends Component {
       .then((response) => {
         if (response.status === 200) {
           this.props.loadRestaurants(3, response.data);
+          this.setState({
+            restFetched: true,
+          })
         }
       }).catch((err) => {
         console.log('No response');
@@ -95,9 +116,27 @@ class SearchRestResults extends Component {
   }
 
   render() {
-    let redirectVar = null;
-    // Accessing props from Navbar as this.props.location.state.xxx
-    console.log('Passed props', this.props);
+
+    //Pagination part
+    const pageNumbers = [];
+
+    let renderPageNumbers = null;
+    const numberOfPages = Math.ceil(this.props.restDisp.filteredRestArr.length/this.props.restDisp.countPerPage);
+    for(let i = 1; i <= numberOfPages; i++) {
+      pageNumbers.push(i);
+    }
+    renderPageNumbers = pageNumbers.map((number) => {
+      return (
+        <li key={number}
+          id={number}
+          onClick= {this.goToPageHandler}
+          class={`${this.props.restDisp.currentPage === number ? 'active' : ''}`}
+        >
+        {number}
+        </li>
+      )
+    })
+
     // eslint-disable-next-line prefer-const
     let locations = [];
     // eslint-disable-next-line react/destructuring-assignment, react/prop-types
@@ -115,6 +154,7 @@ class SearchRestResults extends Component {
     const pins = {
       restaurants: locations,
     };
+
 
     return (
 
@@ -170,6 +210,7 @@ class SearchRestResults extends Component {
             )}
           </PlacesAutocomplete>
         </div>
+        {renderPageNumbers}
         <div className="left-half">
           <ul>
             {this.props.restDisp.displayRestArr.map((listing) => (
@@ -271,6 +312,7 @@ function mapDispatchToProps(dispatch) {
     loadRestaurants: (countPerPage, payload) => dispatch(loadRestaurants(countPerPage, payload)),
     filterRestaurantByDelivery: (payload) => dispatch(filterRestaurantByDelivery(payload)),
     filterRestaurantByLocation: (nbrLatitude, nbrLongitude) => dispatch(filterRestaurantByLocation(nbrLatitude, nbrLongitude)),
+    loadNewPage: (payload) => dispatch(loadNewPage(payload)),
   };
 }
 

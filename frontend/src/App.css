@@ -203,3 +203,7 @@ section {
   display: table;
   width: 100%;
 }
+
+li.active {
+  font-weight: bold;
+}

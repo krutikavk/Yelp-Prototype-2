@@ -68,13 +68,30 @@ const restaurantDisplayReducer = (state = initialRestState, action) => {
     }
 
     case 'LOAD_NEW_PAGE': {
+      if (state.currentPage + action.payload.page < 1 ||
+        state.currentPage + action.payload.page > Math.ceil(state.filteredArray.length/state.countPerPage)) {
+        return state;
+      }
+
+      let newState = { ...state };
+      newState.currentPage += action.payload.page;
+      const upperBound = newState.currentPage * newState.countPerPage;
+      const lowerBound = upperBound - newState.countPerPage;
+      newState.displayRestArr = [...newState.filtered].slice(lowerBound, upperBound);
+
+      /*
       let newState = { ...state };
       newState.currentPage = action.payload;
       const upperBound = newState.currentPage * newState.countPerPage;
       const lowerBound = upperBound - newState.countPerPage;
       newState.displayRestArr = [...newState.filtered].slice(lowerBound, upperBound);
-
+      */
       return newState;
+      
+    }
+
+    case 'LOAD_EXACT_PAGE': {
+      return state;
     }
 
     default: {

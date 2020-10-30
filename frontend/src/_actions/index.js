@@ -46,4 +46,10 @@ export const filterRestaurantByLocation = (nbrLatitude, nbrLongitude) => ({
 
 export const loadNewPage = (payload) => ({
   type: 'LOAD_NEW_PAGE',
+  payload,
+});
+
+export const loadExactPage = (payload) => ({
+  type: 'LOAD_EXACT_PAGE',
+  payload,
 });
