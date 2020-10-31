@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const dishSchema = new Schema({
+  rid: String,
   dname: String,
   dingredients: String,
   dprice: Number,
@@ -17,5 +18,5 @@ const dishSchema = new Schema({
   versionKey: false,
 });
 
-const dishModel = mongoose.model('restaurant', dishSchema);
+const dishModel = mongoose.model('dish', dishSchema);
 module.exports = dishModel;

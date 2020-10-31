@@ -186,7 +186,7 @@ router.post('/login', (request, response) => {
             rcuisine: restaurant.rcuisine,
             rdelivery: restaurant.rdelivery,
             rdish: [...restaurant.rdish],
-            rhours: restaurant.hours,
+            rhours: restaurant.rhours,
             rrating: restaurant.rrating,
             revents: [...restaurant.revents],
           };

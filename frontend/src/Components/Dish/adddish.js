@@ -18,6 +18,7 @@ class AddDish extends Component {
       dprice: '',
       ddescription: '',
       dcategory: '',
+      dcategoryOptions: ['Appetizer', 'Salad', 'Main Course', 'Dessert', 'Beverage'],
       added: false,
 
       //For uploading image
@@ -237,8 +238,18 @@ class AddDish extends Component {
               </div>
 
               <div class="form-group">
-                
-                
+                <label for="dcategory">Dish Category</label>
+                <select class="form-control" id="dcategory" onChange = {this.dcategoryChangeHandler}>>
+                  <option value = {this.state.dcategory}> Choose...</option>
+                  {this.state.dcategoryOptions.map(option => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div class="form-group"> 
                 <label htmlFor="exampleInputPassword1">Dish Photo</label> <br/>
                 {Success_message}
                 <input onChange={this.handleFileUpload} ref = {(ref) => {this.uploadInput = ref;}} type = "file"/>

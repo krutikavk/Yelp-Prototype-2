@@ -210,6 +210,11 @@ router.get('/customers/:cid', (request, response) => {
   });
 });
 
+// Get all customers going to an event
+router.post('/:eid/customers', (request, response) => {
+
+});
+
 /*
 // Register a customer for an event
 router.post('/:eid/customers', (request, response) => {
