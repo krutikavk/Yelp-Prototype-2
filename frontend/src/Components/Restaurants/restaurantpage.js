@@ -129,7 +129,7 @@ class Restaurants extends Component {
     console.log(" restaurantpage component did mount whoIsLogged", this.props.whoIsLogged)
 
     let rid = (this.props.whoIsLogged === true) ? this.props.rid : this.props.location.query.rid;
-    console.log("rid on restaurantpage", rid)
+    console.log("query on restaurantpage", this.props.location.query)
     //Get working hours
     let getHours = 'http://localhost:3001/restaurants/' + rid + '/hours'
     axios.get(getHours)

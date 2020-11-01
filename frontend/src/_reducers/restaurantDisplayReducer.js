@@ -21,7 +21,7 @@ const restaurantDisplayReducer = (state = initialRestState, action) => {
         filteredRestArr: [...action.payload],
         displayRestArr: [...action.payload].slice(0, action.countPerPage),
         countPerPage: action.countPerPage,
-        currentPage: 1
+        currentPage: 1,
         // displayRestArr: [...action.payload],
       };
     }

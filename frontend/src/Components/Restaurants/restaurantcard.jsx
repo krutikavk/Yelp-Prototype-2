@@ -20,10 +20,10 @@ class Restaurant extends Component {
 
     return (
       //Pass restaurant information to display menu and then show when dishes are added to cart
-      <Link to ={{
+      <Link to={{
                   pathname: '/restaurant',
                   query: {
-                    rid: `${this.props.restaurant.rid}`, 
+                    rid: `${this.props.restaurant._id}`, 
                     remail: `${this.props.restaurant.remail}`,
                     rname: `${this.props.restaurant.rname}`,
                     rphone: `${this.props.restaurant.rphone}`,

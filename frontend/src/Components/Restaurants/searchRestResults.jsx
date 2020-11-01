@@ -102,6 +102,7 @@ class SearchRestResults extends Component {
     axios.get(url)
       .then((response) => {
         if (response.status === 200) {
+          console.log('response: ', response.data)
           this.props.loadRestaurants(3, response.data);
           this.setState({
             restFetched: true,
@@ -123,7 +124,7 @@ class SearchRestResults extends Component {
     for(let i = 1; i <= numberOfPages; i++) {
       pageNumbers.push(i);
     }
-
+    console.log('===>', this.props.restDisp.displayRestArr)
     console.log('pageNumbers: ', pageNumbers);
     renderPageNumbers = pageNumbers.map((number) => {
       return (
