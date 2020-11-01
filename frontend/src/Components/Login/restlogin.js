@@ -119,6 +119,7 @@ class restLogin extends Component {
     }
     */
     if (this.state.token.length > 0) {
+      localStorage.clear();
       localStorage.setItem("token", this.state.token);
       var decoded = jwt_decode(this.state.token.split(' ')[1]);
 

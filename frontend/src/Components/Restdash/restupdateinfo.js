@@ -145,6 +145,9 @@ class Restupdateinfo extends Component {
     console.log('remail:', this.props.remail)
     console.log('update endpoint: ', endpoint)
 
+    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
+    axios.defaults.withCredentials = true;
+
     axios.put(endpoint, data)
       .then(response => {
         console.log('Status Code : ', response.status);

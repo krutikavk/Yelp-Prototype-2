@@ -213,7 +213,7 @@ router.post('/login', (request, response) => {
 });
 
 // Update profile
-router.put('/:rid', (request, response) => {
+router.put('/:rid', checkAuth, (request, response) => {
   console.log('\nEndpoint PUT: Restaurant fields update');
   console.log('\nEndpoint PUT: Restaurant fields update', request.params.rid, 'xxxxx');
   const data = {
