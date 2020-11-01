@@ -212,7 +212,23 @@ router.get('/customers/:cid', (request, response) => {
 
 // Get all customers going to an event
 router.post('/:eid/customers', (request, response) => {
-
+  Events
+    .findById(request.params.eid)
+    .select('ecustomers')
+    .exec((err, ecustomers) => {
+      if (err) {
+        response.writeHead(400, {
+          'Content-Type': 'text/plain',
+        });
+        console.log('Error getting events');
+        response.end('Error getting events');
+      } else {
+        response.writeHead(200, {
+          'Content-Type': 'application/json',
+        });
+        response.end(JSON.stringify(ecustomers));
+      }
+    });
 });
 
 /*

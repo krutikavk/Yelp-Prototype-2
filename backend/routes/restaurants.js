@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const { mongoDB, secret } = require('../Utils/config');
 const { checkAuth, auth } = require('../Utils/passport');
 const Restaurants = require('../Models/RestModel');
+const Reviews = require('../Models/ReviewModel');
 
 auth();
 
@@ -278,6 +279,88 @@ router.put('/:rid/password', (request, response) => {
       });
       console.log('restaurant not found');
       response.end('restaurant not found');
+    }
+  });
+});
+
+// Reviews--add review
+router.post('/:rid/reviews', (request, response) => {
+  const now = new Date();
+  const jsonDate = now.toJSON();
+  const current = new Date(jsonDate);
+
+  const newReview = new Reviews({
+    retext: request.body.retext,
+    rerating: request.body.rerating,
+    rdate: current,
+    cid: request.body.cid,
+    rid: request.params.rid,
+  });
+
+  console.log('\nEndpoint POST: restaurant review add');
+  console.log('Req Body: ', request.body);
+  newReview.save((error) => {
+    if (error) {
+      response.writeHead(400, {
+        'Content-Type': 'text/plain',
+      });
+      console.log('Error saving review');
+      response.end('Error saving review');
+    } else {
+      console.log('Review added');
+      response.writeHead(200, {
+        'Content-Type': 'text/plain',
+      });
+      response.end('Review added');
+    }
+  });
+});
+
+// View reviews for restaurant
+router.get('/:rid/reviews', (request, response) => {
+  console.log('\nEndpoint GET: restaurant reviews get');
+  console.log('Req Body: ', request.body);
+  Reviews.find({ rid: request.params.rid }, (error, reviews) => {
+    if (error) {
+      response.writeHead(400, {
+        'Content-Type': 'text/plain',
+      });
+      console.log('Error saving review');
+      response.end('Error saving review');
+    } else {
+      console.log('Review added');
+      response.writeHead(200, {
+        'Content-Type': 'application/json',
+      });
+      response.end(JSON.stringify(reviews));
+    }
+  });
+});
+
+// Get average rating for restaurant
+router.get('/:rid/average', (request, response) => {
+  console.log('\nEndpoint GET: restaurant reviews get');
+  console.log('Req Body: ', request.body);
+  Reviews.aggregate([
+    {
+      $group: {
+        _id: '_id',
+        'AVG(rerating)': {
+          $avg: '$rerating',
+        }
+      } 
+    }]).exec((error, result) => {
+    if (error) {
+      response.writeHead(400, {
+        'Content-Type': 'text/plain',
+      });
+      console.log('Error getting average');
+      response.end('Error getting average');
+    } else {
+      response.writeHead(200, {
+        'Content-Type': 'application/json',
+      });
+      response.end(JSON.stringify(result));
     }
   });
 });
