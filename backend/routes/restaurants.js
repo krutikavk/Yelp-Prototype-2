@@ -6,6 +6,7 @@ const { mongoDB, secret } = require('../Utils/config');
 const { checkAuth, auth } = require('../Utils/passport');
 const Restaurants = require('../Models/RestModel');
 const Reviews = require('../Models/ReviewModel');
+const Dishes = require('../Models/DishModel');
 
 auth();
 
@@ -361,6 +362,84 @@ router.get('/:rid/average', (request, response) => {
         'Content-Type': 'application/json',
       });
       response.end(JSON.stringify(result));
+    }
+  });
+});
+
+/* ************ Search queries ***************** */
+
+// Get restaurant ID serving a dish by dishname
+router.post('/search/dish', (request, response) => {
+  console.log('\nEndpoint POST: Get rid for restaurant serving a dish');
+  console.log('Req Body: ', request.body);
+  Dishes
+    .find({ dname: request.body.dname })
+    .select('rid')
+    .distinct('rid', (error, results) => {
+      if (error) {
+        response.writeHead(400, {
+          'Content-Type': 'text/plain',
+        });
+        console.log('Error getting rid');
+        response.end('Error getting rid');
+      } else {
+        response.writeHead(200, {
+          'Content-Type': 'application/json',
+        });
+        response.end(JSON.stringify(results));
+      }
+    });
+});
+
+// Get restuarants serving a cuisine
+// changed get to post--axios did not like get requests with a body
+router.post('/search/cuisine', (request, response) => {
+  console.log('\nEndpoint POST: restaurants cuisine');
+  console.log('Req Body: ', request.body);
+  Restaurants.find({ rcuisine: request.body.rcuisine }, (error, restaurants) => {
+    if (error) {
+      response.writeHead(400, {
+        'Content-Type': 'text/plain',
+      });
+      console.log('Error searching restaurants');
+      response.end('Error searching restaurants');
+    } else if (restaurants) {
+      response.writeHead(200, {
+        'Content-Type': 'application/json',
+      });
+      response.end(JSON.stringify(restaurants));
+    } else {
+      response.writeHead(400, {
+        'Content-Type': 'text/plain',
+      });
+      console.log('No restaurants found');
+      response.end('No restaurants found');
+    }
+  });
+});
+
+// Get restuarants serving by delivery
+router.post('/search/rdelivery', (request, response) => {
+  console.log('\nEndpoint POST: restaurants rdelivery');
+  console.log('Req Body: ', request.body);
+  Restaurants.find({ rdelivery: request.body.rdelivery }, (error, restaurants) => {
+    if (error) {
+      response.writeHead(400, {
+        'Content-Type': 'text/plain',
+      });
+      console.log('Error searching restaurants');
+      response.end('Error searching restaurants');
+    } else if (restaurants) {
+      response.writeHead(200, {
+        'Content-Type': 'application/json',
+      });
+      response.end(JSON.stringify(restaurants));
+    } else {
+      response.writeHead(400, {
+        'Content-Type': 'text/plain',
+      });
+      console.log('No restaurants found');
+      response.end('No restaurants found');
     }
   });
 });
