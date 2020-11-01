@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const { mongoDB, secret } = require('../Utils/config');
 const { checkAuth, auth } = require('../Utils/passport');
 const Customers = require('../Models/CustModel');
+const Reviews = require('../Models/ReviewModel');
 
 auth();
 
@@ -359,17 +360,31 @@ router.post('/:cid/follow', (request, response) => {
   });
 });
 
-/*
-router.post('/:cid/orders', (request, response) => {
-  console.log('Endpoint POST: Place an new order');
-  console.log('Request Body: ', request.body);
-
-  const now = new Date();
-  const jsonDate = now.toJSON();
-  const then = new Date(jsonDate);
-  console.log(then);
+// View reviews added by a customer
+router.get('/:cid/reviews', checkAuth, (request, response) => {
+  console.log('\nEndpoint GET: Customer reviews get');
+  console.log('Req Body: ', request.body);
+  Reviews.find({ cid: request.params.cid }, (error, reviews) => {
+    if (error) {
+      response.writeHead(500, {
+        'Content-Type': 'text/plain',
+      });
+      console.log('Error in finding reviews');
+      response.end('Error in finding reviews');
+    } else if (reviews) {
+      console.log('Sending 200');
+      response.writeHead(200, {
+        'Content-Type': 'application/json',
+      });
+      response.end(JSON.stringify(reviews));
+    } else {
+      response.writeHead(500, {
+        'Content-Type': 'text/plain',
+      });
+      console.log('Error in finding reviews');
+      response.end('Error in finding reviews');
+    }
+  });
 });
-
-*/
 
 module.exports = router;

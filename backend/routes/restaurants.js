@@ -50,7 +50,7 @@ router.get('/', (request, response) => {
 });
 
 // Get one restaurant
-router.get('/:rid', (request, response) => {
+router.get('/:rid', checkAuth, (request, response) => {
   console.log('\nEndpoint GET: Get a restaurant');
   Restaurants.findById(request.params.rid, (error, restaurant) => {
     if (error) {
