@@ -133,7 +133,7 @@ router.get('/customers/:cid', (request, response) => {
 
 // get an order
 router.get('/:oid', (request, response) => {
-  console.log('Endpoint GET: Get a particular order')
+  console.log('Endpoint GET: Get a particular order');
   console.log('Request Body: ', request.body);
   Orders.findById(request.params.oid, (error, results) => {
     if (error) {

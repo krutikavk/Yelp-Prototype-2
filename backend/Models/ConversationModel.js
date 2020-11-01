@@ -6,6 +6,7 @@ const { Schema } = mongoose;
 const convSchema = new Schema({
   rid: { type: String },
   cid: { type: String },
+  latest: { type: Date },
   // flow true: restaurant -> customer
   // flow false: customer -> restaurant
   messages: [{ text: String, date: Date, flow: Boolean }],

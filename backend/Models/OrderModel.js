@@ -23,6 +23,7 @@ const orderSchema = new Schema({
   otime: Date,
   oaddress: String,
   odishes: [{
+    did: String,
     dname: String,
     dprice: Number,
     durl: String,

@@ -10,6 +10,7 @@ const restaurantsRouter = require('./routes/restaurants');
 const eventsRouter = require('./routes/events');
 const ordersRouter = require('./routes/orders');
 const dishesRouter = require('./routes/dishes');
+const conversationsRouter = require('./routes/conversations');
 require('dotenv').config();
 
 // use cors to allow cross origin resource sharing
@@ -47,6 +48,7 @@ app.use('/restaurants', restaurantsRouter);
 app.use('/events', eventsRouter);
 app.use('/orders', ordersRouter);
 app.use('/dishes', dishesRouter);
+app.use('/conversations', conversationsRouter);
 
 aws.config.update({
   region: process.env.region, // Put your aws region here
