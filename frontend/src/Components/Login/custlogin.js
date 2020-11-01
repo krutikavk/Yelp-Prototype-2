@@ -147,14 +147,11 @@ class custLogin extends Component {
     }
     */
 
-
-
-
-
     if (this.state.token.length > 0) {
       localStorage.setItem("token", this.state.token);
 
       var decoded = jwt_decode(this.state.token.split(' ')[1]);
+      // localStorage.setItem("token", decoded);
       localStorage.setItem("cid", decoded.cid);
       localStorage.setItem("cemail", decoded.cemail);
       localStorage.setItem("cpassword", decoded.cpassword);

@@ -112,7 +112,7 @@ router.post('/', (request, response) => {
 });
 
 // Get all events
-router.get('/', (request, response) => {
+router.get('/', checkAuth, (request, response) => {
   console.log('Endpoint GET: Get all events');
   console.log('Request Body: ', request.body);
   Events.find({}, (error, result) => {
