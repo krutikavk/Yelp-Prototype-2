@@ -6,6 +6,7 @@ const { mongoDB, secret } = require('../Utils/config');
 const { checkAuth, auth } = require('../Utils/passport');
 const Customers = require('../Models/CustModel');
 const Reviews = require('../Models/ReviewModel');
+var kafka = require('../kafka/client');
 
 auth();
 
@@ -30,6 +31,7 @@ mongoose.connect(mongoDB, options, (err, res) => {
 
 // get all customers
 router.get('/', (request, response) => {
+  /*
   console.log('Hit get all customers');
   Customers.find({}, (error, results) => {
     if (error) {
@@ -43,6 +45,25 @@ router.get('/', (request, response) => {
         'Content-Type': 'application/json',
       });
       response.end(JSON.stringify(results));
+    }
+  });
+  */
+
+  kafka.make_request('customersTopic', 'GETALL', request.body, function(err, results){
+    console.log('in result');
+    console.log(results);
+    if (err){
+      console.log("Inside err");
+      res.json({
+          status:"error",
+          msg:"System Error, Try Again."
+      })
+    }else{
+      console.log("Inside else");
+      response.writeHead(results.status, {
+        'Content-Type': results.header,
+      });
+      response.end(results.content)
     }
   });
 });
