@@ -48,107 +48,52 @@ router.get('/', (request, response) => {
     }
   });
   */
-
-  kafka.make_request('customersTopic', 'GETALL', request.body, function(err, results){
-    console.log('in result');
-    console.log(results);
-    if (err){
-      console.log("Inside err");
-      res.json({
-          status:"error",
-          msg:"System Error, Try Again."
-      })
-    }else{
-      console.log("Inside else");
-      response.writeHead(results.status, {
-        'Content-Type': results.header,
+  console.log('\nEndpoint GET: all customers');
+  console.log('Req Body: ', request.body);
+  kafka.make_request('customersTopic', 'GETALL', request.body, (err, result) => {
+    console.log('get all result ', result);
+    if (err) {
+      console.log('Customers getall Kafka error');
+      response.writeHead(500, {
+        'Content-Type': 'text/plain',
       });
-      response.end(results.content)
+      response.end('Customers getall Kafka error');
+    } else {
+      response.writeHead(result.status, {
+        'Content-Type': result.header,
+      });
+      console.log(result.content);
+      response.end(result.content);
     }
   });
 });
 
 // signup
 router.post('/', (request, response) => {
-  const now = new Date();
-  const jsonDate = now.toJSON();
-  const joined = new Date(jsonDate);
   console.log('\nEndpoint POST: customer signup');
   console.log('Req Body: ', request.body);
-  console.log(joined);
-
-  bcrypt.hash(request.body.cpassword, 10, (errHash, hash) => {
-    const newCustomer = new Customers({
-      cemail: request.body.cemail,
-      cpassword: hash,
-      cname: request.body.cname,
-      cjoined: joined,
-    });
-    Customers.findOne({ cemail: request.body.cemail }, (error, customer) => {
-      if (error) {
-        response.writeHead(500, {
-          'Content-Type': 'text/plain',
-        });
-        console.log('Error in finding customer');
-        response.end('Error in finding customer');
-      } else if (customer) {
-        response.writeHead(400, {
-          'Content-Type': 'text/plain',
-        });
-        console.log('customer: ', customer);
-        console.log('Email ID already registered');
-        response.end('Email ID already registered');
-      } else {
-        newCustomer.save((err) => {
-          if (err) {
-            response.writeHead(500, {
-              'Content-Type': 'text/plain',
-            });
-            console.log('Error in saving new customer');
-            response.end('Error in saving new customer');
-          } else {
-            console.log('Successfully added customer to database');
-            // return the customer object back
-            Customers.findOne({ cemail: request.body.cemail }, (e, cust) => {
-              if (e) {
-                response.writeHead(500, {
-                  'Content-Type': 'text/plain',
-                });
-                console.log('Error in finding customer with email ID');
-                response.end('Error in finding customer with email ID');
-              } else if (cust) {
-                const payload = {
-                  // eslint-disable-next-line no-underscore-dangle
-                  cid: cust._id,
-                  cemail: cust.username,
-                  cpassword: cust.password,
-                  cname: cust.cname,
-                  cphone: cust.cphone,
-                  cabout: cust.cabout,
-                  cjoined: cust.cjoined,
-                  cphoto: cust.cphoto,
-                  cfavrest: cust.cfavrest,
-                  cfavcuisine: cust.favcuisine,
-                  // cevents: [...cust.cevents],
-                  cfollowers: [...cust.cfollowers],
-                };
-                const token = jwt.sign(payload, secret, {
-                  expiresIn: 1008000,
-                });
-                console.log('Login successful token:', token);
-                response.status(200).end(`JWT ${token}`);
-              } else {
-                response.writeHead(500, {
-                  'Content-Type': 'text/plain',
-                });
-                console.log('Customer not found');
-                response.end('Customer not found');
-              }
-            });
-          }
-        });
-      }
-    });
+  kafka.make_request('customersTopic', 'SIGNUP', request.body, (err, result) => {
+    console.log('get all result ', result);
+    if (err) {
+      console.log('Customers signup Kafka error');
+      response.writeHead(500, {
+        'Content-Type': 'text/plain',
+      });
+      response.end('Customers signup Kafka error');
+    } else if (result.status === 200) {
+      const token = jwt.sign(result.payload, secret, {
+        expiresIn: 1008000,
+      });
+      console.log('Login successful token:', token);
+      response.status(result.status).end(`JWT ${token}`);
+      console.log(result.content);
+    } else {
+      response.writeHead(result.status, {
+        'Content-Type': result.header,
+      });
+      console.log(result.content);
+      response.end(result.content);
+    }
   });
 });
 
