@@ -138,13 +138,11 @@ class custLogin extends Component {
     //redirect based on successful login
 
     let redirectVar = null;
-    /*
-    console.log(this.props.isLogged)
     if(this.props.isLogged === true) {
       //This will be changed to Search page
       redirectVar = <Redirect to= "/customer/profile"/>
     }
-    */
+    
 
     if (this.state.token.length > 0) {
       localStorage.clear();

@@ -115,7 +115,7 @@ router.get('/:cid', checkAuth, (request, response) => {
 });
 
 // Update customer profile--works kafka done
-router.put('/:cid', (request, response) => {
+router.put('/:cid', checkAuth, (request, response) => {
   console.log('\nEndpoint PUT: Customer fields update');
   console.log('Req Body: ', request.body);
   const data = { ...request.params, ...request.body };

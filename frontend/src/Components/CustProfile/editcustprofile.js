@@ -262,7 +262,9 @@ class Userdash extends Component {
     axios.defaults.withCredentials = true;
     //make a post request with the user data
     console.log(dataToChange);
-    let url = 'http://localhost:3001/customers/' + this.props.cid;
+    // let url = 'http://localhost:3001/customers/' + this.props.cid;
+    let url = `${process.env.REACT_APP_BACKEND}/customers/${this.props.cid}`
+    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
     axios.put(url, dataToChange)
       .then(response => {
         console.log("Status Code : ",response.status);
@@ -307,8 +309,11 @@ class Userdash extends Component {
     }
     //set the with credentials to true
     axios.defaults.withCredentials = true;
+    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
     //make a post request with the user data
-    let url = 'http://localhost:3001/customers/' + this.props.cid + '/password';
+    // let url = 'http://localhost:3001/customers/' + this.props.cid + '/password';
+    let url = `${process.env.REACT_APP_BACKEND}/customers/${this.props.cid}/password`
+    console.log('password chsange url: ', url)
     axios.put(url, data)
       .then(response => {
         console.log("Status Code : ",response.status);
@@ -348,8 +353,9 @@ class Userdash extends Component {
     console.log("Preparing the upload");
 
     axios.defaults.withCredentials = false;
+    let url = `${process.env.REACT_APP_BACKEND}/sign_s3`
 
-    axios.post("http://localhost:3001/sign_s3",{ fileName : fileName, fileType : fileType })
+    axios.post(url, { fileName : fileName, fileType : fileType })
       .then(response => {
         var returnData = response.data.data.returnData;
         var signedRequest = returnData.signedRequest;
@@ -364,7 +370,7 @@ class Userdash extends Component {
             'ContentType': fileType
           }
         };
-
+        delete axios.defaults.headers.common["authorization"];
         axios.put(signedRequest,file, options)
           .then(result => {
             console.log("Response from s3")
@@ -382,9 +388,11 @@ class Userdash extends Component {
               cfavrest: this.props.cfavrest,
               cfavcuisine: this.props.cfavcuisine,
             }
-            console.log('dataToChange: ', dataToChange)
+            console.log('=>dataToChange: ', dataToChange)
 
-            let endpoint = 'http://localhost:3001/customers/' + this.props.cid;
+            // let endpoint = 'http://localhost:3001/customers/' + this.props.cid;
+            let endpoint = `${process.env.REACT_APP_BACKEND}/customers/${this.props.cid}`
+            axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
             axios.put(endpoint, dataToChange)
               .then(response => {
                 console.log("Status Code : ",response.status);
@@ -426,6 +434,7 @@ class Userdash extends Component {
     .catch(error => {
       alert(JSON.stringify(error));
     })
+    // axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
   }
 
 
