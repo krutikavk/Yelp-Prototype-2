@@ -61,6 +61,7 @@ aws.config.update({
 // Now lets export this function so we can call it from somewhere else
 app.post('/sign_s3', (req, res) => {
   // Create a new instance of S3
+  console.log('hit sign s3');
   const s3 = new aws.S3();
   const S3_BUCKET = process.env.Bucket;
   const { fileName, fileType } = req.body;
@@ -73,6 +74,7 @@ app.post('/sign_s3', (req, res) => {
     ContentType: fileType,
     ACL: 'public-read',
   };
+  console.log('s3 params: ', s3Params);
   // Make a request to the S3 API to get a signed URL which we can use to upload our file
   s3.getSignedUrl('putObject', s3Params, (err, data) => {
     if (err) {

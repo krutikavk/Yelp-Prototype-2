@@ -8,8 +8,9 @@ const Reviews = require('../Models/ReviewModel');
 */
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const { mongoDB, secret } = require('../Utils/config');
+const { mongoDB } = require('../Utils/config');
 const Customers = require('../Models/CustModel');
+const Reviews = require('../Models/ReviewModel');
 
 const options = {
   useNewUrlParser: true,
@@ -157,18 +158,18 @@ function loginCustomer(data, callback) {
         if (cust === true) {
           const payload = {
             // eslint-disable-next-line no-underscore-dangle
-            cid: cust._id,
-            cemail: cust.username,
-            cpassword: cust.password,
-            cname: cust.cname,
-            cphone: cust.cphone,
-            cabout: cust.cabout,
-            cjoined: cust.cjoined,
-            cphoto: cust.cphoto,
-            cfavrest: cust.cfavrest,
-            cfavcuisine: cust.favcuisine,
-            cfollowers: (cust.cfollowers === undefined) ? [] : [...cust.cfollowers],
-            cfollowing: (cust.cfollowing === undefined) ? [] : [...cust.cfollowing],
+            cid: customer._id,
+            cemail: customer.username,
+            cpassword: customer.password,
+            cname: customer.cname,
+            cphone: customer.cphone,
+            cabout: customer.cabout,
+            cjoined: customer.cjoined,
+            cphoto: customer.cphoto,
+            cfavrest: customer.cfavrest,
+            cfavcuisine: customer.favcuisine,
+            cfollowers: (customer.cfollowers === undefined) ? [] : [...customer.cfollowers],
+            cfollowing: (customer.cfollowing === undefined) ? [] : [...customer.cfollowing],
           };
           const response = {
             status: 200,
@@ -176,6 +177,7 @@ function loginCustomer(data, callback) {
             content: 'Login successful',
             payload,
           };
+          console.log('kafka backend payload: ', payload);
           console.log('Login successful');
           callback(null, response);
         } else {
@@ -213,17 +215,11 @@ function getOneCustomer(data, callback) {
     } else if (customer) {
       const response = {
         status: 200,
-        header: 'text/plain',
-        content: 'Customer not found',
+        header: 'application/json',
+        content: JSON.stringify(customer),
       };
-      console.log('Customer not found');
+      console.log('Customer found');
       callback(null, response);
-
-      console.log('Sending 200');
-      response.writeHead(200, {
-        'Content-Type': 'application/json',
-      });
-      response.end(JSON.stringify(customer));
     } else {
       const response = {
         status: 400,
@@ -236,10 +232,180 @@ function getOneCustomer(data, callback) {
   });
 }
 
-function handleRequest(msg, callback) {
-  console.log('Inside get all customers');
-  console.log('Message:', msg);
+function updateCustomer(data, callback) {
+  const updateData = {
+    cemail: data.cemail,
+    cname: data.cname,
+    cphone: data.cphone,
+    cabout: data.cabout,
+    cphoto: data.cphoto,
+    cfavrest: data.cfavrest,
+    cfavcuisine: data.cfavcuisine,
+  };
+  Customers.findByIdAndUpdate(data.cid, updateData, (error, customer) => {
+    if (error) {
+      const response = {
+        status: 400,
+        header: 'text/plain',
+        content: 'Error in finding customer with ID',
+      };
+      console.log('Error in finding customer with ID');
+      callback(null, response);
+    } else if (customer) {
+      const response = {
+        status: 200,
+        header: 'text/plain',
+        content: 'Customer updated',
+      };
+      console.log('Customer updated');
+      callback(null, response);
+    } else {
+      const response = {
+        status: 400,
+        header: 'text/plain',
+        content: 'Customer not found',
+      };
+      console.log('Customer not found');
+      callback(null, response);
+    }
+  });
+}
 
+function updatePassCustomer(data, callback) {
+  bcrypt.hash(data.cpassword, 10, (e, hash) => {
+    const updateData = {
+      cpassword: hash,
+    };
+    Customers.findByIdAndUpdate(data.cid, updateData, (error, customer) => {
+      if (error) {
+        const response = {
+          status: 400,
+          header: 'text/plain',
+          content: 'Error in finding customer with ID',
+        };
+        console.log('Error in finding customer with ID');
+        callback(null, response);
+      } else if (customer) {
+        const response = {
+          status: 200,
+          header: 'text/plain',
+          content: 'Customer password updated',
+        };
+        console.log('Customer password updated');
+        callback(null, response);
+      } else {
+        const response = {
+          status: 400,
+          header: 'text/plain',
+          content: 'Customer not found',
+        };
+        console.log('Customer not found');
+        callback(null, response);
+      }
+    });
+  });
+}
+
+function followCustomer(data, callback) {
+  Customers.findById(data.cid1, (error, customer1) => {
+    if (error) {
+      const response = {
+        status: 400,
+        header: 'text/plain',
+        content: 'Error in finding customer1 with ID',
+      };
+      console.log('Error in finding customer1 with ID');
+      callback(null, response);
+    } else if (customer1) {
+      Customers.findById(data.cid2, (err, customer2) => {
+        if (error) {
+          const response = {
+            status: 400,
+            header: 'text/plain',
+            content: 'Error in finding customer2 with ID',
+          };
+          console.log('Error in finding customer2 with ID');
+          callback(null, response);
+        }
+        // console.log('Customer following:', customer2.cfollowing);
+        customer2.cfollowers.push(data.cid1);
+        customer2.save((er) => {
+          if (er) {
+            // Customer 2 found
+            const response = {
+              status: 400,
+              header: 'text/plain',
+              content: 'Error in saving customer2 followers',
+            };
+            console.log('Error in saving customer2 followers');
+            callback(null, response);
+          } else {
+            customer1.cfollowing.push(data.cid2);
+            customer1.save((e) => {
+              if (e) {
+                const response = {
+                  status: 400,
+                  header: 'text/plain',
+                  content: 'Error in saving customer1 following',
+                };
+                console.log('Error in saving customer1 following');
+                callback(null, response);
+              } else {
+                const response = {
+                  status: 200,
+                  header: 'text/plain',
+                  content: 'Operation completed',
+                };
+                console.log('Operation completed');
+                callback(null, response);
+              }
+            });
+          }
+        });
+      });
+    } else {
+      const response = {
+        status: 400,
+        header: 'text/plain',
+        content: 'Error in finding customer1 with ID',
+      };
+      console.log('Error in finding customer1 with ID');
+      callback(null, response);
+    }
+  });
+}
+
+function getReviews(data, callback) {
+  Reviews.find({ cid: data.cid }, (error, reviews) => {
+    if (error) {
+      const response = {
+        status: 400,
+        header: 'text/plain',
+        content: 'Error in finding reviews',
+      };
+      console.log('Error in finding reviews');
+      callback(null, response);
+    } else if (reviews) {
+      const response = {
+        status: 200,
+        header: 'application/json',
+        content: JSON.stringify(reviews),
+      };
+      console.log('Sending 200');
+      callback(null, response);
+    } else {
+      const response = {
+        status: 400,
+        header: 'text/plain',
+        content: 'Error in finding reviews',
+      };
+      console.log('Error in finding reviews');
+      callback(null, response);
+    }
+  });
+}
+
+function handleRequest(msg, callback) {
   switch (msg.subTopic) {
     case 'GETALL': {
       console.log('Inside get all customers');
@@ -256,14 +422,45 @@ function handleRequest(msg, callback) {
     }
 
     case 'LOGIN': {
-      console.log('Inside signup customers');
+      console.log('Inside Login customers');
       console.log('Message:', msg);
       loginCustomer(msg.data, callback);
       break;
     }
 
     case 'GETONE': {
+      console.log('Inside Getone customers');
+      console.log('Message:', msg);
+      getOneCustomer(msg.data, callback);
+      break;
+    }
 
+    case 'UPDATE': {
+      console.log('Inside update customers');
+      console.log('Message:', msg);
+      updateCustomer(msg.data, callback);
+      break;
+    }
+
+    case 'UPDATEPASS': {
+      console.log('Inside update password customers');
+      console.log('Message:', msg);
+      updatePassCustomer(msg.data, callback);
+      break;
+    }
+
+    case 'FOLLOW': {
+      console.log('Inside follow customers');
+      console.log('Message:', msg);
+      followCustomer(msg.data, callback);
+      break;
+    }
+
+    case 'GETREVIEWS': {
+      console.log('Inside get reviews');
+      console.log('Message:', msg);
+      getReviews(msg.data, callback);
+      break;
     }
 
     default: {

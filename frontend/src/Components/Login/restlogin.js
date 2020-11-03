@@ -90,8 +90,6 @@ class restLogin extends Component {
           this.props.update('RRATING', decoded.rrating)
           this.props.update('REVENTS', decoded.revents)
           this.props.login()
-
-          //weird--dosnt work here
           this.props.restaurantLogin()
           this.setState({
               token: response.data,

@@ -1,36 +1,15 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
 const { mongoDB, secret } = require('../Utils/config');
 const { checkAuth, auth } = require('../Utils/passport');
-const Customers = require('../Models/CustModel');
-const Reviews = require('../Models/ReviewModel');
-var kafka = require('../kafka/client');
+const kafka = require('../kafka/client');
 
 auth();
 
 const router = express.Router();
 
-const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  poolSize: 500,
-  bufferMaxEntries: 0,
-};
-
-// eslint-disable-next-line no-unused-vars
-mongoose.connect(mongoDB, options, (err, res) => {
-  if (err) {
-    console.log(err);
-    console.log('MongoDB Connection Failed');
-  } else {
-    console.log('MongoDB Connected');
-  }
-});
-
 // get all customers kafka done
-router.get('/', (request, response) => {
+router.get('/', checkAuth, (request, response) => {
   console.log('\nEndpoint GET: all customers');
   console.log('Req Body: ', request.body);
   kafka.make_request('customersTopic', 'GETALL', request.body, (err, result) => {
@@ -94,6 +73,7 @@ router.post('/login', (request, response) => {
       });
       response.end('Customers login Kafka error');
     } else if (result.status === 200) {
+      console.log('-==> payload received: ', result.payload);
       const token = jwt.sign(result.payload, secret, {
         expiresIn: 1008000,
       });
@@ -110,12 +90,13 @@ router.post('/login', (request, response) => {
   });
 });
 
-// Get one customer
-router.get('/:cid', (request, response) => {
+// Get one customer kafka done
+router.get('/:cid', checkAuth, (request, response) => {
   console.log('\nEndpoint GET: one customer');
   console.log('Req Body: ', request.body);
+  const data = { ...request.params };
 
-  kafka.make_request('customersTopic', 'GETONE', request.params, (err, result) => {
+  kafka.make_request('customersTopic', 'GETONE', data, (err, result) => {
     console.log('Get one customer result ', result);
     if (err) {
       console.log('Customers getone Kafka error');
@@ -131,181 +112,82 @@ router.get('/:cid', (request, response) => {
       response.end(result.content);
     }
   });
-
-  console.log('\nEndpoint GET: Get a customer');
-  Customers.findById(request.params.cid, (error, customer) => {
-    if (error) {
-      response.writeHead(500, {
-        'Content-Type': 'text/plain',
-      });
-      console.log('Error in finding customer with ID');
-      response.end('Error in finding customer with ID');
-    } else if (customer) {
-      console.log('Sending 200');
-      response.writeHead(200, {
-        'Content-Type': 'application/json',
-      });
-      response.end(JSON.stringify(customer));
-    } else {
-      response.writeHead(400, {
-        'Content-Type': 'text/plain',
-      });
-      console.log('Customer not found');
-      response.end('Customer not found');
-    }
-  });
 });
 
-// Update customer profile--works
+// Update customer profile--works kafka done
 router.put('/:cid', (request, response) => {
   console.log('\nEndpoint PUT: Customer fields update');
-  const data = {
-    cemail: request.body.cemail,
-    cname: request.body.cname,
-    cphone: request.body.cphone,
-    cabout: request.body.cabout,
-    cphoto: request.body.cphoto,
-    cfavrest: request.body.cfavrest,
-    cfavcuisine: request.body.cfavcuisine,
-  };
-  Customers.findByIdAndUpdate(request.params.cid, data, (error, customer) => {
-    if (error) {
+  console.log('Req Body: ', request.body);
+  const data = { ...request.params, ...request.body };
+
+  kafka.make_request('customersTopic', 'UPDATE', data, (err, result) => {
+    console.log('Update customer profile result ', result);
+    if (err) {
+      console.log('Customers update profile Kafka error');
       response.writeHead(500, {
         'Content-Type': 'text/plain',
       });
-      console.log('Error in finding customer with ID');
-      response.end('Error in finding customer with ID');
-    } else if (customer) {
-      console.log('Sending 200');
-      response.writeHead(200, {
-        'Content-Type': 'text/plain',
-      });
-      response.end('Customer updated');
+      response.end('Customers update profile Kafka error');
     } else {
-      response.writeHead(400, {
-        'Content-Type': 'text/plain',
+      response.writeHead(result.status, {
+        'Content-Type': result.header,
       });
-      console.log('Customer not found');
-      response.end('Customer not found');
+      console.log(result.content);
+      response.end(result.content);
     }
   });
 });
 
 // Update customer password
-router.put('/:cid/password', (request, response) => {
+router.put('/:cid/password', checkAuth, (request, response) => {
   console.log('\nEndpoint PUT: customer password update');
-  bcrypt.hash(request.body.cpassword, 10, (e, hash) => {
-    const data = {
-      cpassword: hash,
-    };
-    Customers.findByIdAndUpdate(request.params.cid, data, (error, customer) => {
-      if (error) {
-        response.writeHead(500, {
-          'Content-Type': 'text/plain',
-        });
-        console.log('Error in finding customer with ID');
-        response.end('Error in finding customer with ID');
-      } else if (customer) {
-        console.log('Sending 200');
-        response.writeHead(200, {
-          'Content-Type': 'text/plain',
-        });
-        response.end('Customer password updated');
-      } else {
-        response.writeHead(400, {
-          'Content-Type': 'text/plain',
-        });
-        console.log('Customer not found');
-        response.end('Customer not found');
-      }
-    });
-  });
-});
+  console.log('Req Body: ', request.body);
+  const data = { ...request.params, ...request.body };
+  console.log('==> ', data);
 
-/*
-function addFollower(cid1, cid2) {
-  Customers.findById(cid1, (error, customer1) => {
-    if (error) return false;
-    console.log('Customer followers:', customer1.cfollowers);
-    customer1.cfollowers.push(cid2);
-    customer1.save (err => {
-      if (err) return false;
-      return true;
-    });
-  });
-}
-
-//customer2 is following customer1
-//Add customer1 to customer2's following
-function addFollowing(cid1, cid2) {
-   Customers.findById(cid2, (error, customer2) => {
-    if(error) return false;
-    console.log('Customer following:', customer2.cfollowing)
-    customer2.cfollowing.push(cid1);
-    customer2.save(err => {
-      if(err) return false;
-      return true;
-    })
-  })
-}
-*/
-
-// Follow another customer
-// request.params.cid follows customer in request.body
-router.post('/:cid/follow', (request, response) => {
-  console.log('\nEndpoint POST: customer follow');
-  Customers.findById(request.params.cid, (error, customer1) => {
-    if (error) {
+  kafka.make_request('customersTopic', 'UPDATEPASS', data, (err, result) => {
+    console.log('Update customer password result ', result);
+    if (err) {
+      console.log('Customers update password Kafka error');
       response.writeHead(500, {
         'Content-Type': 'text/plain',
       });
-      console.log('Error in finding customer with ID');
-      response.end('Error in finding customer with ID');
-    } else if (customer1) {
-      Customers.findById(request.body.cid, (err, customer2) => {
-        if (error) {
-          response.writeHead(500, {
-            'Content-Type': 'text/plain',
-          });
-          console.log('Error in finding customer with ID');
-          response.end('Error in finding customer with ID');
-        }
-        // console.log('Customer following:', customer2.cfollowing);
-        customer2.cfollowers.push(request.params.cid);
-        customer2.save((er) => {
-          if (er) {
-            // Customer 2 found
-            response.writeHead(500, {
-              'Content-Type': 'text/plain',
-            });
-            console.log('Error in finding customer with ID');
-            response.end('Error in finding customer with ID');
-          } else {
-            customer1.cfollowing.push(request.body.cid);
-            customer1.save((e) => {
-              if (e) {
-                response.writeHead(500, {
-                  'Content-Type': 'text/plain',
-                });
-                console.log('Error in finding customer with ID');
-                response.end('Error in finding customer with ID');
-              } else {
-                response.writeHead(200, {
-                  'Content-Type': 'text/plain',
-                });
-                console.log('Operation completed');
-                response.end('Operation completed');
-              }
-            });
-          }
-        });
-      });
+      response.end('Customers update password Kafka error');
     } else {
-      response.writeHead(400, {
+      response.writeHead(result.status, {
+        'Content-Type': result.header,
+      });
+      console.log(result.content);
+      response.end(result.content);
+    }
+  });
+});
+
+// Follow another customer
+// request.params.cid follows customer in request.body
+router.post('/:cid/follow', checkAuth, (request, response) => {
+  console.log('\nEndpoint POST: customer follow');
+  console.log('Req Body: ', request.body);
+  const data = {
+    cid1: request.params.cid,
+    cid2: request.body.cid,
+  };
+  console.log('==>data ', data);
+
+  kafka.make_request('customersTopic', 'FOLLOW', data, (err, result) => {
+    console.log('Follow customer password result ', result);
+    if (err) {
+      console.log('Customers follow Kafka error');
+      response.writeHead(500, {
         'Content-Type': 'text/plain',
       });
-      console.log('Customer not found');
-      response.end('Customer not found');
+      response.end('Customers follow Kafka error');
+    } else {
+      response.writeHead(result.status, {
+        'Content-Type': result.header,
+      });
+      console.log(result.content);
+      response.end(result.content);
     }
   });
 });
@@ -314,25 +196,23 @@ router.post('/:cid/follow', (request, response) => {
 router.get('/:cid/reviews', checkAuth, (request, response) => {
   console.log('\nEndpoint GET: Customer reviews get');
   console.log('Req Body: ', request.body);
-  Reviews.find({ cid: request.params.cid }, (error, reviews) => {
-    if (error) {
+  const data = { ...request.params };
+  console.log('==>data ', data);
+
+  kafka.make_request('customersTopic', 'GETREVIEWS', data, (err, result) => {
+    console.log('Get reviews result ', result);
+    if (err) {
+      console.log('Get reviews Kafka error');
       response.writeHead(500, {
         'Content-Type': 'text/plain',
       });
-      console.log('Error in finding reviews');
-      response.end('Error in finding reviews');
-    } else if (reviews) {
-      console.log('Sending 200');
-      response.writeHead(200, {
-        'Content-Type': 'application/json',
-      });
-      response.end(JSON.stringify(reviews));
+      response.end('Get reviews Kafka error');
     } else {
-      response.writeHead(500, {
-        'Content-Type': 'text/plain',
+      response.writeHead(result.status, {
+        'Content-Type': result.header,
       });
-      console.log('Error in finding reviews');
-      response.end('Error in finding reviews');
+      console.log(result.content);
+      response.end(result.content);
     }
   });
 });

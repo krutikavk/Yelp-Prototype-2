@@ -105,15 +105,9 @@ class custLogin extends Component {
         if(response.status === 200){
           console.log('Login authorized');
           console.log('Token: ', response.data);
-          this.setState({
-              token: response.data,
-              authFlag : true
-          })
-          var decoded = jwt_decode(this.state.token.split(' ')[1]);
           
-          // console.log(response.data[0]);
-          //console.log("cjoined: ", response.data[0].cjoined)
-          //call props action
+          var decoded = jwt_decode(response.data.split(' ')[1]);
+          console.log('decoded: ', decoded);
           this.props.update('CID', decoded.cid)
           this.props.update('CEMAIL', decoded.cemail)
           this.props.update('CPASSWORD', decoded.cpassword)
@@ -126,6 +120,11 @@ class custLogin extends Component {
           this.props.update('CFAVCUISINE', decoded.cfavcuisine)
           this.props.login()   //this will update isLogged = true
           this.props.customerLogin()
+
+          this.setState({
+              token: response.data,
+              authFlag : true
+          })
         }
       }).catch(err =>{
         alert("Incorrect credentials")

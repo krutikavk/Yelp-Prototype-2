@@ -25,7 +25,7 @@ class DisplayProfile extends Component {
     axios.get(url)
       .then((response) => {
         if (response.status === 200) {
-          // When results return multiple rows, rowdatapacket object needs to be converted to JSON object again 
+          // When results return multiple rows, rowdatapacket object needs to be converted to JSON object again
           // use JSON.parse(JSON.stringify()) to convert back to JSON object
           const temp = JSON.parse(JSON.stringify(response.data));
           this.setState({

@@ -342,7 +342,7 @@ class Userdash extends Component {
     let file = this.uploadInput.files[0];
     // Split the filename to get the name and type
     let fileParts = this.uploadInput.files[0].name.split('.');
-    let fileName = 'custprof_' + this.props.cid + '_' + fileParts[0];
+    let fileName = 'custprof_' + fileParts[0];
     console.log(fileName);
     let fileType = fileParts[1];
     console.log("Preparing the upload");
@@ -382,6 +382,7 @@ class Userdash extends Component {
               cfavrest: this.props.cfavrest,
               cfavcuisine: this.props.cfavcuisine,
             }
+            console.log('dataToChange: ', dataToChange)
 
             let endpoint = 'http://localhost:3001/customers/' + this.props.cid;
             axios.put(endpoint, dataToChange)
