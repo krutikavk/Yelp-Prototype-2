@@ -85,9 +85,13 @@ class AddDish extends Component {
     let fileType = fileParts[1];
     console.log("Preparing the upload");
 
+    // Reference: https://stackoverflow.com/questions/52999712/aws-s3-bucket-getsignedurl-put-return-a-400-bad-request
+    // remove JWT authorization before sending s3 upload request
+    // add back once image is added 
     axios.defaults.withCredentials = false;
+    
     let url = `${process.env.REACT_APP_BACKEND}/sign_s3`;
-    axios.post(url,{ fileName : fileName, fileType : fileType })
+    axios.post(url, { fileName : fileName, fileType : fileType })
       .then(response => {
         var returnData = response.data.data.returnData;
         var signedRequest = returnData.signedRequest;
@@ -102,6 +106,7 @@ class AddDish extends Component {
             'ContentType': fileType
           }
         };
+        delete axios.defaults.headers.common["authorization"];
 
         axios.put(signedRequest,file, options)
           .then(result => {
@@ -109,7 +114,6 @@ class AddDish extends Component {
             this.setState({
               success: true
             });
-
           })
           .catch(error => {
             alert("ERROR " + JSON.stringify(error));
@@ -118,15 +122,15 @@ class AddDish extends Component {
     .catch(error => {
       alert(JSON.stringify(error));
     })
-
+    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
   }
 
 
   addDish = (event) => {
     event.preventDefault();
     axios.defaults.withCredentials = true;
-    let url = 'http://localhost:3001/dishes'
-
+    // let url = 'http://localhost:3001/dishes'
+    let url = `${process.env.REACT_APP_BACKEND}/dishes`
     const data = {
       dname: this.state.dname,
       rid: this.props.rid,
@@ -136,7 +140,6 @@ class AddDish extends Component {
       dcategory: this.state.dcategory,
       durl: this.state.url
     }
-
 
     axios.post(url, data)
       .then(response => {
