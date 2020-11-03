@@ -159,7 +159,7 @@ function loginCustomer(data, callback) {
           const payload = {
             // eslint-disable-next-line no-underscore-dangle
             cid: customer._id,
-            cemail: customer.username,
+            cemail: customer.cemail,
             cpassword: customer.password,
             cname: customer.cname,
             cphone: customer.cphone,
@@ -242,6 +242,7 @@ function updateCustomer(data, callback) {
     cfavrest: data.cfavrest,
     cfavcuisine: data.cfavcuisine,
   };
+  console.log('kafka backend data: ', data);
   Customers.findByIdAndUpdate(data.cid, updateData, (error, customer) => {
     if (error) {
       const response = {

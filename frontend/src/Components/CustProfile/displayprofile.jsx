@@ -7,8 +7,6 @@ import { update } from '../../_actions';
 import Review from '../Reviews/displayreview';
 import Navbar from '../Navbar/navbar';
 
-const validText = RegExp('[A-Za-z0-9]+');
-
 class DisplayProfile extends Component {
   constructor(props) {
     super(props);
@@ -19,8 +17,9 @@ class DisplayProfile extends Component {
 
   componentDidMount() {
     // let url = 'http://localhost:3001/customers/' + this.props.cid + '/reviews';
-    const url = `${process.env.REACT_APP_BACKEND}/customers/${this.props.cid}/reviews`;
-    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
+    const custId = (this.props.whoIsLogged === true) ? this.props.location.query.cid : this.props.cid;
+    const url = `${process.env.REACT_APP_BACKEND}/customers/${custId}/reviews`;
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
     axios.defaults.withCredentials = true;
     axios.get(url)
       .then((response) => {
@@ -32,7 +31,7 @@ class DisplayProfile extends Component {
             reviews: [...temp],
           });
         }
-      }).catch((err) => {
+      }).catch(() => {
         console.log('No response');
       });
   }
@@ -40,7 +39,7 @@ class DisplayProfile extends Component {
   render() {
     let redirectVar = null;
     if (this.props.isLogged === false) {
-      redirectVar = <Redirect to='/login' />
+      redirectVar = <Redirect to='/login' />;
     }
 
     //  customer is logged in, get data from redux state
@@ -48,7 +47,7 @@ class DisplayProfile extends Component {
 
     // If restaurant is logged in, get display data from props passed from another page
     if (this.props.whoIsLogged === true) {
-      //customer login--display from redux state
+      //  customer login--display from redux state
       customerprofile = {
         cid: this.props.location.query.cid,
         cemail: this.props.location.query.cemail,
@@ -86,22 +85,24 @@ class DisplayProfile extends Component {
               <div className="col-12 mt-3">
                 <div className="card">
                   <div className="card-horizontal">
-                    <img src={this.props.cphoto} className="img-thumbnail" alt="Cinque Terre" width = "300" />
+                    <img src={this.props.cphoto} className="img-thumbnail" alt="Cinque Terre" width="300" />
 
                     <div className="card-body">
                       <p className="card-text font-weight-bold font-italic">
                         {customerprofile.cname}
                       </p>
                       <p className="card-text text-muted font-italic">
-                        Here since: {customerprofile.cjoined.split("T")[0]}
+                        Here since:
+                        {customerprofile.cjoined.split('T')[0]}
                       </p>
                       <p className="card-text text-muted font-italic">
-                        Reviews given: {this.state.reviews.length}
+                        Reviews given:
+                        {this.state.reviews.length}
                       </p>
                       <p className="card-text text-muted font-italic">
                         Friends: 4728
                       </p>
-                      <Link to='/customer/edit' class="btn btn-danger">Edit profile</Link> 
+                      <Link to='/customer/edit' class="btn btn-danger">Edit profile</Link>
                     </div>
                   </div>
                   <div className="card-footer">
@@ -119,7 +120,7 @@ class DisplayProfile extends Component {
         </div>
         <div className="container-fluid ">
           <p className="card-text font-weight-bold">Reviews Given</p>
-          {this.state.reviews.map ((entry) => (
+          {this.state.reviews.map((entry) => (
             <Review review={entry} />
           ))}
         </div>
