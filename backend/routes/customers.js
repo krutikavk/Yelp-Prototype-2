@@ -29,29 +29,12 @@ mongoose.connect(mongoDB, options, (err, res) => {
   }
 });
 
-// get all customers
+// get all customers kafka done
 router.get('/', (request, response) => {
-  /*
-  console.log('Hit get all customers');
-  Customers.find({}, (error, results) => {
-    if (error) {
-      response.writeHead(400, {
-        'Content-Type': 'text/plain',
-      });
-      response.end('Error fetching customers');
-    } else {
-      console.log('Sending 200');
-      response.writeHead(200, {
-        'Content-Type': 'application/json',
-      });
-      response.end(JSON.stringify(results));
-    }
-  });
-  */
   console.log('\nEndpoint GET: all customers');
   console.log('Req Body: ', request.body);
   kafka.make_request('customersTopic', 'GETALL', request.body, (err, result) => {
-    console.log('get all result ', result);
+    console.log('Get all result ', result);
     if (err) {
       console.log('Customers getall Kafka error');
       response.writeHead(500, {
@@ -68,12 +51,12 @@ router.get('/', (request, response) => {
   });
 });
 
-// signup
+// signup kafka done
 router.post('/', (request, response) => {
   console.log('\nEndpoint POST: customer signup');
   console.log('Req Body: ', request.body);
   kafka.make_request('customersTopic', 'SIGNUP', request.body, (err, result) => {
-    console.log('get all result ', result);
+    console.log('Signup result ', result);
     if (err) {
       console.log('Customers signup Kafka error');
       response.writeHead(500, {
@@ -97,57 +80,58 @@ router.post('/', (request, response) => {
   });
 });
 
-// Login
+// Login kafka done
 router.post('/login', (request, response) => {
   console.log('\nEndpoint POST: customer login');
   console.log('Req Body: ', request.body);
-  Customers.findOne({ cemail: request.body.cemail }, (error, customer) => {
-    if (error) {
+
+  kafka.make_request('customersTopic', 'LOGIN', request.body, (err, result) => {
+    console.log('Login result ', result);
+    if (err) {
+      console.log('Customers login Kafka error');
       response.writeHead(500, {
         'Content-Type': 'text/plain',
       });
-      console.log('Error in finding customer with email ID');
-      response.end('Error in finding customer with email ID');
-    } else if (customer) {
-      bcrypt.compare(request.body.cpassword, customer.cpassword, (err, result) => {
-        console.log('in db: ', customer.cpassword);
-        if (result === true) {
-          const payload = {
-          // eslint-disable-next-line no-underscore-dangle
-            cid: customer._id,
-            cemail: customer.cemail,
-            cpassword: customer.cpassword,
-            cname: customer.cname,
-            cphone: customer.cphone,
-            cabout: customer.cabout,
-            cjoined: customer.cjoined,
-            cphoto: customer.cphoto,
-            cfavrest: customer.cfavrest,
-            cfavcuisine: customer.favcuisine,
-            // cevents: [...customer.cevents],
-            cfollowers: [...customer.cfollowers],
-          };
-          const token = jwt.sign(payload, secret, {
-            expiresIn: 1008000,
-          });
-          response.status(200).end(`JWT ${token}`);
-          console.log('Login successful', customer);
-        } else {
-          response.status(404).send('Incorrect login');
-        }
+      response.end('Customers login Kafka error');
+    } else if (result.status === 200) {
+      const token = jwt.sign(result.payload, secret, {
+        expiresIn: 1008000,
       });
+      console.log('Login successful token:', token);
+      response.status(result.status).end(`JWT ${token}`);
+      console.log(result.content);
     } else {
-      response.writeHead(400, {
-        'Content-Type': 'text/plain',
+      response.writeHead(result.status, {
+        'Content-Type': result.header,
       });
-      console.log('Customer not found');
-      response.end('Customer not found');
+      console.log(result.content);
+      response.end(result.content);
     }
   });
 });
 
 // Get one customer
 router.get('/:cid', (request, response) => {
+  console.log('\nEndpoint GET: one customer');
+  console.log('Req Body: ', request.body);
+
+  kafka.make_request('customersTopic', 'GETONE', request.params, (err, result) => {
+    console.log('Get one customer result ', result);
+    if (err) {
+      console.log('Customers getone Kafka error');
+      response.writeHead(500, {
+        'Content-Type': 'text/plain',
+      });
+      response.end('Customers getone Kafka error');
+    } else {
+      response.writeHead(result.status, {
+        'Content-Type': result.header,
+      });
+      console.log(result.content);
+      response.end(result.content);
+    }
+  });
+
   console.log('\nEndpoint GET: Get a customer');
   Customers.findById(request.params.cid, (error, customer) => {
     if (error) {

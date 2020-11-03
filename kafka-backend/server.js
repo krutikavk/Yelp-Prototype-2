@@ -14,7 +14,7 @@ function handleTopicRequest(topic_name,fname){
         console.log(JSON.stringify(message.value));
         var data = JSON.parse(message.value);
         
-        fname.handle_request(data, function(err,res){
+        fname.handleRequest(data, function(err,res){
             console.log('after handle'+res);
             var payloads = [
                 { topic: data.replyTo,
@@ -34,6 +34,6 @@ function handleTopicRequest(topic_name,fname){
     });
 }
 // Add your TOPICs here
-//first argument is topic name
-//second argument is a function that will handle this topic request
-handleTopicRequest("customersTopic", Customers);
+// first argument is topic name
+// second argument is a function that will handle this topic request
+handleTopicRequest('customersTopic', Customers);

@@ -114,8 +114,8 @@ function signUpCustomer(data, callback) {
                   cphoto: cust.cphoto,
                   cfavrest: cust.cfavrest,
                   cfavcuisine: cust.favcuisine,
-                  // cevents: [...cust.cevents],
-                  cfollowers: [...cust.cfollowers],
+                  cfollowers: (cust.cfollowers === undefined) ? [] : [...cust.cfollowers],
+                  cfollowing: (cust.cfollowing === undefined) ? [] : [...cust.cfollowing],
                 };
                 const response = {
                   status: 200,
@@ -142,7 +142,101 @@ function signUpCustomer(data, callback) {
   });
 }
 
-function handle_request(msg, callback) {
+function loginCustomer(data, callback) {
+  Customers.findOne({ cemail: data.cemail }, (error, customer) => {
+    if (error) {
+      const response = {
+        status: 400,
+        header: 'text/plain',
+        content: 'Error in finding customer with email ID',
+      };
+      console.log('Error in finding customer with email ID');
+      callback(null, response);
+    } else if (customer) {
+      bcrypt.compare(data.cpassword, customer.cpassword, (err, cust) => {
+        if (cust === true) {
+          const payload = {
+            // eslint-disable-next-line no-underscore-dangle
+            cid: cust._id,
+            cemail: cust.username,
+            cpassword: cust.password,
+            cname: cust.cname,
+            cphone: cust.cphone,
+            cabout: cust.cabout,
+            cjoined: cust.cjoined,
+            cphoto: cust.cphoto,
+            cfavrest: cust.cfavrest,
+            cfavcuisine: cust.favcuisine,
+            cfollowers: (cust.cfollowers === undefined) ? [] : [...cust.cfollowers],
+            cfollowing: (cust.cfollowing === undefined) ? [] : [...cust.cfollowing],
+          };
+          const response = {
+            status: 200,
+            header: 'text/plain',
+            content: 'Login successful',
+            payload,
+          };
+          console.log('Login successful');
+          callback(null, response);
+        } else {
+          const response = {
+            status: 400,
+            header: 'text/plain',
+            content: 'Incorrect login',
+          };
+          console.log('Incorrect login');
+          callback(null, response);
+        }
+      });
+    } else {
+      const response = {
+        status: 400,
+        header: 'text/plain',
+        content: 'Customer not found',
+      };
+      console.log('Customer not found');
+      callback(null, response);
+    }
+  });
+}
+
+function getOneCustomer(data, callback) {
+  Customers.findById(data.cid, (error, customer) => {
+    if (error) {
+      const response = {
+        status: 400,
+        header: 'text/plain',
+        content: 'Error in finding customer with email ID',
+      };
+      console.log('Error in finding customer with email ID');
+      callback(null, response);
+    } else if (customer) {
+      const response = {
+        status: 200,
+        header: 'text/plain',
+        content: 'Customer not found',
+      };
+      console.log('Customer not found');
+      callback(null, response);
+
+      console.log('Sending 200');
+      response.writeHead(200, {
+        'Content-Type': 'application/json',
+      });
+      response.end(JSON.stringify(customer));
+    } else {
+      const response = {
+        status: 400,
+        header: 'text/plain',
+        content: 'Customer not found',
+      };
+      console.log('Customer not found');
+      callback(null, response);
+    }
+  });
+}
+
+function handleRequest(msg, callback) {
   console.log('Inside get all customers');
   console.log('Message:', msg);
 
@@ -161,6 +255,17 @@ function handle_request(msg, callback) {
       break;
     }
 
+    case 'LOGIN': {
+      console.log('Inside signup customers');
+      console.log('Message:', msg);
+      loginCustomer(msg.data, callback);
+      break;
+    }
+
+    case 'GETONE': {
+
+    }
+
     default: {
       const response = {
         status: 400,
@@ -172,4 +277,4 @@ function handle_request(msg, callback) {
   }
 }
 
-exports.handle_request = handle_request;
+exports.handleRequest = handleRequest;
