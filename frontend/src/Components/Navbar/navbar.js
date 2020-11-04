@@ -11,9 +11,8 @@ class Navbar extends Component {
     this.handleLogout = this.handleLogout.bind(this);
   }
 
-
   handleLogout = (event) => {
-      //cookie.remove('cookie', { path: '/' })
+
       this.props.update('CID', '')
       this.props.update('CEMAIL', '')
       this.props.update('CPASSWORD', '')
@@ -39,7 +38,7 @@ class Navbar extends Component {
       this.props.update('RDELIVERY', '')
 
       this.props.logout()
-
+      localStorage.clear()
   }
 
 
@@ -53,14 +52,14 @@ class Navbar extends Component {
         ); 
     }else{
         navLogin = (
-              <Link className="nav-link" to="/login">Login</Link>
+          <Link className="nav-link" to="/login">Login</Link>
         )
     }
 
 
     let cart = (
         <Link className="nav-link" to="/cart">
-          <i className="fa fa-shopping-cart" style={{'font-size':36}}></i>
+          <i className="fa fa-shopping-cart" style={{'fontSize':36}}></i>
         </Link>
       )
     let menu = null;

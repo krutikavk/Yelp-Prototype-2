@@ -69,7 +69,7 @@ class Restaurants extends Component {
             'ContentType': fileType
           }
         };
-
+        delete axios.defaults.headers.common["authorization"];
         axios.put(signedRequest, file, options)
           .then(result => {
             console.log("Response from s3")
@@ -95,6 +95,7 @@ class Restaurants extends Component {
             }
             
             let endpoint = 'http://localhost:3001/restaurants/' + this.props.rid;
+            axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
             axios.put(endpoint, data)
               .then(response => {
                 console.log('Status Code : ', response.status);

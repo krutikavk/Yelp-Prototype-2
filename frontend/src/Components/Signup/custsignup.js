@@ -130,9 +130,10 @@ class Custsignup extends Component {
           this.props.update('CFAVREST', decoded.cfavrest)
           this.props.update('CFAVCUISINE', decoded.cfavcuisine)
           console.log("Before: ", this.props.isLogged)
-          console.log("After: ", this.props.isLogged)
+          
 
           this.props.login()   //this will update isLogged = true
+          console.log("After: ", this.props.isLogged)
           this.props.customerLogin()
           
           //This is no longer needed, state error only needed

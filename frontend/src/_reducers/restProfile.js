@@ -5,16 +5,14 @@ const initialRestProfile = {
   rname: '',
   rphone: '',
   rabout: '',
-  rphoto: ['abc', 'def', 'efg'],
+  rphoto: [],
   rlatitude: '',
   rlongitude: '',
   raddress: '',
   rcuisine: '',
   rdelivery: '',
-  rdish: [],
   rhours: {},
   rrating: '',
-  revents: [],
 };
 
 const restReducer = (state = initialRestProfile, action) => {
@@ -50,10 +48,8 @@ const restReducer = (state = initialRestProfile, action) => {
             raddress: state.raddress,
             rcuisine: state.rcuisine,
             rdelivery: state.rdelivery,
-            rdish: [...state.rdish],
             rhours: { ...state.rhours },
             rrating: state.rrating,
-            revents: [...state.revents],
           };
         }
 
@@ -87,10 +83,8 @@ const restReducer = (state = initialRestProfile, action) => {
             raddress: state.raddress,
             rcuisine: state.rcuisine,
             rdelivery: state.rdelivery,
-            rdish: [...state.rdish],
             rhours: { ...state.rhours },
             rrating: state.rrating,
-            revents: [...state.revents],
           };
         }
 
@@ -123,10 +117,8 @@ const restReducer = (state = initialRestProfile, action) => {
             raddress: state.raddress,
             rcuisine: state.rcuisine,
             rdelivery: state.rdelivery,
-            rdish: [...state.rdish],
             rhours: { ...state.rhours },
             rrating: state.rrating,
-            revents: [...state.revents],
           };
         }
 
@@ -159,10 +151,8 @@ const restReducer = (state = initialRestProfile, action) => {
             raddress: state.raddress,
             rcuisine: state.rcuisine,
             rdelivery: state.rdelivery,
-            rdish: [...state.rdish],
             rhours: { ...state.rhours },
             rrating: state.rrating,
-            revents: [...state.revents],
           };
         }
 
@@ -195,10 +185,8 @@ const restReducer = (state = initialRestProfile, action) => {
             raddress: state.raddress,
             rcuisine: state.rcuisine,
             rdelivery: state.rdelivery,
-            rdish: [...state.rdish],
             rhours: { ...state.rhours },
             rrating: state.rrating,
-            revents: [...state.revents],
           };
         }
 
@@ -231,10 +219,8 @@ const restReducer = (state = initialRestProfile, action) => {
             raddress: state.raddress,
             rcuisine: state.rcuisine,
             rdelivery: state.rdelivery,
-            rdish: [...state.rdish],
             rhours: { ...state.rhours },
             rrating: state.rrating,
-            revents: [...state.revents],
           };
         }
 
@@ -268,27 +254,8 @@ const restReducer = (state = initialRestProfile, action) => {
             raddress: state.raddress,
             rcuisine: state.rcuisine,
             rdelivery: state.rdelivery,
-            rdish: [...state.rdish],
             rhours: { ...state.rhours },
             rrating: state.rrating,
-            revents: [...state.revents],
-          };
-        }
-        // Do not need anymore
-        case 'RLOCATION': {
-          return {
-            rid: state.rid,
-            remail: state.remail,
-            rpassword: state.rpassword,
-            rname: state.rname,
-            rphone: state.rphone,
-            rabout: state.rabout,
-            rphoto: state.rphoto,
-            rlatitude: state.rlatitude,
-            rlongitude: state.rlongitude,
-            raddress: state.raddress,
-            rcuisine: state.rcuisine,
-            rdelivery: state.rdelivery,
           };
         }
 
@@ -321,10 +288,8 @@ const restReducer = (state = initialRestProfile, action) => {
             raddress: state.raddress,
             rcuisine: state.rcuisine,
             rdelivery: state.rdelivery,
-            rdish: [...state.rdish],
             rhours: { ...state.rhours },
             rrating: state.rrating,
-            revents: [...state.revents],
           };
         }
 
@@ -357,10 +322,8 @@ const restReducer = (state = initialRestProfile, action) => {
             raddress: state.raddress,
             rcuisine: state.rcuisine,
             rdelivery: state.rdelivery,
-            rdish: [...state.rdish],
             rhours: { ...state.rhours },
             rrating: state.rrating,
-            revents: [...state.revents],
           };
         }
 
@@ -393,10 +356,8 @@ const restReducer = (state = initialRestProfile, action) => {
             raddress: action.payload,
             rcuisine: state.rcuisine,
             rdelivery: state.rdelivery,
-            rdish: [...state.rdish],
             rhours: { ...state.rhours },
             rrating: state.rrating,
-            revents: [...state.revents],
           };
         }
 
@@ -429,10 +390,8 @@ const restReducer = (state = initialRestProfile, action) => {
             raddress: state.raddress,
             rcuisine: action.payload,
             rdelivery: state.rdelivery,
-            rdish: [...state.rdish],
             rhours: { ...state.rhours },
             rrating: state.rrating,
-            revents: [...state.revents],
           };
         }
 
@@ -465,31 +424,8 @@ const restReducer = (state = initialRestProfile, action) => {
             raddress: state.raddress,
             rcuisine: state.rcuisine,
             rdelivery: action.payload,
-            rdish: [...state.rdish],
             rhours: { ...state.rhours },
             rrating: state.rrating,
-            revents: [...state.revents],
-          };
-        }
-
-        case 'RDISH': {
-          return {
-            rid: state.rid,
-            remail: state.remail,
-            rpassword: state.rpassword,
-            rname: state.rname,
-            rphone: state.rphone,
-            rabout: state.rabout,
-            rphoto: [...state.rphoto],
-            rlatitude: state.rlatitude,
-            rlongitude: state.rlongitude,
-            raddress: state.raddress,
-            rcuisine: state.rcuisine,
-            rdelivery: state.rdelivery,
-            rdish: [...action.payload],
-            rhours: { ...state.rhours },
-            rrating: state.rrating,
-            revents: [...state.revents],
           };
         }
 
@@ -507,10 +443,8 @@ const restReducer = (state = initialRestProfile, action) => {
             raddress: state.raddress,
             rcuisine: state.rcuisine,
             rdelivery: state.rdelivery,
-            rdish: [...state.rdish],
             rhours: { ...action.payload },
             rrating: state.rrating,
-            revents: [...state.revents],
           };
         }
 
@@ -532,27 +466,6 @@ const restReducer = (state = initialRestProfile, action) => {
             rhours: { ...state.rhours },
             rrating: action.payload,
             revents: [...state.revents],
-          };
-        }
-
-        case 'REVENTS': {
-          return {
-            rid: state.rid,
-            remail: state.remail,
-            rpassword: state.rpassword,
-            rname: state.rname,
-            rphone: state.rphone,
-            rabout: state.rabout,
-            rphoto: [...state.rphoto],
-            rlatitude: state.rlatitude,
-            rlongitude: state.rlongitude,
-            raddress: state.raddress,
-            rcuisine: state.rcuisine,
-            rdelivery: state.rdelivery,
-            rdish: [...state.rdish],
-            rhours: { ...state.rhours },
-            rrating: state.rrating,
-            revents: [...action.payload],
           };
         }
 
@@ -580,10 +493,8 @@ const restReducer = (state = initialRestProfile, action) => {
             raddress: state.raddress,
             rcuisine: state.rcuisine,
             rdelivery: state.rdelivery,
-            rdish: [...state.rdish],
             rhours: { ...state.rhours },
             rrating: state.rrating,
-            revents: [...state.revents],
           };
         }
 
