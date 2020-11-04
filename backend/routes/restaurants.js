@@ -1,31 +1,12 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const { mongoDB, secret } = require('../Utils/config');
+const { secret } = require('../Utils/config');
 const { checkAuth, auth } = require('../Utils/passport');
 const kafka = require('../kafka/client');
 
 auth();
 
 const router = express.Router();
-
-const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  poolSize: 500,
-  bufferMaxEntries: 0,
-  useFindAndModify: false,
-};
-
-// eslint-disable-next-line no-unused-vars
-mongoose.connect(mongoDB, options, (err, res) => {
-  if (err) {
-    console.log(err);
-    console.log('MongoDB Connection Failed');
-  } else {
-    console.log('MongoDB Connected');
-  }
-});
 
 // get all restaurants kafka done
 router.get('/', (request, response) => {
@@ -133,7 +114,7 @@ router.post('/login', (request, response) => {
 });
 
 // Update profile
-router.put('/:rid', checkAuth, (request, response) => {
+router.put('/:rid', (request, response) => {
   console.log('\nEndpoint PUT: Restaurant fields update');
   console.log('Req Body: ', request.body);
   const data = { ...request.params, ...request.body };

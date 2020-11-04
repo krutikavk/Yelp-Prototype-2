@@ -1,39 +1,39 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const { mongoDB, secret } = require('../Utils/config');
 const { checkAuth, auth } = require('../Utils/passport');
-const Orders = require('../Models/OrderModel');
+const kafka = require('../kafka/client');
 
 auth();
 
 const router = express.Router();
 
-const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  poolSize: 500,
-  bufferMaxEntries: 0,
-};
-
-// eslint-disable-next-line no-unused-vars
-mongoose.connect(mongoDB, options, (err, res) => {
-  if (err) {
-    console.log(err);
-    console.log('MongoDB Connection Failed');
-  } else {
-    console.log('MongoDB Connected');
-  }
-});
-
 // Place a new order
 router.post('/', (request, response) => {
+  console.log('Endpoint POST: Place a new order');
+  console.log('Request Body: ', request.body);
+  const data = { ...request.body };
+  kafka.make_request('ordersTopic', 'PLACEORDER', data, (err, result) => {
+    console.log('Place order result ', result);
+    if (err) {
+      console.log('Place new order Kafka error');
+      response.writeHead(500, {
+        'Content-Type': 'text/plain',
+      });
+      response.end('Restaurants signup Kafka error');
+    } else {
+      response.writeHead(result.status, {
+        'Content-Type': result.header,
+      });
+      console.log(result.content);
+      response.end(result.content);
+    }
+  });
+
+  /*
   const now = new Date();
   const jsonDate = now.toJSON();
   const ordertime = new Date(jsonDate);
 
-  console.log('Endpoint POST: Place an new order');
+  console.log('Endpoint POST: Place a new order');
   console.log('Request Body: ', request.body);
   console.log(ordertime);
 
@@ -83,10 +83,31 @@ router.post('/', (request, response) => {
         });
     }
   });
+  */
 });
 
 // Get all orders for a restaurant
 router.get('/restaurants/:rid', (request, response) => {
+  console.log('Endpoint GET: Get all orders for rest');
+  console.log('Request Body: ', request.body);
+  const data = { ...request.params, ...request.body };
+  kafka.make_request('ordersTopic', 'ORDERSFORREST', data, (err, result) => {
+    console.log('Place order result ', result);
+    if (err) {
+      console.log('Place new order Kafka error');
+      response.writeHead(500, {
+        'Content-Type': 'text/plain',
+      });
+      response.end('Restaurants signup Kafka error');
+    } else {
+      response.writeHead(result.status, {
+        'Content-Type': result.header,
+      });
+      console.log(result.content);
+      response.end(result.content);
+    }
+  });
+  /*
   Orders.find({ rid: request.params.rid }, (error, results) => {
     if (error) {
       response.writeHead(500, {
@@ -106,10 +127,31 @@ router.get('/restaurants/:rid', (request, response) => {
       response.end('Could not find orders');
     }
   });
+  */
 });
 
 // Get all orders for a customer
 router.get('/customers/:cid', (request, response) => {
+  console.log('Endpoint GET: Get all orders for cust');
+  console.log('Request Body: ', request.body);
+  const data = { ...request.params, ...request.body };
+  kafka.make_request('ordersTopic', 'ORDERSFORCUST', data, (err, result) => {
+    console.log('Place order result ', result);
+    if (err) {
+      console.log('Place new order Kafka error');
+      response.writeHead(500, {
+        'Content-Type': 'text/plain',
+      });
+      response.end('Restaurants signup Kafka error');
+    } else {
+      response.writeHead(result.status, {
+        'Content-Type': result.header,
+      });
+      console.log(result.content);
+      response.end(result.content);
+    }
+  });
+  /*
   Orders.find({ cid: request.params.cid }, (error, results) => {
     if (error) {
       response.writeHead(500, {
@@ -129,12 +171,31 @@ router.get('/customers/:cid', (request, response) => {
       response.end('Could not find orders');
     }
   });
+  */
 });
 
 // get an order
 router.get('/:oid', (request, response) => {
   console.log('Endpoint GET: Get a particular order');
   console.log('Request Body: ', request.body);
+  const data = { ...request.params };
+  kafka.make_request('ordersTopic', 'GETORDER', data, (err, result) => {
+    console.log('Place order result ', result);
+    if (err) {
+      console.log('Place new order Kafka error');
+      response.writeHead(500, {
+        'Content-Type': 'text/plain',
+      });
+      response.end('Restaurants signup Kafka error');
+    } else {
+      response.writeHead(result.status, {
+        'Content-Type': result.header,
+      });
+      console.log(result.content);
+      response.end(result.content);
+    }
+  });
+  /*
   Orders.findById(request.params.oid, (error, results) => {
     if (error) {
       response.writeHead(500, {
@@ -154,11 +215,31 @@ router.get('/:oid', (request, response) => {
       response.end('Could not find orders');
     }
   });
+  */
 });
 
 // Update an order's status
 router.put('/:oid', (request, response) => {
-  console.log('\nEndpoint PUT: Customer fields update');
+  console.log('\nEndpoint PUT: Order status update');
+  console.log('Request Body: ', request.body);
+  const data = { ...request.params, ...request.data };
+  kafka.make_request('ordersTopic', 'UPDATEORDER', data, (err, result) => {
+    console.log('Place order result ', result);
+    if (err) {
+      console.log('Place new order Kafka error');
+      response.writeHead(500, {
+        'Content-Type': 'text/plain',
+      });
+      response.end('Restaurants signup Kafka error');
+    } else {
+      response.writeHead(result.status, {
+        'Content-Type': result.header,
+      });
+      console.log(result.content);
+      response.end(result.content);
+    }
+  });
+  /*
   const data = {
     ostatus: request.body.ostatus,
   };
@@ -183,6 +264,7 @@ router.put('/:oid', (request, response) => {
       response.end('Order not found');
     }
   });
+  */
 });
 
 module.exports = router;

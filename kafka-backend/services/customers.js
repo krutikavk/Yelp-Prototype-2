@@ -106,7 +106,7 @@ function signUpCustomer(data, callback) {
                 const payload = {
                   // eslint-disable-next-line no-underscore-dangle
                   cid: cust._id,
-                  cemail: cust.username,
+                  cemail: cust.cemail,
                   cpassword: cust.password,
                   cname: cust.cname,
                   cphone: cust.cphone,

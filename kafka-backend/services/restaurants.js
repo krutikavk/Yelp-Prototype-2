@@ -134,10 +134,8 @@ function signUpRestaurant(data, callback) {
                   raddress: rest.raddress,
                   rcuisine: rest.rcuisine,
                   rdelivery: rest.rdelivery,
-                  rdish: [...rest.rdish],
                   rhours: { ...rest.rhours },
                   rrating: rest.rrating,
-                  revents: [...rest.revents],
                 };
                 const response = {
                   status: 200,
@@ -191,10 +189,8 @@ function loginRestaurant(data, callback) {
             raddress: restaurant.raddress,
             rcuisine: restaurant.rcuisine,
             rdelivery: restaurant.rdelivery,
-            rdish: [...restaurant.rdish],
             rhours: restaurant.rhours,
             rrating: restaurant.rrating,
-            revents: [...restaurant.revents],
           };
           const response = {
             status: 200,
@@ -239,10 +235,8 @@ function updateRestaurant(data, callback) {
     raddress: data.raddress,
     rcuisine: data.rcuisine,
     rdelivery: data.rdelivery,
-    rdish: data.rdish,
     rhours: data.rhours,
     rrating: data.rrating,
-    revents: data.revents,
   };
   Restaurants.findByIdAndUpdate(data.rid, updateData, (error, restaurant) => {
     if (error) {

@@ -292,55 +292,6 @@ function handleRequest(msg, callback) {
       break;
     }
 
-    case 'FOLLOW': {
-      console.log('Inside follow restaurants');
-      console.log('Message:', msg);
-
-      break;
-    }
-
-    case 'ADDREVIEW': {
-      console.log('Inside add reviews restaurant');
-      console.log('Message:', msg);
-      addReview(msg.data, callback);
-      break;
-    }
-
-    case 'GETREVIEWS': {
-      console.log('Inside get reviews restaurant');
-      console.log('Message:', msg);
-      getReviews(msg.data, callback);
-      break;
-    }
-
-    case 'GETRATING': {
-      console.log('Inside get average rating restaurant');
-      console.log('Message:', msg);
-      getRating(msg.data, callback);
-      break;
-    }
-
-    case 'SEARCHBYDISH': {
-      console.log('Inside restaurant search by Dish');
-      console.log('Message:', msg);
-      searchByDish(msg.data, callback);
-      break;
-    }
-
-    case 'SEARCHBYCUISINE': {
-      console.log('Inside restaurant search by Cuisine');
-      console.log('Message:', msg);
-      searchByCuisine(msg.data, callback);
-      break;
-    }
-
-    case 'SEARCHBYDELIVERY': {
-      console.log('Inside restaurant search by Delivery');
-      console.log('Message:', msg);
-      searchByDelivery(msg.data, callback);
-      break;
-    }
-
     default: {
       const response = {
         status: 400,

@@ -1,6 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const { mongoDB, secret } = require('../Utils/config');
+const { secret } = require('../Utils/config');
 const { checkAuth, auth } = require('../Utils/passport');
 const kafka = require('../kafka/client');
 
@@ -9,7 +9,7 @@ auth();
 const router = express.Router();
 
 // get all customers kafka done
-router.get('/', checkAuth, (request, response) => {
+router.get('/', (request, response) => {
   console.log('\nEndpoint GET: all customers');
   console.log('Req Body: ', request.body);
   kafka.make_request('customersTopic', 'GETALL', request.body, (err, result) => {
@@ -91,7 +91,7 @@ router.post('/login', (request, response) => {
 });
 
 // Get one customer kafka done
-router.get('/:cid', checkAuth, (request, response) => {
+router.get('/:cid', (request, response) => {
   console.log('\nEndpoint GET: one customer');
   console.log('Req Body: ', request.body);
   const data = { ...request.params };
@@ -115,7 +115,7 @@ router.get('/:cid', checkAuth, (request, response) => {
 });
 
 // Update customer profile--works kafka done
-router.put('/:cid', checkAuth, (request, response) => {
+router.put('/:cid', (request, response) => {
   console.log('\nEndpoint PUT: Customer fields update');
   console.log('Req Body: ', request.body);
   const data = { ...request.params, ...request.body };
@@ -139,7 +139,7 @@ router.put('/:cid', checkAuth, (request, response) => {
 });
 
 // Update customer password
-router.put('/:cid/password', checkAuth, (request, response) => {
+router.put('/:cid/password', (request, response) => {
   console.log('\nEndpoint PUT: customer password update');
   console.log('Req Body: ', request.body);
   const data = { ...request.params, ...request.body };
@@ -165,7 +165,7 @@ router.put('/:cid/password', checkAuth, (request, response) => {
 
 // Follow another customer
 // request.params.cid follows customer in request.body
-router.post('/:cid/follow', checkAuth, (request, response) => {
+router.post('/:cid/follow', (request, response) => {
   console.log('\nEndpoint POST: customer follow');
   console.log('Req Body: ', request.body);
   const data = {
@@ -193,7 +193,7 @@ router.post('/:cid/follow', checkAuth, (request, response) => {
 });
 
 // View reviews added by a customer
-router.get('/:cid/reviews', checkAuth, (request, response) => {
+router.get('/:cid/reviews', (request, response) => {
   console.log('\nEndpoint GET: Customer reviews get');
   console.log('Req Body: ', request.body);
   const data = { ...request.params };

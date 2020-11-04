@@ -5,6 +5,8 @@ var Customers = require('./services/customers');
 var Restaurants = require('./services/restaurants');
 var Dishes = require('./services/dishes');
 var Conversations = require('./services/conversations');
+var Events = require('./services/events');
+var Orders = require('./services/orders');
 
 function handleTopicRequest(topic_name,fname){
     //var topic_name = 'root_topic';
@@ -43,3 +45,5 @@ handleTopicRequest('customersTopic', Customers);
 handleTopicRequest('restaurantsTopic', Restaurants);
 handleTopicRequest('dishesTopic', Dishes);
 handleTopicRequest('conversationsTopic', Conversations);
+handleTopicRequest('eventsTopic', Events);
+handleTopicRequest('ordersTopic', Orders);

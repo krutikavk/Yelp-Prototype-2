@@ -1,31 +1,10 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const { mongoDB } = require('../Utils/config');
 const { checkAuth, auth } = require('../Utils/passport');
-const Dishes = require('../Models/DishModel');
-const Restaurants = require('../Models/RestModel');
 const kafka = require('../kafka/client');
 
 auth();
 
 const router = express.Router();
-
-const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  poolSize: 500,
-  bufferMaxEntries: 0,
-};
-
-// eslint-disable-next-line no-unused-vars
-mongoose.connect(mongoDB, options, (err, res) => {
-  if (err) {
-    console.log(err);
-    console.log('MongoDB Connection Failed');
-  } else {
-    console.log('MongoDB Connected');
-  }
-});
 
 // Add a dish
 router.post('/', (request, response) => {

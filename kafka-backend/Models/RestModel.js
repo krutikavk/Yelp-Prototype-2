@@ -19,7 +19,6 @@ const restSchema = new Schema({
     enum: ['Curbside pickup', 'Yelp Delivery', 'Dine In'],
     default: 'Curbside pickup',
   },
-  rdish: [{ type: String }],
   rhours: {
     sunday: { type: Boolean, default: true },
     monday: { type: Boolean, default: true },
@@ -32,7 +31,6 @@ const restSchema = new Schema({
     endTime: { type: String, default: '21:00 hrs' },
   },
   rrating: { type: Number, default: 0 },
-  revents: [{ type: String }],
 },
 {
   versionKey: false,
