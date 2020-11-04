@@ -99,6 +99,7 @@ class restLogin extends Component {
           //this.props.restaurantLogin()          
         }
       }).catch(err =>{
+        alert("Incorrect credentials")
         this.setState({
             authFlag : false
         })
