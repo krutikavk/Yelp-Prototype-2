@@ -4,6 +4,7 @@ var connection =  new require('./kafka/Connection');
 var Customers = require('./services/customers');
 var Restaurants = require('./services/restaurants');
 var Dishes = require('./services/dishes');
+var Conversations = require('./services/conversations');
 
 function handleTopicRequest(topic_name,fname){
     //var topic_name = 'root_topic';
@@ -41,3 +42,4 @@ function handleTopicRequest(topic_name,fname){
 handleTopicRequest('customersTopic', Customers);
 handleTopicRequest('restaurantsTopic', Restaurants);
 handleTopicRequest('dishesTopic', Dishes);
+handleTopicRequest('conversationsTopic', Conversations);
