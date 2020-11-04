@@ -129,7 +129,6 @@ class AddDish extends Component {
   addDish = (event) => {
     event.preventDefault();
     axios.defaults.withCredentials = true;
-    // let url = 'http://localhost:3001/dishes'
     let url = `${process.env.REACT_APP_BACKEND}/dishes`
     const data = {
       dname: this.state.dname,

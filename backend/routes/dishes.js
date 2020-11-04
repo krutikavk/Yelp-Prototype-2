@@ -1,11 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const { mongoDB, secret } = require('../Utils/config');
+const { mongoDB } = require('../Utils/config');
 const { checkAuth, auth } = require('../Utils/passport');
 const Dishes = require('../Models/DishModel');
 const Restaurants = require('../Models/RestModel');
+const kafka = require('../kafka/client');
 
 auth();
 
@@ -30,6 +29,27 @@ mongoose.connect(mongoDB, options, (err, res) => {
 
 // Add a dish
 router.post('/', (request, response) => {
+  console.log('\nEndpoint POST: Add a dish');
+  console.log('Req Body: ', request.body);
+  const data = { ...request.body };
+
+  kafka.make_request('dishesTopic', 'ADDDISH', data, (err, result) => {
+    console.log('Add dish result ', result);
+    if (err) {
+      console.log('Add dish Kafka error');
+      response.writeHead(500, {
+        'Content-Type': 'text/plain',
+      });
+      response.end('Add dish Kafka error');
+    } else {
+      response.writeHead(result.status, {
+        'Content-Type': result.header,
+      });
+      console.log(result.content);
+      response.end(result.content);
+    }
+  });
+  /*
   const newDish = new Dishes({
     rid: request.body.rid,
     dname: request.body.dname,
@@ -59,10 +79,32 @@ router.post('/', (request, response) => {
       response.status(200).end('Added new dish');
     }
   });
+  */
 });
 
 // Get all dishes for a restaurant
 router.get('/:rid', (request, response) => {
+  console.log('\nEndpoint GET: Get all dishes for a restaurant');
+  console.log('Req Body: ', request.body);
+  const data = { ...request.params};
+
+  kafka.make_request('dishesTopic', 'GETALLFORREST', data, (err, result) => {
+    console.log('Add dish result ', result);
+    if (err) {
+      console.log('Add dish Kafka error');
+      response.writeHead(500, {
+        'Content-Type': 'text/plain',
+      });
+      response.end('Add dish Kafka error');
+    } else {
+      response.writeHead(result.status, {
+        'Content-Type': result.header,
+      });
+      console.log(result.content);
+      response.end(result.content);
+    }
+  });
+  /*
   Dishes.find({ rid: request.params.rid }, (error, dishes) => {
     if (error) {
       response.writeHead(400, {
@@ -83,10 +125,32 @@ router.get('/:rid', (request, response) => {
       response.end('Error in saving new event');
     }
   });
+  */
 });
 
 // Edit a dish
 router.put('/:did', (request, response) => {
+  console.log('\nEndpoint PUT: Edit a dish');
+  console.log('Req Body: ', request.body);
+  const data = { ...request.params, ...request.body };
+
+  kafka.make_request('dishesTopic', 'EDITDISH', data, (err, result) => {
+    console.log('Edit dish result ', result);
+    if (err) {
+      console.log('Edit dish Kafka error');
+      response.writeHead(500, {
+        'Content-Type': 'text/plain',
+      });
+      response.end('Edit dish Kafka error');
+    } else {
+      response.writeHead(result.status, {
+        'Content-Type': result.header,
+      });
+      console.log(result.content);
+      response.end(result.content);
+    }
+  });
+  /*
   const data = {
     dname: request.body.dname,
     dingredients: request.body.dingredients,
@@ -109,6 +173,7 @@ router.put('/:did', (request, response) => {
       response.end('Updated dish');
     }
   });
+  */
 });
 
 module.exports = router;

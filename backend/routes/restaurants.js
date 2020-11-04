@@ -1,12 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
 const { mongoDB, secret } = require('../Utils/config');
 const { checkAuth, auth } = require('../Utils/passport');
-const Restaurants = require('../Models/RestModel');
-const Reviews = require('../Models/ReviewModel');
-const Dishes = require('../Models/DishModel');
 const kafka = require('../kafka/client');
 
 auth();
