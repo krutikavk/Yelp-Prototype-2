@@ -38,7 +38,7 @@ class Navbar extends Component {
       this.props.update('RDELIVERY', '')
 
       this.props.logout()
-      localStorage.clear()
+
   }
 
 

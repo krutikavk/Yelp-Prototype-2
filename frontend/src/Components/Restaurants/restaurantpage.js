@@ -53,8 +53,9 @@ class Restaurants extends Component {
     console.log("Preparing the upload");
 
     axios.defaults.withCredentials = false;
+    let url = `${process.env.REACT_APP_BACKEND}/sign_s3`;
 
-    axios.post("http://localhost:3001/sign_s3",{ fileName : fileName, fileType : fileType })
+    axios.post(url, { fileName : fileName, fileType : fileType })
       .then(response => {
         var returnData = response.data.data.returnData;
         var signedRequest = returnData.signedRequest;
@@ -78,13 +79,14 @@ class Restaurants extends Component {
             });
 
             //Add the URL to database HERE
-
+            let photoArr = [...this.props.rphoto];
+            photoArr.push(url);
             const data = {
               remail: this.props.remail,
               rname: this.props.rname,
               rphone : this.props.rphone,
               rabout : this.props.rabout,
-              rphoto: url,
+              rphoto: [...photoArr],
               rlocation: this.props.rlocation,
               rlatitude: this.props.rlatitude,
               rlongitude: this.props.rlongitude,
@@ -94,7 +96,8 @@ class Restaurants extends Component {
               rid: this.props.rid
             }
             
-            let endpoint = 'http://localhost:3001/restaurants/' + this.props.rid;
+            // let endpoint = 'http://localhost:3001/restaurants/' + this.props.rid;
+            let endpoint = `${process.env.REACT_APP_BACKEND}/restaurants/$this.props.rid`;
             axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
             axios.put(endpoint, data)
               .then(response => {
@@ -103,7 +106,7 @@ class Restaurants extends Component {
                   console.log('Update completed')
                   //call props action
                   //this.props.update('RNAME', this.state.rname)
-                  this.props.update('RPHOTO', this.state.url)
+                  this.props.update('RPHOTO', photoArr)
                   this.setState({
                     updated: true,
                   })
@@ -243,7 +246,7 @@ class Restaurants extends Component {
         rname: this.props.rname,
         rphone: this.props.rphone,
         rabout: this.props.rabout,
-        rphoto: this.props.rphoto,
+        rphoto: [...this.props.rphoto],
         rlocation: this.props.rlocation,
         rlatitude: this.props.rlatitude,
         rlongitude: this.props.rlongitude,
@@ -420,7 +423,7 @@ const mapStateToProps = (state) => {
       rname: state.restProfile.rname,
       rphone: state.restProfile.rphone,
       rabout: state.restProfile.rabout,
-      rphoto: state.restProfile.rphoto,
+      rphoto: [...state.restProfile.rphoto],
       rlocation: state.restProfile.rlocation,
       rlatitude: state.restProfile.rlatitude,
       rlongitude: state.restProfile.rlongitude,

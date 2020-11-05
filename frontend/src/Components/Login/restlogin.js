@@ -85,10 +85,8 @@ class restLogin extends Component {
           this.props.update('RADDRESS', decoded.raddress)
           this.props.update('RCUISINE', decoded.rcuisine)
           this.props.update('RDELIVERY', decoded.rdelivery)
-          this.props.update('RDISH', decoded.rdish)
           this.props.update('RHOURS', decoded.rhours)
           this.props.update('RRATING', decoded.rrating)
-          this.props.update('REVENTS', decoded.revents)
           this.props.login()
           this.props.restaurantLogin()
           this.setState({
@@ -134,10 +132,8 @@ class restLogin extends Component {
       localStorage.setItem('raddress', decoded.raddress)
       localStorage.setItem('rcuisine', decoded.rcuisine)
       localStorage.setItem('rdelivery', decoded.rdelivery)
-      localStorage.setItem('rdish', decoded.rdish)
       localStorage.setItem('rhours', decoded.rhours)
       localStorage.setItem('rrating', decoded.rrating)
-      localStorage.setItem('revents', decoded.revents)
       
       redirectVar = <Redirect to="/restaurant" />
     }
@@ -194,26 +190,7 @@ class restLogin extends Component {
 
 //importedname: state.reducer.statename
 const mapStateToProps = (state) => {
-    return {
-      //Restaurant props
-      /*
-      rid: state.restProfile.rid,
-      remail: state.restProfile.remail,
-      rpassword: state.restProfile.rpassword,
-      rname: state.restProfile.rname,
-      rphone: state.restProfile.rphone,
-      rabout: state.restProfile.rabout,
-      rphoto: state.restProfile.rphoto,
-      rlocation: state.restProfile.rlocation,
-      rlatitude: state.restProfile.rlatitude,
-      rlongitude: state.restProfile.rlongitude,
-      raddress: state.restProfile.raddress,
-      rcuisine: state.restProfile.rcuisine,
-      rdelivery: state.restProfile.rdelivery,
-      isLogged: state.isLogged.isLoggedIn,
-      whoIsLogged: state.whoIsLogged.whoIsLoggedIn,
-      */
-      
+    return {      
       rid: state.restProfile.rid,
       remail: state.restProfile.remail,
       rpassword: state.restProfile.rpassword,
@@ -226,10 +203,8 @@ const mapStateToProps = (state) => {
       raddress: state.restProfile.raddress,
       rcuisine: state.restProfile.rcuisine,
       rdelivery: state.restProfile.rdelivery,
-      rdish: JSON.parse(JSON.stringify(state.restProfile.rdish)),
       rhours: {...state.restProfile.hours},
       rrating: state.restProfile.rrating,
-      revents: [...state.restProfile.revents],
       isLogged: state.isLogged.isLoggedIn,
       whoIsLogged: state.whoIsLogged.whoIsLoggedIn,
     }

@@ -134,13 +134,12 @@ class Restupdateinfo extends Component {
       raddress: this.state.address,
       rcuisine: this.state.rcuisine,
       rdelivery: this.state.rdelivery,
-      rdish: this.props.rdish,
       rhours: this.props.hours,
       rrating: this.props.rrating,
       revents: this.props.revents,
     }
 
-    let endpoint = process.env.REACT_APP_BACKEND + '/restaurants/' + this.props.rid;
+    let endpoint = `${process.env.REACT_APP_BACKEND}/restaurants/${this.props.rid}`;
     console.log('rid:', this.props.rid)
     console.log('remail:', this.props.remail)
     console.log('update endpoint: ', endpoint)
@@ -150,11 +149,10 @@ class Restupdateinfo extends Component {
 
     axios.put(endpoint, data)
       .then(response => {
-        console.log('Status Code : ', response.status);
+        console.log('Status Code update info : ', response.status);
         if(response.status === 200){
           console.log('Update completed')
           //call props action
-          //this.props.update('RNAME', this.state.rname)
           this.props.update('RPHONE', this.state.rphone)
           this.props.update('RABOUT', this.state.rabout)
           this.props.update('RCUISINE', this.state.rcuisine)
@@ -177,6 +175,7 @@ class Restupdateinfo extends Component {
 
     let redirectVar = null;
     //Nobody is logged in
+    console.log('this.state.updated:', this.state.updated)
     if(this.props.isLogged === false ) {
       redirectVar = <Redirect to= '/login'/>
     }
@@ -187,6 +186,7 @@ class Restupdateinfo extends Component {
 
     //Update successful--redirect to update2 page
     else if(this.props.isLogged === true && this.props.whoIsLogged === true && this.state.updated === true) {
+      alert("I came here")
       redirectVar = <Redirect to= '/restaurant/updatelocation'/>
     }
 
@@ -297,10 +297,10 @@ const mapStateToProps = (state) => {
       raddress: state.restProfile.raddress,
       rcuisine: state.restProfile.rcuisine,
       rdelivery: state.restProfile.rdelivery,
-      rdish: JSON.parse(JSON.stringify(state.restProfile.rdish)),
+      //rdish: JSON.parse(JSON.stringify(state.restProfile.rdish)),
       rhours: {...state.restProfile.hours},
       rrating: state.restProfile.rrating,
-      revents: [...state.restProfile.revents],
+      //revents: [...state.restProfile.revents],
       isLogged: state.isLogged.isLoggedIn,
       whoIsLogged: state.whoIsLogged.whoIsLoggedIn,
     }

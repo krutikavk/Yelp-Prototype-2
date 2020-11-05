@@ -41,25 +41,10 @@ class Restupdatelocation extends Component {
         console.log('Location found: ', latLng)
 
         //Update restaurant location
-
-
-        let endpoint = process.env.REACT_APP_BACKEND + '/restaurants/' + this.props.rid;
+        let endpoint = `${process.env.REACT_APP_BACKEND}/restaurants/${this.props.rid}`;
         console.log('update restaurant endpoint: ', endpoint)
 
         const data = {
-          /*
-          remail: this.props.remail,
-          rname: this.props.rname,
-          rphone : this.props.rphone,
-          rabout : this.props.rabout,
-          rlocation: this.props.rlocation,
-          rlatitude: latLng.lat,
-          rlongitude : latLng.lng,
-          raddress : this.state.address,
-          rcuisine: this.props.rcuisine,
-          rdelivery: this.props.rdelivery,
-          rid: this.props.rid
-          */
 
           remail: this.props.remail,
           rname: this.props.rname,
@@ -71,11 +56,11 @@ class Restupdatelocation extends Component {
           raddress: this.state.address,
           rcuisine: this.props.rcuisine,
           rdelivery: this.props.rdelivery,
-          rdish: [...this.props.rdish],
           rhours: this.props.hours,
           rrating: this.props.rrating,
-          revents: [...this.props.revents],
         }
+        axios.defaults.withCredentials = true;
+        axios.defaults.headers.common.authorization = localStorage.getItem('token');
 
         axios.put(endpoint, data)
           .then(response => {
@@ -219,10 +204,10 @@ const mapStateToProps = (state) => {
       raddress: state.restProfile.raddress,
       rcuisine: state.restProfile.rcuisine,
       rdelivery: state.restProfile.rdelivery,
-      rdish: JSON.parse(JSON.stringify(state.restProfile.rdish)),
+      // rdish: JSON.parse(JSON.stringify(state.restProfile.rdish)),
       rhours: {...state.restProfile.hours},
       rrating: state.restProfile.rrating,
-      revents: [...state.restProfile.revents],
+      // revents: [...state.restProfile.revents],
       isLogged: state.isLogged.isLoggedIn,
       whoIsLogged: state.whoIsLogged.whoIsLoggedIn,
     }

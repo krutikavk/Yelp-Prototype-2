@@ -99,8 +99,10 @@ class Restsignup extends Component {
     }
 
     axios.defaults.withCredentials = true;
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
     //make a post request with the user data
-    let url = process.env.REACT_APP_BACKEND + '/restaurants';
+    let url = `${process.env.REACT_APP_BACKEND}/restaurants`;
+    console.log('url: ', url);
     axios.post(url, data)
       .then(response => {
 
@@ -111,6 +113,7 @@ class Restsignup extends Component {
           //call props action
           console.log('Decoded token: ', decoded);
           console.log('Token: ', response.data);
+
           this.props.update('RID', decoded.rid)
           this.props.update('REMAIL', decoded.remail)
           this.props.update('RPASSWORD', decoded.rpassword)
@@ -123,12 +126,11 @@ class Restsignup extends Component {
           this.props.update('RADDRESS', decoded.raddress)
           this.props.update('RCUISINE', decoded.rcuisine)
           this.props.update('RDELIVERY', decoded.rdelivery)
-          this.props.update('RDISH', decoded.rdish)
           this.props.update('RHOURS', decoded.rhours)
           this.props.update('RRATING', decoded.rrating)
-          this.props.update('REVENTS', decoded.revents)
           this.props.login()
           this.props.restaurantLogin()
+          console.log('here')
 
           this.setState({
               token: response.data,
@@ -136,6 +138,7 @@ class Restsignup extends Component {
           })      
         }
       }).catch(err =>{
+          console.log('there')
           this.setState({
               isAdded : false
           })
@@ -145,12 +148,6 @@ class Restsignup extends Component {
 
 	render (){
     let redirectVar = null;
-    /*
-    if(cookie.load('cookie')){
-      console.log(cookie)
-      redirectVar = <Redirect to= "/userdash"/>
-    } */
-
     if (this.state.token.length > 0) {
       localStorage.setItem("token", this.state.token);
       var decoded = jwt_decode(this.state.token.split(' ')[1]);
@@ -167,10 +164,8 @@ class Restsignup extends Component {
       localStorage.setItem('raddress', decoded.raddress)
       localStorage.setItem('rcuisine', decoded.rcuisine)
       localStorage.setItem('rdelivery', decoded.rdelivery)
-      localStorage.setItem('rdish', decoded.rdish)
       localStorage.setItem('rhours', decoded.rhours)
       localStorage.setItem('rrating', decoded.rrating)
-      localStorage.setItem('revents', decoded.revents)
       redirectVar = <Redirect to= "/restaurant/updateinfo"/>
     }
 
@@ -250,40 +245,21 @@ class Restsignup extends Component {
 const mapStateToProps = (state) => {
     return {
 
-      /*
       rid: state.restProfile.rid,
       remail: state.restProfile.remail,
       rpassword: state.restProfile.rpassword,
       rname: state.restProfile.rname,
       rphone: state.restProfile.rphone,
       rabout: state.restProfile.rabout,
-      rphoto: state.restProfile.rphoto,
-      rlocation: state.restProfile.rlocation,
-      rlatitude: state.restProfile.rlatitude,
-      rlongitude: state.restProfile.rlongitude,
-      raddress: state.restProfile.raddress,
-      rcuisine:  state.restProfile.rcuisine,
-      rdelivery: state.restProfile.rdelivery,
-      isLogged: state.isLogged.isLoggedIn,
-      whoIsLogged: state.whoIsLogged.whoIsLoggedIn,
-      */
-
-      rid: state.restProfile.rid,
-      remail: state.restProfile.remail,
-      rpassword: state.restProfile.rpassword,
-      rname: state.restProfile.rname,
-      rphone: state.restProfile.rphone,
-      rabout: state.restProfile.rabout,
-      rphoto: [...state.restProfile.rphoto],
+      rphoto: JSON.parse(JSON.stringify(state.restProfile.rphoto)),
       rlatitude: state.restProfile.rlatitude,
       rlongitude: state.restProfile.rlongitude,
       raddress: state.restProfile.raddress,
       rcuisine: state.restProfile.rcuisine,
       rdelivery: state.restProfile.rdelivery,
-      rdish: JSON.parse(JSON.stringify(state.restProfile.rdish)),
+      //rdish: JSON.parse(JSON.stringify(state.restProfile.rdish)),
       rhours: {...state.restProfile.hours},
       rrating: state.restProfile.rrating,
-      revents: [...state.restProfile.revents],
       isLogged: state.isLogged.isLoggedIn,
       whoIsLogged: state.whoIsLogged.whoIsLoggedIn,
     }
