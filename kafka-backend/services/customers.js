@@ -62,6 +62,9 @@ function signUpCustomer(data, callback) {
       cpassword: hash,
       cname: data.cname,
       cjoined: joined,
+      clatitude: data.clatitude,
+      clongitude: data.clongitude,
+      caddress: data.caddress,
     });
     Customers.findOne({ cemail: data.cemail }, (error, customer) => {
       if (error) {
@@ -86,9 +89,9 @@ function signUpCustomer(data, callback) {
             const response = {
               status: 400,
               header: 'text/plain',
-              content: 'Error in saving new customer',
+              content: 'Error saving new customer',
             };
-            console.log('Error in saving new customer');
+            console.log('Error saving new customer');
             callback(null, response);
           } else {
             console.log('Successfully added customer to database');
@@ -117,6 +120,9 @@ function signUpCustomer(data, callback) {
                   cfavcuisine: cust.favcuisine,
                   cfollowers: (cust.cfollowers === undefined) ? [] : [...cust.cfollowers],
                   cfollowing: (cust.cfollowing === undefined) ? [] : [...cust.cfollowing],
+                  clatitude: cust.clatitude,
+                  clongitude: cust.clongitude,
+                  caddress: cust.caddress,
                 };
                 const response = {
                   status: 200,
@@ -170,6 +176,9 @@ function loginCustomer(data, callback) {
             cfavcuisine: customer.favcuisine,
             cfollowers: (customer.cfollowers === undefined) ? [] : [...customer.cfollowers],
             cfollowing: (customer.cfollowing === undefined) ? [] : [...customer.cfollowing],
+            clatitude: customer.clatitude,
+            clongitude: customer.clongitude,
+            caddress: customer.caddress,
           };
           const response = {
             status: 200,
@@ -406,6 +415,41 @@ function getReviews(data, callback) {
   });
 }
 
+function escapeRegex(text) {
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+}
+
+function searchByName(data, callback) {
+  const regex = new RegExp(escapeRegex(data.cname), 'gi');
+  Customers.find({ cname: regex }, (error, customer) => {
+    if (error) {
+      const response = {
+        status: 400,
+        header: 'text/plain',
+        content: 'Error in finding customer with name',
+      };
+      console.log('Error in finding customer with name');
+      callback(null, response);
+    } else if (customer) {
+      const response = {
+        status: 200,
+        header: 'application/json',
+        content: JSON.stringify(customer),
+      };
+      console.log('Customer found');
+      callback(null, response);
+    } else {
+      const response = {
+        status: 400,
+        header: 'text/plain',
+        content: 'Customer not found',
+      };
+      console.log('Customer not found');
+      callback(null, response);
+    }
+  });
+}
+
 function handleRequest(msg, callback) {
   switch (msg.subTopic) {
     case 'GETALL': {
@@ -461,6 +505,13 @@ function handleRequest(msg, callback) {
       console.log('Inside get reviews');
       console.log('Message:', msg);
       getReviews(msg.data, callback);
+      break;
+    }
+
+    case 'SEARCHNAME': {
+      console.log('Inside search by name');
+      console.log('Message:', msg);
+      searchByName(msg.data, callback);
       break;
     }
 

@@ -16,6 +16,9 @@ const custSchema = new Schema({
   // cevents: [{ type: String }],
   cfollowers: [{ type: String }],
   cfollowing: [{ type: String }],
+  clatitude: { type: Number },
+  clongitude: { type: Number },
+  caddress: { type: String },
 },
 {
   versionKey: false,

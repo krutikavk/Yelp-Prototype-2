@@ -65,7 +65,7 @@ class Cart extends Component{
       dquantity: '',
     }
 
-
+    let url = `${process.env.REACT_APP_BACKEND}/orders`
     axios.post('http://localhost:3001/orders', orderdata)
       .then(response => {
         console.log("Status Code : ",response.status);

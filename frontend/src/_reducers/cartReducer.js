@@ -27,7 +27,7 @@ const cartReducer = (state = initialCartState, action) => {
           ** coincide with cartContents' index!
           ** delete entry 0, then delete 1, will not find state.cartContents[cartid].dquantity
           */
-          // eslint-disable-next-line eqeqeq
+          // eslint-disable-next-line
           const index = state.cartContents.findIndex((x) => x.did == did);
           if (index === -1) {
             /*
@@ -50,7 +50,6 @@ const cartReducer = (state = initialCartState, action) => {
               cartContents: newcontents,
             };
             return newState;
-
           } else {
             newcontents= [...state.cartContents];
             newcontents[index].dquantity++;

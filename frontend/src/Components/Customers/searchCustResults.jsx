@@ -4,14 +4,11 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import {
-  update, login, logout, loadRestaurants, filterRestaurantByDelivery, filterRestaurantByLocation, loadNewPage, loadExactPage
+  update, login, logout, loadCustomers, sortCustByFollowers, loadNewCustPage, loadExactCustPage
 } from '../../_actions';
-// import Navbar from '../Navbar/navbar';
-// import { RestaurantListingsProvider, RestaurantListingsConsumer } from '../../_context/restaurantListingsProvider';
-import Restaurant from './restaurantcard';
 import MapSection from '../Map/map';
-import RestFilter from '../Filter/restaurantfilter';
 import PlacesAutocomplete from 'react-places-autocomplete';
+import CustomerCard from './customerCard';
 import {
   geocodeByAddress,
   geocodeByPlaceId,
@@ -19,19 +16,19 @@ import {
 } from 'react-places-autocomplete';
 
 // eslint-disable-next-line react/prefer-stateless-function
-class SearchRestResults extends Component {
+class SearchCustResults extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      method: '',
-      methodStates: ['All', 'Curbside pickup', 'Yelp Delivery', 'Dine In'],
+      followFilter: '',
+      followFilterStates: ['All', 'Followers', 'Following'],
       nbrAddress: '',
       nbrLatitude: '',
       nbrLongitude: '',
       restFetched: false,
     };
 
-    this.methodHandler = this.methodHandler.bind(this);
+    this.followFilterHandler = this.followFilterHandler.bind(this);
 
     this.handleSelectAddress = this.handleSelectAddress.bind(this);
     this.handleAddressChange = this.handleAddressChange.bind(this);
@@ -49,28 +46,23 @@ class SearchRestResults extends Component {
   }
 
   nextPageHandler = () => {
-    this.props.loadNewPage({page: 1})
+    this.props.loadNewCustPage({page: 1})
   }
 
   prevPageHandler = () => {
-    this.props.loadNewPage({page: -1})
+    this.props.loadNewCustPage({page: -1})
   }
 
   goToPageHandler = (event) => {
-    this.props.loadExactPage(event.target.id);
+    this.props.loadExactCustPage(event.target.id);
   }
 
-  methodHandler = (event) => {
+  followFilterHandler = (event) => {
     console.log("selected", event.target.value)
-    this.props.filterRestaurantByDelivery(event.target.value);
+    this.props.filterCustByFollow(event.target.value, this.props.custProfile);
     this.setState({
-      method: event.target.value
+      followFilter: event.target.value
     })
-    /*
-    setTimeout(() => {
-      this.props.updateFilter(this.state)
-    }, 0);
-    */
   }
 
   handleSelectAddress = address => {
@@ -92,18 +84,26 @@ class SearchRestResults extends Component {
   }
 
   componentDidMount() {
-    console.log('RestaurantListingsProvider props: ', this.props);
-    this.getAllRestaurants();
+    console.log('searchCustResults props: ', this.props);
+    if(this.props.searchBy === 'Location') {
+      this.getAllCustomersByLocation(this.props.searchLat, this.props.searchLng)
+    } else if (this.props.searchBy === 'Name') {
+      this.searchByName(this.props.searchTxt)
+    } else {
+      this.getAllCustomers();
+    }
   }
 
-  getAllRestaurants() {
 
-    const url = `${process.env.REACT_APP_BACKEND}/restaurants`;
+  getAllCustomers() {
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
+    axios.defaults.withCredentials = true;
+    const url = `${process.env.REACT_APP_BACKEND}/customers`;
     axios.get(url)
       .then((response) => {
         if (response.status === 200) {
           console.log('response: ', response.data)
-          this.props.loadRestaurants(1, response.data);
+          this.props.loadCustomers(1, response.data);
           this.setState({
             restFetched: true,
           })
@@ -113,53 +113,99 @@ class SearchRestResults extends Component {
       });
   }
 
+  searchByName(cname) {
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
+    axios.defaults.withCredentials = true;
+    const url = `${process.env.REACT_APP_BACKEND}/customers/search/cname`;
+    axios.post(url, {cname: cname})
+      .then((response) => {
+        if (response.status === 200) {
+          console.log('response: ', response.data)
+          this.props.loadCustomers(1, response.data);
+          this.setState({
+            restFetched: true,
+          })
+        }
+      }).catch((err) => {
+        console.log('No response');
+      });
+  }
+
+  getAllCustomersByLocation(nbrLatitude, nbrLongitude) {
+    const url = `${process.env.REACT_APP_BACKEND}/customers`;
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
+    axios.defaults.withCredentials = true;
+    axios.get(url)
+      .then((response) => {
+        if (response.status === 200) {
+          console.log('response: ', response.data)
+          this.props.loadCustomers(1, response.data);
+          this.props.filterCustomerByLocation(nbrLatitude, nbrLongitude);
+          this.setState({
+            restFetched: true,
+          })
+        }
+      }).catch((err) => {
+        console.log('No response');
+      });
+  }
+
+
   render() {
 
     //Pagination part
     const pageNumbers = [];
-
     let renderPageNumbers = null;
     
-    const numberOfPages = Math.ceil(this.props.restDisp.filteredRestArr.length / this.props.restDisp.countPerPage);
+    const numberOfPages = Math.ceil(this.props.custDisp.filteredCustArr.length / this.props.custDisp.countPerPage);
     for(let i = 1; i <= numberOfPages; i++) {
       pageNumbers.push(i);
     }
-    console.log('===>', this.props.restDisp.displayRestArr)
+    console.log('===>', this.props.custDisp.displayCustArr)
     console.log('pageNumbers: ', pageNumbers);
     renderPageNumbers = pageNumbers.map((number) => {
       return (
         <li key={number}
           id={number}
           onClick= {this.goToPageHandler}
-          class={`${this.props.restDisp.currentPage === number ? 'active' : ''}`}
+          class={`${this.props.custDisp.currentPage === number ? 'active' : ''}`}
         >
         {number}
         </li>
       )
     })
-    
-
-    // eslint-disable-next-line prefer-const
-    let locations = [];
-    // eslint-disable-next-line react/destructuring-assignment, react/prop-types
-    this.props.restDisp.displayRestArr.forEach((item) => {
-      // eslint-disable-next-line prefer-const
-      let location = {
-        name: item.rname,
-        lat: item.rlatitude,
-        lng: item.rlongitude,
-      };
-      locations.push(location);
-    });
-
-    // eslint-disable-next-line prefer-const
-    const pins = {
-      restaurants: locations,
-    };
-
 
     return (
+      <div>
+        <div class="form-inline">
+          <label for="follow" style={{color:"black"}}>Filter by Follow: </label>
+          <select class="form-control" id="follow" onChange = {this.followFilterHandler}>>
+            <option value = {this.state.followFilter}> Choose...</option>
+            {this.state.followFilterStates.map(option => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
+        <ul id="page-numbers">
+          <li onClick={this.prevPageHandler}>Prev</li>
+          {renderPageNumbers}
+          <li onClick={this.nextPageHandler}>Next</li>
+        </ul>
 
+        <ul>
+          {this.props.custDisp.displayCustArr.map((listing) => (
+              <div>
+                <CustomerCard customer={listing} />
+              </div>
+            ))}
+        </ul>
+
+      </div>
+
+      /*
+      
       <div>
         <div class="form-inline">
           <label for="ooption" style={{color:"black"}}>Filter by Service: </label>
@@ -234,7 +280,9 @@ class SearchRestResults extends Component {
           </div>
         </div>
       </div>
-    );
+      */
+      
+    )
   }
 }
 
@@ -245,7 +293,7 @@ const mapStateToProps = (state) => {
     rid: state.restProfile.rid,
     isLogged: state.isLogged.isLoggedIn,
     whoIsLogged: state.whoIsLogged.whoIsLoggedIn,
-    restDisp: state.restDisplay,
+    custDisp: state.custDisplay,
   };
 };
 
@@ -254,12 +302,11 @@ function mapDispatchToProps(dispatch) {
     update: (field, payload) => dispatch(update(field, payload)),
     login: () => dispatch(login()),
     logout: () => dispatch(logout()),
-    loadRestaurants: (countPerPage, payload) => dispatch(loadRestaurants(countPerPage, payload)),
-    filterRestaurantByDelivery: (payload) => dispatch(filterRestaurantByDelivery(payload)),
-    filterRestaurantByLocation: (nbrLatitude, nbrLongitude) => dispatch(filterRestaurantByLocation(nbrLatitude, nbrLongitude)),
-    loadNewPage: (payload) => dispatch(loadNewPage(payload)),
-    loadExactPage: (payload) => dispatch(loadExactPage(payload)),
+    loadCustomers: (countPerPage, payload) => dispatch(loadCustomers(countPerPage, payload)),
+    sortCustByFollowers: () => dispatch(sortCustByFollowers()),
+    loadNewCustPage: (payload) => dispatch(loadNewCustPage(payload)),
+    loadExactCustPage: (payload) => dispatch(loadExactCustPage(payload))
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchRestResults);
+export default connect(mapStateToProps, mapDispatchToProps)(SearchCustResults);

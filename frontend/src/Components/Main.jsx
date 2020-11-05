@@ -28,8 +28,9 @@ import Event from './Events/eventpage';
 import RegEvents from './Events/displayRegisteredEvents';
 import HostedEvents from './Events/displayHostedEvents';
 import notfound from './NotFound/notfound';
-import SearchRest from './SearchRest/searchrest';
+import SearchRest from './Search/searchrest';
 import AddReview from './Reviews/addReview';
+import SearchCust from './Search/searchcust';
 
 // Create a Main Component
 // eslint-disable-next-line react/prefer-stateless-function
@@ -67,6 +68,7 @@ class Main extends Component {
           <Route exact path='/event' component={Event} />
           <Route exact path='/restaurants/search' component={SearchRest} />
           <Route exact path='/restaurant/addreview' component={AddReview} />
+          <Route exact path='/customers/search' component={SearchCust} />
           <Route path='*' component={notfound} />
         </Switch>
 

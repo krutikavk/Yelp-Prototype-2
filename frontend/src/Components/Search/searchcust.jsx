@@ -9,44 +9,29 @@ import {
   geocodeByPlaceId,
   getLatLng,
 } from 'react-places-autocomplete';
-import SearchRestResults from '../Restaurants/searchRestResults.jsx';
+import SearchCustResults from '../Customers/searchCustResults.jsx';
 import Navbar from '../Navbar/navbar';
 
-
-
-
 //create the Navbar Component
-class SearchRest extends Component {
+class SearchCust extends Component {
   constructor(props){
     super(props);
 
     this.state = {
       searchBy: '',
-      searchStates: ['Location', 'Cuisine', 'Delivery Type', 'Dish Name'],
+      searchStates: ['Location', 'Name'],
       searchTxt: '',
       searchAddress : '',
       searchLat: 0.0,
       searchLng: 0.0,
-      cuisineType: '',
-      cuisineStates: ['Mexican', 'Italian', 'French', 'Indian', 'Continental', 'Dessert', 'Pan Asian', 'Patisserie', 'Fusion'],
-      deliveryType: '',
-      deliveryStates: ['Curbside pickup', 'Yelp Delivery', 'Dine In'],
       searchStarted: false                        
     };  
     
-
-
     this.searchByHandler     = this.searchByHandler.bind(this);
     this.searchTextHandler   = this.searchTextHandler.bind(this);
-    this.cuisineTypeHandler  = this.cuisineTypeHandler.bind(this);
-    this.deliveryTypeHandler = this.deliveryTypeHandler.bind(this);
-    this.getPlaceHolder      = this.getPlaceHolder.bind(this);
-
     this.handleAddressChange = this.handleAddressChange.bind(this);
     this.handleSelectAddress = this.handleSelectAddress.bind(this);
-
-    this.submitSearch = this.submitSearch.bind(this)
-
+    this.submitSearch = this.submitSearch.bind(this);
   }
 
   searchByHandler = (event) => {
@@ -58,32 +43,11 @@ class SearchRest extends Component {
   }
 
   searchTextHandler = (event) => {
+    console.log('Entered ', event.target.value)
     this.setState({
       searchTxt: event.target.value,
       searchStarted: false
     })
-  }
-
-  cuisineTypeHandler = (event) => {
-    console.log("Cuisine type", event.target.value)
-    this.setState({
-      cuisineType: event.target.value,
-      searchStarted: false
-    })
-  }
-
-  deliveryTypeHandler = (event) => {
-    console.log("delivert type", event.target.value)
-    this.setState({
-      deliveryType: event.target.value,
-      searchStarted: false
-    })
-  }
-
-  getPlaceHolder() {
-    if (this.state.searchBy === 'Location') return 'Restaurant Name'
-    if (this.state.searchBy === 'Dish Name') return 'Enter Dish Name'
-    return 'Restaurants'
   }
 
   handleAddressChange = (address) => {
@@ -110,7 +74,6 @@ class SearchRest extends Component {
       .catch(error => console.error('Error', error));
   }
 
-
   submitSearch = (event) => {
     event.preventDefault();
     //set the with credentials to true
@@ -120,14 +83,65 @@ class SearchRest extends Component {
     this.setState({
       searchStarted: true
     })
-    console.log("submit search state", this.state)
-
+    console.log("Submit search state", this.state)
   }
 
+  render() {
+    let locationSearch = null;
+    if(this.state.searchBy === 'Location') {
+      locationSearch = (
+        <PlacesAutocomplete
+          value={this.state.searchAddress}
+          onChange={this.handleAddressChange}
+          onSelect={this.handleSelectAddress}
+          >
+          {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+            <div>
+              <input
+                {...getInputProps({
+                placeholder: 'Search Places ...',
+                className: 'form-control mr-sm-0',
+                })}
+              />
+              <div className="autocomplete-dropdown-container">
+                {loading && <div>Loading...</div>}
+                {suggestions.map(suggestion => {
+                  const className = suggestion.active
+                    ? 'suggestion-item--active'
+                    : 'suggestion-item';
+                  // inline style for demonstration purpose
+                  const style = suggestion.active
+                    ? { backgroundColor: '#fafafa', cursor: 'pointer' }
+                    : { backgroundColor: '#ffffff', cursor: 'pointer' };
+                  return (
+                    <div
+                      {...getSuggestionItemProps(suggestion, {
+                        className,
+                        style,
+                      })}
+                    >
+                      <span>{suggestion.description}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+        </PlacesAutocomplete>
+      )
+    }
 
-  render(){
-      //if Cookie is set render Logout Button
-
+    let nameSearch = null;
+    if(this.state.searchBy === 'Name') {
+      nameSearch = (
+          <input
+          className="form-control mr-sm-2"
+          type="text"
+          placeholder="Customer Name..."
+          onChange={this.searchTextHandler}>
+        </input>
+      )
+    }
 
     let search = (
       <li className="nav-item">
@@ -141,124 +155,33 @@ class SearchRest extends Component {
             ))}
           </select>
 
-
-          {(this.state.searchBy !== 'Cuisine' &&
-            this.state.searchBy !== 'Delivery Type') ?
-          <input
-            className="form-control mr-sm-2"
-            type="text"
-            placeholder={this.getPlaceHolder()}
-            onChange={this.searchTextHandler}>
-          </input>
-          : ''}
-
-
-          {this.state.searchBy === 'Cuisine' ?
-          <select class="form-control" id="cuisineType" onChange = {this.cuisineTypeHandler}>>
-            <option value = {this.state.cuisineType}> Cuisines...</option>
-            {this.state.cuisineStates.map(option => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-            ))}
-          </select>
-          : ''}
-
-
-          {this.state.searchBy === 'Delivery Type' ?
-          <select class="form-control" id="deliveryType" onChange = {this.deliveryTypeHandler}>>
-            <option value = {this.state.deliveryType}> Delivery Type...</option>
-            {this.state.deliveryStates.map(option => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-            ))}
-          </select>
-          : ''}
-
-
-          <PlacesAutocomplete
-          value={this.state.searchAddress}
-          onChange={this.handleAddressChange}
-          onSelect={this.handleSelectAddress}
-          >
-            {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-              <div>
-                <input
-                  {...getInputProps({
-                  placeholder: 'Search Places ...',
-                  className: 'form-control mr-sm-0',
-                  })}
-                />
-                <div className="autocomplete-dropdown-container">
-                  {loading && <div>Loading...</div>}
-                  {suggestions.map(suggestion => {
-                    const className = suggestion.active
-                      ? 'suggestion-item--active'
-                      : 'suggestion-item';
-                    // inline style for demonstration purpose
-                    const style = suggestion.active
-                      ? { backgroundColor: '#fafafa', cursor: 'pointer' }
-                      : { backgroundColor: '#ffffff', cursor: 'pointer' };
-                    return (
-                      <div
-                        {...getSuggestionItemProps(suggestion, {
-                          className,
-                          style,
-                        })}
-                      >
-                        <span>{suggestion.description}</span>
-                      </div>
-                    );
-                
-                  })}
-                </div>
-              </div>
-            )}
-          </PlacesAutocomplete>
-
+          {nameSearch}
+          {locationSearch}
+          
           <button
             onClick={this.submitSearch}
             className="btn btn-success btn-sm"
             type="submit">
-              Search
+              Search Users
           </button>
         </form>
       </li>
     )
 
-    let searchComponent = <SearchRestResults  
+    let searchComponent = <SearchCustResults  
                             searchBy = {this.state.searchBy} 
                             searchTxt = {this.state.searchTxt}
                             searchAddress = {this.state.searchAddress}
                             searchLat = {this.state.searchLat}
                             searchLng = {this.state.searchLng}
-                            cuisineType = {this.state.cuisineType}
-                            deliveryType = {this.state.deliveryType}
                           />
 
-      /* STATE
-      searchBy: '',
-      searchStates: ['Location', 'Cuisine', 'Delivery Type', 'Dish Name'],
-      searchTxt: '',
-      searchAddress : '',
-      searchLat: 0.0,
-      searchLng: 0.0,
-      cuisineType: '',
-      cuisineStates: ['Mexican', 'Italian', 'French', 'Indian', 'Continental', 'Dessert', 'Pan Asian', 'Patisserie', 'Fusion'],
-      deliveryType: '',
-      deliveryStates: ['Curbside pickup', 'Yelp Delivery', 'Dine In'],
-      searchStarted: false  
-      */
-
-    let searchResults = this.state.searchStarted ? <SearchRestResults  
+    let searchResults = this.state.searchStarted ? <SearchCustResults  
                             searchBy = {this.state.searchBy} 
                             searchTxt = {this.state.searchTxt}
                             searchAddress = {this.state.searchAddress}
                             searchLat = {this.state.searchLat}
                             searchLng = {this.state.searchLng}
-                            cuisineType = {this.state.cuisineType}
-                            deliveryType = {this.state.deliveryType}
                           /> 
                           : null
     
@@ -281,7 +204,7 @@ class SearchRest extends Component {
 }
 
 //importedname: state.reducer.statename
-
+/*
 const mapStateToProps = (state) => {
     return {
       cid: state.custProfile.cid,
@@ -324,6 +247,6 @@ function mapDispatchToProps(dispatch) {
   
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchRest);
-
-//export default Navbar;
+export default connect(mapStateToProps, mapDispatchToProps)(SearchCust);
+*/
+export default SearchCust;

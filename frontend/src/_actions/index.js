@@ -53,3 +53,37 @@ export const loadExactPage = (payload) => ({
   type: 'LOAD_EXACT_PAGE',
   payload,
 });
+
+export const loadCustomers = (countPerPage, payload) => ({
+  type: 'LOAD_DATA',
+  countPerPage,
+  payload,
+});
+
+// payload: All, Followers, Following
+export const filterCustByFollow = (payload, custProfile) => ({
+  type: 'FILTER_BY_FOLLOW',
+  payload,
+  custProfile,
+});
+
+// sort by followers
+export const sortCustByFollowers = () => ({
+  type: 'SORT_BY_FOLLOWERS',
+});
+
+export const filterCustomerByLocation = (nbrLatitude, nbrLongitude) => ({
+  type: 'FILTER_CUST_BY_LOCATION',
+  nbrLatitude,
+  nbrLongitude,
+});
+
+export const loadNewCustPage = (payload) => ({
+  type: 'LOAD_NEW_PAGE',
+  payload,
+});
+
+export const loadExactCustPage = (payload) => ({
+  type: 'LOAD_EXACT_PAGE',
+  payload,
+});

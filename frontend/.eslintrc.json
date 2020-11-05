@@ -25,8 +25,8 @@
     "rules": {
         "react/destructuring-assignment": 0,
         "react/prop-types": 0,
-        "jsx-quotes": 0,
-        "max-len": 0,
-        "no-console": 0
+        "react/jsx-quotes": 0,
+        "react/max-len": 0,
+        "react/no-console": 0
     }
 }
