@@ -129,6 +129,12 @@ class Custsignup extends Component {
           this.props.update('CPHOTO', decoded.cphoto)
           this.props.update('CFAVREST', decoded.cfavrest)
           this.props.update('CFAVCUISINE', decoded.cfavcuisine)
+          this.props.update('CFOLLOWERS', decoded.cfollowers)
+          this.props.update('CFOLLOWING', decoded.cfollowing)
+          this.props.update('CLATITUDE', decoded.clatitude)
+          this.props.update('CLONGITUDE', decoded.clongitude)
+          this.props.update('CADDRESS', decoded.caddress)
+
           console.log("Before: ", this.props.isLogged)
           
 
@@ -161,19 +167,7 @@ class Custsignup extends Component {
     */
     if (this.state.token.length > 0) {
       localStorage.setItem("token", this.state.token);
-
-      var decoded = jwt_decode(this.state.token.split(' ')[1]);
-      localStorage.setItem("cid", decoded.cid);
-      localStorage.setItem("cemail", decoded.cemail);
-      localStorage.setItem("cpassword", decoded.cpassword);
-      localStorage.setItem("cname", decoded.cname);
-      localStorage.setItem("cphone", decoded.cphone);
-      localStorage.setItem("cabout", decoded.cabout);
-      localStorage.setItem("cjoined", decoded.cjoined);
-      localStorage.setItem("cphoto", decoded.cphoto);
-      localStorage.setItem("cfavrest", decoded.cfavrest);
-      localStorage.setItem("cfavcuisine", decoded.cfavcuisine);
-      
+      var decoded = jwt_decode(this.state.token.split(' ')[1]);      
       redirectVar = <Redirect to="/customer/profile" />
     }
 
@@ -258,6 +252,11 @@ const mapStateToProps = (state) => {
       cphoto: state.custProfile.cphoto,
       cfavrest: state.custProfile.cfavrest,
       cfavcuisine: state.custProfile.cfavcuisine,
+      cfollowers: [...state.custProfile.cfollowers],
+      cfollowing: [...state.custProfile.cfollowing],
+      clatitude: state.custProfile.clatitude,
+      clongitude: state.custProfile.clongitude,
+      caddress: state.custProfile.caddress,
       isLogged: state.isLogged.isLoggedIn,
       whoIsLogged: state.whoIsLogged.whoIsLoggedIn,
 

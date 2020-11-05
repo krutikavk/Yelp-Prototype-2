@@ -291,6 +291,8 @@ const mapStateToProps = (state) => {
   return {
     cid: state.custProfile.cid,
     rid: state.restProfile.rid,
+    cfollowers: [...state.custProfile.cfollowers],
+    cfollowing: [...state.custProfile.cfollowing],
     isLogged: state.isLogged.isLoggedIn,
     whoIsLogged: state.whoIsLogged.whoIsLoggedIn,
     custDisp: state.custDisplay,

@@ -118,6 +118,11 @@ class custLogin extends Component {
           this.props.update('CPHOTO', decoded.cphoto)
           this.props.update('CFAVREST', decoded.cfavrest)
           this.props.update('CFAVCUISINE', decoded.cfavcuisine)
+          this.props.update('CFOLLOWERS', decoded.cfollowers)
+          this.props.update('CFOLLOWING', decoded.cfollowing)
+          this.props.update('CLATITUDE', decoded.clatitude)
+          this.props.update('CLONGITUDE', decoded.clongitude)
+          this.props.update('CADDRESS', decoded.caddress)
           this.props.login()   //this will update isLogged = true
           this.props.customerLogin()
 
@@ -149,31 +154,17 @@ class custLogin extends Component {
       localStorage.setItem("token", this.state.token);
 
       var decoded = jwt_decode(this.state.token.split(' ')[1]);
-      // localStorage.setItem("token", decoded);
-      localStorage.setItem("cid", decoded.cid);
-      localStorage.setItem("cemail", decoded.cemail);
-      localStorage.setItem("cpassword", decoded.cpassword);
-      localStorage.setItem("cname", decoded.cname);
-      localStorage.setItem("cphone", decoded.cphone);
-      localStorage.setItem("cabout", decoded.cabout);
-      localStorage.setItem("cjoined", decoded.cjoined);
-      localStorage.setItem("cphoto", decoded.cphoto);
-      localStorage.setItem("cfavrest", decoded.cfavrest);
-      localStorage.setItem("cfavcuisine", decoded.cfavcuisine);
-      
       redirectVar = <Redirect to="/customer/profile" />
     }
 
     const errors = this.state.errors;
 
     return(
-
       <div>
         <Navbar/>
         <div>
           {redirectVar}
           <div className="card col-12 col-lg-4 login-card mt-2 hv-center" >
-
           <br/>
             <form>
               <div className="col d-flex justify-content-center rounded-0">
@@ -219,8 +210,6 @@ class custLogin extends Component {
   }
 }
 
-
-
 //importedname: state.reducer.statename
 
 const mapStateToProps = (state) => {
@@ -236,6 +225,11 @@ const mapStateToProps = (state) => {
       cphoto: state.custProfile.cphoto,
       cfavrest: state.custProfile.cfavrest,
       cfavcuisine: state.custProfile.cfavcuisine,
+      cfollowers: [...state.custProfile.cfollowers],
+      cfollowing: [...state.custProfile.cfollowing],
+      clatitude: state.custProfile.clatitude,
+      clongitude: state.custProfile.clongitude,
+      caddress: state.custProfile.caddress,
       isLogged: state.isLogged.isLoggedIn,
       whoIsLogged: state.whoIsLogged.whoIsLoggedIn
     }

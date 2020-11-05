@@ -59,6 +59,11 @@ class DisplayProfile extends Component {
         cphoto: this.props.location.query.cphoto,
         cfavrest: this.props.location.query.cfavrest,
         cfavcuisine: this.props.location.query.cfavcuisine,
+        cfollowers: [...this.props.location.query.cfollowers],
+        cfollowing: [...this.props.location.query.cfollowing],
+        clatitude: this.props.location.query.clatitude,
+        clongitude: this.props.location.query.clongitude,
+        caddress: this.props.location.query.caddress,
       };
     } else {
       customerprofile = {
@@ -72,6 +77,11 @@ class DisplayProfile extends Component {
         cphoto: this.props.cphoto,
         cfavrest: this.props.cfavrest,
         cfavcuisine: this.props.cfavcuisine,
+        cfollowers: [...this.props.cfollowers],
+        cfollowing: [...this.props.cfollowing],
+        clatitude: this.props.clatitude,
+        clongitude: this.props.clongitude,
+        caddress: this.props.caddress,
       };
     }
 
@@ -141,6 +151,11 @@ const mapStateToProps = (state) => {
     cphoto: state.custProfile.cphoto,
     cfavrest: state.custProfile.cfavrest,
     cfavcuisine: state.custProfile.cfavcuisine,
+    cfollowers: [...state.custProfile.cfollowers],
+    cfollowing: [...state.custProfile.cfollowing],
+    clatitude: state.custProfile.clatitude,
+    clongitude: state.custProfile.clongitude,
+    caddress: state.custProfile.caddress,
     isLogged: state.isLogged.isLoggedIn,
     whoIsLogged: state.whoIsLogged.whoIsLoggedIn,
   };
