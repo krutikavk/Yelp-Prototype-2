@@ -214,7 +214,7 @@ class SearchRest extends Component {
 
           <button
             onClick={this.submitSearch}
-            className="btn btn-success btn-sm"
+            className="btn btn-danger btn-sm"
             type="submit">
               Search
           </button>

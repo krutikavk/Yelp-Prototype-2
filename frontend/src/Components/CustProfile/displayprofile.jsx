@@ -46,8 +46,7 @@ class DisplayProfile extends Component {
     let isMyPage = false;
     // If restaurant is logged in, get display data from props passed from another page
     if (this.props.location.query !== undefined) {
-      //  customer login--display from redux state
-      alert('here')
+      // coming from search/review page
       customerprofile = {
         cid: this.props.location.query.cid,
         cemail: this.props.location.query.cemail,
@@ -118,7 +117,8 @@ class DisplayProfile extends Component {
                         {this.state.reviews.length}
                       </p>
                       <p className="card-text text-muted font-italic">
-                        Friends: 4728
+                        Followers: {customerprofile.cfollowers.length} <br />
+                        Following: {customerprofile.cfollowing.length}
                       </p>
                       {editProfile}
                     </div>

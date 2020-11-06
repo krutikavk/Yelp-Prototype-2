@@ -31,6 +31,7 @@ import notfound from './NotFound/notfound';
 import SearchRest from './Search/searchrest';
 import AddReview from './Reviews/addReview';
 import SearchCust from './Search/searchcust';
+import Search from './Search/search';
 
 // Create a Main Component
 // eslint-disable-next-line react/prefer-stateless-function
@@ -45,6 +46,7 @@ class Main extends Component {
     return (
       <div>
         <Switch>
+          <Route exact path='/' component={Login} />
           <Route path='/login' component={Login} />
           <Route path='/customer/login' component={Custlogin} />
           <Route exact path='/restaurant/login' component={Restlogin} />
@@ -69,6 +71,7 @@ class Main extends Component {
           <Route exact path='/restaurants/search' component={SearchRest} />
           <Route exact path='/restaurant/addreview' component={AddReview} />
           <Route exact path='/customers/search' component={SearchCust} />
+          <Route exact path='/search' component={Search} />
           <Route path='*' component={notfound} />
         </Switch>
 

@@ -117,7 +117,7 @@ class Navbar extends Component {
           </ul>
             
           <ul className="navbar-nav mx-auto">
-            <Link className="nav-link" to="/restaurants/search">Search</Link>
+            <Link className="nav-link" to="/search">Search</Link>
           </ul>
           
           <ul className="navbar-nav ml-auto">
