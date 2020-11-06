@@ -1,4 +1,4 @@
-const initialRestState = {
+const initialCustState = {
   custArr: [],
   filteredCustArr: [],
   displayCustArr: [],
@@ -8,7 +8,7 @@ const initialRestState = {
   filterFollowing: '',
 };
 
-const customerDisplayReducer = (state = initialRestState, action) => {
+const customerDisplayReducer = (state = initialCustState, action) => {
   switch (action.type) {
     case 'LOAD_DATA': {
       console.log('action: ', action);
@@ -55,7 +55,7 @@ const customerDisplayReducer = (state = initialRestState, action) => {
       filtered = filtered.sort((a, b) => a.cfollowers.length < b.cfollowers.length ? -1 : 1);
 
       newState.currentPage = 1;
-      newState.countPerPage = action.countPerPage;
+      // newState.countPerPage = action.countPerPage;
       newState.displayRestArr = [...filtered].slice(0, newState.countPerPage);
       //newState.displayRestArr = [...filtered];
       return newState;
@@ -81,7 +81,7 @@ const customerDisplayReducer = (state = initialRestState, action) => {
           ((b.clongitude - action.nbrLongitude) * (b.clongitude - action.nbrLongitude))
         ) ? -1 : 1);
       newState.currentPage = 1;
-      newState.countPerPage = action.countPerPage;
+      // newState.countPerPage = action.countPerPage;
       newState.displayCustArr = [...filtered].slice(0, newState.countPerPage);
       // newState.displayCustArr = [...filtered];
       return newState;

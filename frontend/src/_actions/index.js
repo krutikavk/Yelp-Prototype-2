@@ -87,3 +87,26 @@ export const loadExactCustPage = (payload) => ({
   type: 'LOAD_EXACT_PAGE',
   payload,
 });
+
+export const loadEvents = (countPerPage, payload) => ({
+  type: 'LOAD_DATA',
+  payload,
+});
+
+export const sortEventsAsc = () => ({
+  type: 'SORTASC',
+});
+
+export const sortEventsDesc = () => ({
+  type: 'SORTDESC',
+});
+
+export const loadNewEventPage = (payload) => ({
+  type: 'LOAD_NEW_PAGE',
+  payload,
+});
+
+export const loadExactEventPage = (payload) => ({
+  type: 'LOAD_EXACT_PAGE',
+  payload,
+});

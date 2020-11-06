@@ -62,6 +62,13 @@ class Navbar extends Component {
           <i className="fa fa-shopping-cart" style={{'fontSize':36}}></i>
         </Link>
       )
+
+    let msg = (
+        <Link className="nav-link" to="/conversations">
+          <i class="fa fa-comment" style={{'fontSize':36}}></i>
+        </Link>
+      )
+
     let menu = null;
     
 
@@ -121,6 +128,7 @@ class Navbar extends Component {
           </ul>
           
           <ul className="navbar-nav ml-auto">
+            {msg}
             {cart}
             <li className="nav-item">
               {navLogin}
