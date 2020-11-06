@@ -39,15 +39,15 @@ class DisplayProfile extends Component {
   render() {
     let redirectVar = null;
     if (this.props.isLogged === false) {
-      redirectVar = <Redirect to='/login' />;
+      //redirectVar = <Redirect to='/login' />;
     }
-
     //  customer is logged in, get data from redux state
     let customerprofile = {};
-
+    let isMyPage = false;
     // If restaurant is logged in, get display data from props passed from another page
-    if (this.props.whoIsLogged === true) {
+    if (this.props.location.query !== undefined) {
       //  customer login--display from redux state
+      alert('here')
       customerprofile = {
         cid: this.props.location.query.cid,
         cemail: this.props.location.query.cemail,
@@ -83,6 +83,14 @@ class DisplayProfile extends Component {
         clongitude: this.props.clongitude,
         caddress: this.props.caddress,
       };
+      isMyPage = true;
+    }
+
+    console.log('customerProfile: ', customerprofile);
+
+    let editProfile = null;
+    if (this.props.isLogged === true && this.props.whoIsLogged === false && isMyPage === true) {
+      editProfile = <Link to='/customer/edit' class="btn btn-danger">Edit profile</Link>
     }
 
     return (
@@ -95,7 +103,7 @@ class DisplayProfile extends Component {
               <div className="col-12 mt-3">
                 <div className="card">
                   <div className="card-horizontal">
-                    <img src={this.props.cphoto} className="img-thumbnail" alt="Cinque Terre" width="300" />
+                    <img src={customerprofile.cphoto} className="img-thumbnail" alt="Cinque Terre" width="300" />
 
                     <div className="card-body">
                       <p className="card-text font-weight-bold font-italic">
@@ -112,7 +120,7 @@ class DisplayProfile extends Component {
                       <p className="card-text text-muted font-italic">
                         Friends: 4728
                       </p>
-                      <Link to='/customer/edit' class="btn btn-danger">Edit profile</Link>
+                      {editProfile}
                     </div>
                   </div>
                   <div className="card-footer">

@@ -28,7 +28,7 @@ KafkaRPC.prototype.makeRequest = function(topic_name, subTopic, content, callbac
         callback(new Error("timeout " + corr_id));
         //delete the entry from hash
         delete self.requests[corr_id];
-    }, TIMEOUT, correlationId);
+    }, 8000, correlationId);
 
     //create a request entry to store in a hash
     var entry = {

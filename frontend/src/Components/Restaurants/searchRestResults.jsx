@@ -66,11 +66,6 @@ class SearchRestResults extends Component {
     this.setState({
       method: event.target.value
     })
-    /*
-    setTimeout(() => {
-      this.props.updateFilter(this.state)
-    }, 0);
-    */
   }
 
   handleSelectAddress = address => {
@@ -93,7 +88,17 @@ class SearchRestResults extends Component {
 
   componentDidMount() {
     console.log('RestaurantListingsProvider props: ', this.props);
-    this.getAllRestaurants();
+
+    if(this.props.searchBy === 'Cuisine' && this.props.searchTxt !== '') {
+      console.log("Search by cuisine: ", this.props.cuisineType)
+      this.searchByCuisine(this.props.searchTxt, this.props.searchLat,  this.props.searctLng)
+    } else if(this.props.searchBy === 'Delivery Type' && this.props.deliveryType !== ''){
+      this.searchByDeliveryType(this.props.deliveryType, this.props.searchLat,  this.props.searctLng);
+    } else if (this.props.searchBy === 'Dish Name' && this.props.searchTxt !== '') {
+      this.searchByDishName(this.props.searchTxt, this.props.searchLat,  this.props.searctLng)
+    } else {
+      this.getAllRestaurants();
+    }
   }
 
   getAllRestaurants() {
@@ -103,7 +108,7 @@ class SearchRestResults extends Component {
       .then((response) => {
         if (response.status === 200) {
           console.log('response: ', response.data)
-          this.props.loadRestaurants(1, response.data);
+          this.props.loadRestaurants(3, response.data);
           this.setState({
             restFetched: true,
           })
@@ -112,6 +117,113 @@ class SearchRestResults extends Component {
         console.log('No response');
       });
   }
+
+  searchByCuisine(cuisine, latitude, longitude) {
+    let url = `${process.env.REACT_APP_BACKEND}/restaurants/search/cuisine`;
+    const data = {
+      rcuisine : cuisine,
+    }
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
+    axios.defaults.withCredentials = true;
+    axios.post(url, data)
+      .then(response => {
+        if(response.status === 200){
+          //When results return multiple rows, rowdatapacket object needs to be converted to JSON object again 
+          //use JSON.parse(JSON.stringify()) to convert back to JSON object
+          console.log("filtered by cuisine:", response.data)
+          this.props.loadRestaurants(3, response.data);
+          if(latitude !== '' && longitude !== '') {
+            this.props.filterRestaurantByLocation(latitude, longitude);
+          }
+          this.setState({
+            restFetched: true,
+          })
+        }
+      }).catch(err =>{
+          console.log("No response")
+    });
+
+    return;
+  }
+
+  searchByDeliveryType(dtype, latitude, longitude) {
+    let url = `${process.env.REACT_APP_BACKEND}/restaurants/search/rdelivery`;
+    const data = {
+      rdelivery : dtype,
+    }
+
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
+    axios.defaults.withCredentials = true;
+    axios.post(url, data)
+      .then(response => {
+        if(response.status === 200){
+          //When results return multiple rows, rowdatapacket object needs to be converted to JSON object again 
+          //use JSON.parse(JSON.stringify()) to convert back to JSON object
+          console.log("filtered by cuisine:", response.data)
+          this.props.loadRestaurants(3, response.data);
+          if(latitude !== '' && longitude !== '') {
+            this.props.filterRestaurantByLocation(latitude, longitude);
+          }
+          this.setState({
+            restFetched: true,
+          })
+        }
+      }).catch(err =>{
+          console.log("No response")
+    });
+
+    return;
+
+  }
+
+  searchByDishName(dname, latitude, longitude) {
+    let url = `${process.env.REACT_APP_BACKEND}/restaurants/search/dish`;
+    const data = {
+      dname,
+    }
+
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
+    axios.defaults.withCredentials = true;
+    axios.post(url, data)
+      .then(response => {
+        if(response.status === 200){
+          let rid = [...response.data];
+          console.log("Recieved rids: ", response.data)
+          console.log("Read rids: ", rid)
+          let promiseArray = rid.map(dataarr => axios.get(`${process.env.REACT_APP_BACKEND}/restaurants/${dataarr}`));
+
+          Promise.all( promiseArray )
+          .then(
+            results => {
+
+              let responses = results.filter(entry => 
+                entry.status === 200
+              )
+              let restaurants = [];
+              responses.forEach(response => {
+                restaurants.push(response.data)
+              })
+              if(restaurants.length > 0) {
+                this.props.loadRestaurants(3, restaurants);
+                if(latitude !== '' && longitude !== '') {
+                  this.props.filterRestaurantByLocation(latitude, longitude);
+                }
+                this.setState({
+                  restFetched: true,
+                })
+              }
+            }
+          )
+          .catch(console.log);   
+        }
+      }).catch(err =>{
+          console.log("No response")
+    });
+
+    return;
+
+  }
+
 
   render() {
 
@@ -124,7 +236,6 @@ class SearchRestResults extends Component {
     for(let i = 1; i <= numberOfPages; i++) {
       pageNumbers.push(i);
     }
-    console.log('===>', this.props.restDisp.displayRestArr)
     console.log('pageNumbers: ', pageNumbers);
     renderPageNumbers = pageNumbers.map((number) => {
       return (

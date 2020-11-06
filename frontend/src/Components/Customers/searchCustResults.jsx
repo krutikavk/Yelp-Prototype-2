@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import {
-  update, login, logout, loadCustomers, sortCustByFollowers, loadNewCustPage, loadExactCustPage
+  update, login, logout, loadCustomers, sortCustByFollowers, loadNewCustPage, loadExactCustPage, filterCustByFollow
 } from '../../_actions';
 import MapSection from '../Map/map';
 import PlacesAutocomplete from 'react-places-autocomplete';
@@ -21,7 +21,7 @@ class SearchCustResults extends Component {
     super(props);
     this.state = {
       followFilter: '',
-      followFilterStates: ['All', 'Followers', 'Following'],
+      followFilterStates: ['All', 'Followers', 'Following', 'Sort by Followers'],
       nbrAddress: '',
       nbrLatitude: '',
       nbrLongitude: '',
@@ -59,10 +59,20 @@ class SearchCustResults extends Component {
 
   followFilterHandler = (event) => {
     console.log("selected", event.target.value)
-    this.props.filterCustByFollow(event.target.value, this.props.custProfile);
-    this.setState({
-      followFilter: event.target.value
-    })
+    if(this.props.isLogged === true && 
+      this.props.whoIsLogged === false && 
+      (event.target.value === 'Followers' || event.target.value === 'Following')) {
+        alert('here')
+        this.props.filterCustByFollow(event.target.value, this.props.custProfile);
+        this.setState({
+          followFilter: event.target.value
+        })
+    } else if(event.target.value === 'Sort by Followers') {
+      this.props.sortCustByFollowers();
+      this.setState({
+        followFilter: event.target.value
+      })
+    }
   }
 
   handleSelectAddress = address => {
@@ -306,6 +316,7 @@ function mapDispatchToProps(dispatch) {
     logout: () => dispatch(logout()),
     loadCustomers: (countPerPage, payload) => dispatch(loadCustomers(countPerPage, payload)),
     sortCustByFollowers: () => dispatch(sortCustByFollowers()),
+    filterCustByFollow: (payload, custProfile) => dispatch(filterCustByFollow(payload, custProfile)),
     loadNewCustPage: (payload) => dispatch(loadNewCustPage(payload)),
     loadExactCustPage: (payload) => dispatch(loadExactCustPage(payload))
   };

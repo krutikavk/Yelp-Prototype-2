@@ -47,17 +47,17 @@ const customerDisplayReducer = (state = initialRestState, action) => {
       // eslint-disable-next-line prefer-const
       let newState = { ...state };
       console.log('action: ', action);
-      let filtered = newState.filteredRestArr;
+      let filtered = newState.filteredCustArr;
 
       console.log('filtered before', filtered);
 
       // eslint-disable-next-line no-confusing-arrow
       filtered = filtered.sort((a, b) => a.cfollowers.length < b.cfollowers.length ? -1 : 1);
 
-      // newState.currentPage = 1;
-      // newState.countPerPage = action.countPerPage;
-      // newState.displayRestArr = [...filtered].slice(0, newState.countPerPage);
-      newState.displayRestArr = [...filtered];
+      newState.currentPage = 1;
+      newState.countPerPage = action.countPerPage;
+      newState.displayRestArr = [...filtered].slice(0, newState.countPerPage);
+      //newState.displayRestArr = [...filtered];
       return newState;
     }
 

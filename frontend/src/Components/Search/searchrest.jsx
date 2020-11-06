@@ -13,8 +13,6 @@ import SearchRestResults from '../Restaurants/searchRestResults.jsx';
 import Navbar from '../Navbar/navbar';
 
 
-
-
 //create the Navbar Component
 class SearchRest extends Component {
   constructor(props){
@@ -22,7 +20,7 @@ class SearchRest extends Component {
 
     this.state = {
       searchBy: '',
-      searchStates: ['Location', 'Cuisine', 'Delivery Type', 'Dish Name'],
+      searchStates: ['Location', 'Cuisine', 'Delivery Type', 'Dish Name', 'Restaurant Name'],
       searchTxt: '',
       searchAddress : '',
       searchLat: 0.0,
@@ -82,7 +80,8 @@ class SearchRest extends Component {
 
   getPlaceHolder() {
     if (this.state.searchBy === 'Location') return 'Restaurant Name'
-    if (this.state.searchBy === 'Dish Name') return 'Enter Dish Name'
+    if (this.state.searchBy === 'Dish Name') return 'Dish Name'
+    if (this.state.searchBy === 'Cuisine') return 'Cuisine'
     return 'Restaurants'
   }
 
@@ -152,14 +151,12 @@ class SearchRest extends Component {
 
 
           {this.state.searchBy === 'Cuisine' ?
-          <select class="form-control" id="cuisineType" onChange = {this.cuisineTypeHandler}>>
-            <option value = {this.state.cuisineType}> Cuisines...</option>
-            {this.state.cuisineStates.map(option => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-            ))}
-          </select>
+          <input
+            className="form-control mr-sm-2"
+            type="text"
+            placeholder={this.getPlaceHolder()}
+            onChange={this.searchTextHandler}>
+          </input>
           : ''}
 
 
