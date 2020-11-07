@@ -416,7 +416,10 @@ function getReviews(data, callback) {
 }
 
 function escapeRegex(text) {
-  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+  if (text !== undefined) {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+  }
+  return;
 }
 
 function searchByName(data, callback) {

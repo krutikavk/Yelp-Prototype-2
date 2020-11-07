@@ -7,6 +7,7 @@ import cartReducer from './cartReducer';
 import restaurantDisplayReducer from './restaurantDisplayReducer';
 import customerDisplayReducer from './customerDisplayReducer';
 import eventDisplayReducer from './eventDisplayReducer';
+import conversationReducer from './conversationReducer';
 
 const allReducer = combineReducers({
   // equivalent: counterReducer: counterReducer
@@ -19,6 +20,7 @@ const allReducer = combineReducers({
   restDisplay: restaurantDisplayReducer,
   custDisplay: customerDisplayReducer,
   eventDisplay: eventDisplayReducer,
+  conversation: conversationReducer,
 });
 
 export default allReducer;

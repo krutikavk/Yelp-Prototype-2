@@ -113,7 +113,7 @@ class SearchCustResults extends Component {
       .then((response) => {
         if (response.status === 200) {
           console.log('response: ', response.data)
-          this.props.loadCustomers(1, response.data);
+          this.props.loadCustomers(3, response.data);
           this.setState({
             restFetched: true,
           })
@@ -131,7 +131,7 @@ class SearchCustResults extends Component {
       .then((response) => {
         if (response.status === 200) {
           console.log('response: ', response.data)
-          this.props.loadCustomers(1, response.data);
+          this.props.loadCustomers(3, response.data);
           this.setState({
             restFetched: true,
           })
@@ -149,7 +149,7 @@ class SearchCustResults extends Component {
       .then((response) => {
         if (response.status === 200) {
           console.log('response: ', response.data)
-          this.props.loadCustomers(1, response.data);
+          this.props.loadCustomers(3, response.data);
           this.props.filterCustomerByLocation(nbrLatitude, nbrLongitude);
           this.setState({
             restFetched: true,

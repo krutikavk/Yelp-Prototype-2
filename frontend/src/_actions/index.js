@@ -110,3 +110,8 @@ export const loadExactEventPage = (payload) => ({
   type: 'LOAD_EXACT_PAGE',
   payload,
 });
+
+export const loadConversations = (payload) => ({
+  type: 'LOAD_DATA',
+  payload,
+});

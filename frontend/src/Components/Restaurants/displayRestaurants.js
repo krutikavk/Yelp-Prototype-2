@@ -50,20 +50,20 @@ class Restaurants extends Component {
     //replace this URL with search URL 
     let url = 'http://localhost:3001/restaurants';
     axios.get(url)
-        .then(response => {
-          console.log("Status Code : ",response.data);
-          if(response.status === 200){
-            //When results return multiple rows, rowdatapacket object needs to be converted to JSON object again 
-            //use JSON.parse(JSON.stringify()) to convert back to JSON object
-            let temp = JSON.parse(JSON.stringify(response.data));
-            console.log('temp: ', temp)
-            this.setState({
-                restaurants: [...temp]
-            })
-          }
-        }).catch(err =>{
-            console.log("No response")
-        });
+      .then(response => {
+        console.log("Status Code : ",response.data);
+        if(response.status === 200){
+          //When results return multiple rows, rowdatapacket object needs to be converted to JSON object again 
+          //use JSON.parse(JSON.stringify()) to convert back to JSON object
+          let temp = JSON.parse(JSON.stringify(response.data));
+          console.log('temp: ', temp)
+          this.setState({
+              restaurants: [...temp]
+          })
+        }
+      }).catch(err =>{
+          console.log("No response")
+      });
   }
 
   render() {

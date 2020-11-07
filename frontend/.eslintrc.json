@@ -26,7 +26,7 @@
         "react/destructuring-assignment": 0,
         "react/prop-types": 0,
         "react/jsx-quotes": 0,
-        "react/max-len": 0,
+        "react/max-len": "off",
         "react/no-console": 0
     }
 }

@@ -32,6 +32,7 @@ import SearchRest from './Search/searchrest';
 import AddReview from './Reviews/addReview';
 import SearchCust from './Search/searchcust';
 import Search from './Search/search';
+import Conversations from './Conversations/displayConversations';
 
 // Create a Main Component
 // eslint-disable-next-line react/prefer-stateless-function
@@ -72,6 +73,7 @@ class Main extends Component {
           <Route exact path='/restaurant/addreview' component={AddReview} />
           <Route exact path='/customers/search' component={SearchCust} />
           <Route exact path='/search' component={Search} />
+          <Route exact path='/conversations' component={Conversations} />
           <Route path='*' component={notfound} />
         </Switch>
 

@@ -5,7 +5,9 @@ const { Schema } = mongoose;
 // Can add non-essential fields to meta: {} later on
 const convSchema = new Schema({
   rid: { type: String },
+  rname: { type: String },
   cid: { type: String },
+  cname: { type: String },
   latest: { type: Date },
   // flow true: restaurant -> customer
   // flow false: customer -> restaurant

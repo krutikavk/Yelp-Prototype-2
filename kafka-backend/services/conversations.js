@@ -33,7 +33,9 @@ function initiate(data, callback) {
   messages.push(message);
   const newConv = new Conversations({
     rid: data.rid,
+    rname: data.rname,
     cid: data.cid,
+    cname: data.cname,
     latest: tstamp,
     messages,
   });

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Redirect, Link} from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import '../../App.css';
 import axios from 'axios';
 import restropic from './restro.jpg';
@@ -19,25 +19,25 @@ class Restaurant extends Component {
   render() {
 
     return (
-      //Pass restaurant information to display menu and then show when dishes are added to cart
+      // Pass restaurant information to display menu and then show when dishes are added to cart
       <Link to={{
-                  pathname: '/restaurant',
-                  query: {
-                    rid: `${this.props.restaurant._id}`, 
-                    remail: `${this.props.restaurant.remail}`,
-                    rname: `${this.props.restaurant.rname}`,
-                    rphone: `${this.props.restaurant.rphone}`,
-                    rabout: `${this.props.restaurant.rabout}`,
-                    rphoto: `${this.props.restaurant.rphoto}`,
-                    rlocation: `${this.props.restaurant.rlocation}`,
-                    rlatitude: `${this.props.restaurant.rlatitude}`,
-                    rlongitude: `${this.props.restaurant.rlongitude}`,
-                    raddress: `${this.props.restaurant.raddress}`,
-                    rcuisine: `${this.props.restaurant.rcuisine}`,
-                    rdelivery: `${this.props.restaurant.rdelivery}`,
-                  }
-
-                }}>
+        pathname: '/restaurant',
+        query: {
+          rid: `${this.props.restaurant._id}`,
+          remail: `${this.props.restaurant.remail}`,
+          rname: `${this.props.restaurant.rname}`,
+          rphone: `${this.props.restaurant.rphone}`,
+          rabout: `${this.props.restaurant.rabout}`,
+          rphoto: `${this.props.restaurant.rphoto}`,
+          rlocation: `${this.props.restaurant.rlocation}`,
+          rlatitude: `${this.props.restaurant.rlatitude}`,
+          rlongitude: `${this.props.restaurant.rlongitude}`,
+          raddress: `${this.props.restaurant.raddress}`,
+          rcuisine: `${this.props.restaurant.rcuisine}`,
+          rdelivery: `${this.props.restaurant.rdelivery}`,
+        },
+      }}
+      >
         <div class="container-fluid style={{height: 100}}">
           <div class="row">
             <div class="col-12 mt-3">

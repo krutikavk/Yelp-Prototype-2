@@ -13,6 +13,12 @@ class DisplayProfile extends Component {
     this.state = {
       reviews: [],
     };
+
+    this.followHandler = this.followHandler.bind(this);
+  }
+
+  followHandler = (event) => {
+
   }
 
   componentDidMount() {
@@ -38,8 +44,8 @@ class DisplayProfile extends Component {
 
   render() {
     let redirectVar = null;
-    if (this.props.isLogged === false) {
-      //redirectVar = <Redirect to='/login' />;
+    if (this.props.location.query === undefined && this.props.isLogged === false) {
+      redirectVar = <Redirect to='/login' />;
     }
     //  customer is logged in, get data from redux state
     let customerprofile = {};
@@ -90,6 +96,19 @@ class DisplayProfile extends Component {
     let editProfile = null;
     if (this.props.isLogged === true && this.props.whoIsLogged === false && isMyPage === true) {
       editProfile = <Link to='/customer/edit' class="btn btn-danger">Edit profile</Link>
+    }
+
+    let messageButton = null;
+    // Restaurant is logged in 
+    if (this.props.isLogged === true && this.props.whoIsLogged === true) {
+      messageButton = <Link to='/conversations/add' class="btn btn-danger">Message</Link>;
+    }
+
+    //One customer can follow another
+    // Show follow page only if another customer visits the profile page
+    let followButton = null;
+    if (this.props.isLogged === true && this.props.whoIsLogged === false && isMyPage === false) {
+      followButton = <button class="btn btn-danger btn-sm" onClick = {this.followHandler}>Edit</button>;
     }
 
     return (
