@@ -115,3 +115,9 @@ export const loadConversations = (payload) => ({
   type: 'LOAD_DATA',
   payload,
 });
+
+export const addMessage = (convid, message) => ({
+  type: 'ADDMESSAGE',
+  convid,
+  message,
+});

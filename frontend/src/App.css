@@ -219,3 +219,7 @@ section {
 li.active {
   font-weight: bold;
 }
+
+.wrapper {
+  display: inline-block;
+}

@@ -33,6 +33,7 @@ import AddReview from './Reviews/addReview';
 import SearchCust from './Search/searchcust';
 import Search from './Search/search';
 import Conversations from './Conversations/displayConversations';
+import ConversationPage from './Conversations/conversationPage';
 
 // Create a Main Component
 // eslint-disable-next-line react/prefer-stateless-function
@@ -74,6 +75,7 @@ class Main extends Component {
           <Route exact path='/customers/search' component={SearchCust} />
           <Route exact path='/search' component={Search} />
           <Route exact path='/conversations' component={Conversations} />
+          <Route exact path='/conversationPage' component={ConversationPage} />
           <Route path='*' component={notfound} />
         </Switch>
 

@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { update, login, logout, loadConversations } from '../../_actions';
+import Conversation from './conversationCard';
 import Navbar from '../Navbar/navbar';
 
 class displayConversations extends Component {
@@ -12,7 +13,7 @@ class displayConversations extends Component {
     super(props);
 
     this.state = {
-      conversations: [],
+      conversations: []
     };
   }
 
@@ -24,6 +25,8 @@ class displayConversations extends Component {
       endpoint = `${process.env.REACT_APP_BACKEND}/conversations/customers/${this.props.cid}`;
     }
     console.log('url: ', endpoint);
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
+    axios.defaults.withCredentials = true;
     axios.get(endpoint)
       .then((response) => {
         console.log('Status Code : ', response.data);
@@ -33,18 +36,7 @@ class displayConversations extends Component {
           console.log('response: ', response.data);
           let temp = JSON.parse(JSON.stringify(response.data));
           console.log('temp: ', temp);
-          this.props.loadConversations(response.data);
-          /*
-          this.setState({
-            conversations: [...temp],
-          });
-
-          let temp = JSON.parse(JSON.stringify(response.data));
-          console.log('temp: ', temp)
-          this.setState({
-            restaurants: [...temp],
-          });
-          */
+          this.props.loadConversations(temp);
         }
       }).catch((err) => {
         console.log('No response');
@@ -52,38 +44,15 @@ class displayConversations extends Component {
   }
 
   render() {
-    console.log('State: ', this.state.conversations);
+    console.log('State: ', this.props.conversations);
     return (
       <div>
         <Navbar />
-        worked
-      </div>
-
-    /*
-      <div>
-        <Navbar />
-        {this.state.conversations.map((conversation) => (
-          <div className="container-fluid style={{height: 100}}">
-            <div className="row">
-              <div className="col-12 mt-3">
-                <div className="card">
-                  <div className="card-horizontal">
-                    <div className="card-body">
-                        <p className="card-text">Name: {conversation.rname}</p>
-                        <p className="card-text">Message: {conversation.messages[0]}</p>
-                    </div>
-                  </div>
-                  <div className="card-footer">
-                      <small className="text-muted">Featured!</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        My conversations
+        {this.props.conversations.map((conv) => (
+          <Conversation conv={conv} />
         ))}
       </div>
-      */
-
     );
   }
 }
@@ -95,6 +64,7 @@ const mapStateToProps = (state) => {
     rid: state.restProfile.rid,
     isLogged: state.isLogged.isLoggedIn,
     whoIsLogged: state.whoIsLogged.whoIsLoggedIn,
+    conversations: state.conversation.convArr,
   };
 };
 
