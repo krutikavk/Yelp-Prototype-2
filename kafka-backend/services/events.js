@@ -85,7 +85,7 @@ function addEvent(data, callback) {
                 ephoto: evnt.ephoto,
                 rid: evnt.rid,
                 rname: evnt.rname,
-                ecustomers: [...evnt.ecustomers],
+                ecustomers: (evnt.ecustomers === undefined ? [] : [...evnt.ecustomers]),
               };
               console.log('Event added successfully');
               const response = {
@@ -111,7 +111,7 @@ function addEvent(data, callback) {
   });
 }
 
-function getAllEvents(callback) {
+function getAllEvents(data, callback) {
   console.log('Endpoint GET: Get all events');
   Events.find({}, (error, result) => {
     if (error) {

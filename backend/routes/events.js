@@ -112,11 +112,11 @@ router.post('/', (request, response) => {
 });
 
 // Get all events
-router.get('/', checkAuth, (request, response) => {
+router.get('/', (request, response) => {
   console.log('Endpoint GET: Get all events');
   console.log('Request Body: ', request.body);
 
-  kafka.make_request('eventsTopic', 'GETALL', data, (err, result) => {
+  kafka.make_request('eventsTopic', 'GETALL',  request.body, (err, result) => {
     console.log('Get all events result ', result);
     if (err) {
       console.log('Add event Kafka error');

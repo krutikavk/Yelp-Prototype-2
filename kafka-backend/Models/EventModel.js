@@ -8,7 +8,7 @@ const eventSchema = new Schema({
   eaddress: { type: String },
   elatitude: { type: Number },
   elongitude: { type: Number },
-  edate: { type: Number },
+  edate: { type: Date },
   ephoto: { type: String },
   // May need entire rest object
   rid: { type: String },

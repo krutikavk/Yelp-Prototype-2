@@ -12,15 +12,25 @@ const eventDisplayReducer = (state = initialEventState, action) => {
   switch (action.type) {
     case 'LOAD_DATA': {
       console.log('action: ', action);
-      return {
-        ...state,
-        eventArr: [...action.payload],
-        filteredEventArr: [...action.payload],
-        displayEventArr: [...action.payload].slice(0, action.countPerPage),
-        countPerPage: action.countPerPage,
-        currentPage: 1,
-        // displayEventArr: [...action.payload],
-      };
+
+      let newState = { ...state };
+      newState.eventArr = [...action.payload];
+      newState.filteredEventArr = [...action.payload];
+      newState.filteredEventArr = newState.filteredEventArr.sort((a, b) => a.edate < b.edate ? -1 : 1);
+      newState.displayEventArr = [...action.payload].slice(0, action.countPerPage);
+      newState.countPerPage = action.countPerPage;
+      newState.currentPage = 1;
+      return newState;
+    }
+
+    case 'ADD_EVENT': {
+      let newState = { ...state };
+      newState.eventArr.push(action.payload);
+      newState.filteredEventArr = [...newState.eventArr];
+      newState.countPerPage = action.countPerPage;
+      newState.displayEventArr = [...newState.eventArr].slice(0, action.countPerPage);
+      newState.currentPage = 1;
+      return newState;
     }
 
     case 'SORTASC': {

@@ -1,9 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
+import DatePicker from "react-datepicker";
 import '../../App.css';
+import 'react-datepicker/dist/react-datepicker.css';
 import axios from 'axios';
 import {Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {update, login, logout, customerLogin} from '../../_actions';
+import {update, login, logout, customerLogin, loadEvents, addEvent} from '../../_actions';
 import PlacesAutocomplete from 'react-places-autocomplete';
 import {
   geocodeByAddress,
@@ -24,11 +26,16 @@ class AddEvent extends Component {
       eaddress: '',
       elatitude: '',
       elongitude: '',
-      edate: '',
-      address: '',
+      edate: new Date(),
+      eaddress: '',
       updated: 'false',
-      added: false
+      added: false,
+      // s3 photo upload
+      url: '',
+      success: false,
     }
+
+    //const [edate, setDate] = useState(new Date());
 
     this.enameChangeHandler = this.enameChangeHandler.bind(this);
     this.edescriptionChangeHandler = this.edescriptionChangeHandler.bind(this);
@@ -37,6 +44,9 @@ class AddEvent extends Component {
 
     this.handleAddressChange = this.handleAddressChange.bind(this);
     this.handleSelectAddress = this.handleSelectAddress.bind(this);
+
+    this.handleFileUpload = this.handleFileUpload.bind(this);
+    this.handleFileChange = this.handleFileChange.bind(this);
   }
 
   enameChangeHandler = (event) => {
@@ -51,9 +61,10 @@ class AddEvent extends Component {
     })
   }
 
-  edateChangeHandler = (event) => {
+  edateChangeHandler = (date) => {
+    console.log('selected: ', date)
     this.setState({
-      edate: event.target.value
+      edate: date,
     })
   }
 
@@ -64,7 +75,7 @@ class AddEvent extends Component {
   }
 
   handleSelectAddress = address => {
-    this.setState({address : address});
+    this.setState({eaddress : address});
     console.log(address);
 
     geocodeByAddress(address)
@@ -80,34 +91,95 @@ class AddEvent extends Component {
       .catch(error => console.error('Error', error));
   }
 
+  handleFileChange = (event) => {
+    this.setState({
+      success: false, url : ''
+    });
+  }
+
+  handleFileUpload = (event) => {
+    this.setState({
+      success: false, 
+      url : ''
+    });
+
+    let file = this.uploadInput.files[0];
+    // Split the filename to get the name and type
+    let fileParts = this.uploadInput.files[0].name.split('.');
+    let fileName = 'event_' + fileParts[0];
+    console.log(fileName);
+    let fileType = fileParts[1];
+    console.log("Preparing the upload");
+
+    axios.defaults.withCredentials = false;
+    let url = `${process.env.REACT_APP_BACKEND}/sign_s3`
+
+    axios.post(url, { fileName : fileName, fileType : fileType })
+      .then(response => {
+        var returnData = response.data.data.returnData;
+        var signedRequest = returnData.signedRequest;
+        var url = returnData.url;
+
+        this.setState({url: url})
+        this.setState({success: true})
+        console.log("Recieved a signed request " + signedRequest);
+        // Put the fileType in the headers for the upload
+        var options = {
+          headers: {
+            'ContentType': fileType
+          }
+        };
+        delete axios.defaults.headers.common["authorization"];
+        axios.put(signedRequest,file, options)
+          .then(result => {
+            console.log("Response from s3")
+            this.setState({
+              success: true
+            });
+          })
+          .catch(error => {
+            alert("ERROR " + JSON.stringify(error));
+          })
+    })
+    .catch(error => {
+      alert(JSON.stringify(error));
+    })
+    axios.defaults.headers.common['authorization'] = localStorage.getItem('token');
+  }
+
   addEvent = (event) => {
     event.preventDefault();
     axios.defaults.withCredentials = true;
-
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
+    const url = `${process.env.REACT_APP_BACKEND}/events`;
     const data = {
       ename: this.state.ename,
       edescription: this.state.edescription,
       eaddress: this.state.eaddress,
       elatitude: this.state.elatitude,
+      ephoto: this.state.url,
       elongitude: this.state.elongitude,
       edate: this.state.edate,
       rid: this.props.rid,
       rname: this.props.rname
     }
     console.log("data sent to add event", data)
-    let url = 'http://localhost:3001/events'
 
     axios.post(url, data)
       .then(response => {
-        console.log("Status Code : ",response.status);
+        console.log('Status Code : ', response.status);
         if(response.status === 200){
+          console.log('Event added');
+          alert('Event added');
+          // this.props.loadEvents(3, response.data);
+          this.props.addEvent(3, response.data);
           this.setState({
-            added: true
+            added: true,
           })
-          
+           
         }
       }).catch(err =>{
-          alert('Add event failed');
+          console.log('Add event failed');
       });
   }
 
@@ -118,11 +190,19 @@ class AddEvent extends Component {
 
     if(!(this.props.isLogged === true && this.props.whoIsLogged === true)) {
       redirectVar = <Redirect to='/login'/>
-    } else if(this.props.isLogged === true && this.props.whoIsLogged === true && this.state.added === true) {
+    } else if(this.props.eventArr.length > 0 && this.state.added === true) {
       redirectVar = <Redirect to='/events'/>
     }
-    return (
+    console.log('redirectVar: ', redirectVar)
 
+    const Success_message = () => (
+      <div class='form-group'>
+      <img src={this.state.url} alt="" class="img-responsive" width="150" height="150"/>
+      <br/>
+      </div>
+    )
+
+    return (
       <div>
         {redirectVar}
         <Navbar/>
@@ -203,18 +283,12 @@ class AddEvent extends Component {
               </PlacesAutocomplete>
             </div>
 
-            <div className="form-group text-left">
-              <br/>
-              <label htmlFor="exampleInputPassword1">Schedule</label>
-              <input onChange = {this.edateChangeHandler} 
-                                  type="text" 
-                                  name="edate" 
-                                  className="form-control form-control-sm"
-                                  placeholder="Schedule"
-                                  required/>
-                                  
+            <div class="form-group">
+              {this.state.success ? <Success_message /> : null}
+              <input onChange={this.handleFileUpload} ref = {(ref) => {this.uploadInput = ref;}} type = "file"/>
             </div>
 
+            <DatePicker selected={this.state.edate} onChange={this.edateChangeHandler} />
             <div className="col-md-12 text-center">
             <button id="btnLogin" className="btn btn-danger" onClick={this.addEvent}>Add</button>
             </div>
@@ -231,6 +305,9 @@ class AddEvent extends Component {
 //importedname: state.reducer.statenames
 const mapStateToProps = (state) => {
     return {
+      eventArr: [...state.eventDisplay.eventArr],
+      filteredEventArr: [...state.eventDisplay.filteredEventArr],
+      displayEventArr: [...state.eventDisplay.displayEventArr],
       rid: state.restProfile.rid,
       rname: state.restProfile.rname,
       isLogged: state.isLogged.isLoggedIn,
@@ -246,7 +323,9 @@ function mapDispatchToProps(dispatch) {
     update : (field, payload) => dispatch(update(field, payload)),
     login: () => dispatch(login()),
     logout: () => dispatch(logout()),
-    customerLogin: () => dispatch(customerLogin())
+    customerLogin: () => dispatch(customerLogin()),
+    loadEvents: (countPerPage, payload) => dispatch(loadEvents(countPerPage, payload)),
+    addEvent: (countPerPage, payload) => dispatch(addEvent(countPerPage, payload)),
   }
   
 }

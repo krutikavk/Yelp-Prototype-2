@@ -1,28 +1,19 @@
 import React, { Component } from 'react';
 import '../../App.css';
 import axios from 'axios';
-import { Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import locationIcon from '@iconify/icons-mdi/map-marker';
-import { Icon } from '@iconify/react';
-import GoogleMapReact from 'google-map-react';
+import Navbar from '../Navbar/navbar';
+import pumpkin from './mediterranean.jpg';
 import {
-  update, login, logout, customerLogin, loadEvents, loadNewEventPage, loadExactEventPage,
+  loadEvents, loadNewEventPage, loadExactEventPage,
 } from '../../_actions';
 import Event from './eventcard';
-import '../Map/map.css';
-import Navbar from '../Navbar/navbar';
 
-const LocationPin = ({ text }) => (
-  <div className="pin">
-    <Icon icon={locationIcon} className="pin-icon" color="#ff6347" width="40" height="40" />
-    <p className="pin-text" style={{ color:"#ff6347" }}>{ text } </p>
-  </div>
-);
-
-class DisplayEvents extends Component {
+class DisplayRegistered extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       events: [],
     };
@@ -46,20 +37,22 @@ class DisplayEvents extends Component {
   }
 
   componentDidMount() {
-    // replace this URL with search URL
-    const url = `${process.env.REACT_APP_BACKEND}/events`;
+    console.log('Mounted registered events');
     axios.defaults.withCredentials = true;
     axios.defaults.headers.common.authorization = localStorage.getItem('token');
+    const url = `${process.env.REACT_APP_BACKEND}/events/restaurants/${this.props.rid}`;
+    // let url = 'http://localhost:3001/events/restaurants/' + this.props.rid
+    console.log('url:', url);
+
     axios.get(url)
       .then((response) => {
-        console.log('Status Code : ', response.data);
+        console.log('Status Code : ', response.status);
         if (response.status === 200) {
-          // When results return multiple rows, rowdatapacket object needs to be converted to JSON object again
-          // use JSON.parse(JSON.stringify()) to convert back to JSON object
-          const temp = JSON.parse(JSON.stringify(response.data));
-          this.props.loadEvents(3, response.data);
+          console.log('customer IDs', response.data);
+          const hosted = JSON.parse(JSON.stringify(response.data));
+          this.props.loadEvents(3, hosted);
           this.setState({
-            events: [...temp],
+            events: [...hosted],
           });
         }
       }).catch((err) => {
@@ -68,6 +61,7 @@ class DisplayEvents extends Component {
   }
 
   render() {
+
     const pageNumbers = [];
     let renderPageNumbers = null;
     const numberOfPages = Math.ceil(this.props.filteredEventArr.length / this.props.countPerPage);
@@ -95,10 +89,8 @@ class DisplayEvents extends Component {
           {renderPageNumbers}
           <li onClick={this.nextPageHandler}>Next</li>
         </ul>
-        {this.props.displayEventArr.map((event) => (
-          <div>
-            <Event event={event} />
-          </div>
+        { this.props.displayEventArr.map((entry) => (
+          <Event event={entry} />
         ))}
       </div>
     );
@@ -112,21 +104,18 @@ const mapStateToProps = (state) => {
     displayEventArr: [...state.eventDisplay.displayEventArr],
     countPerPage: state.eventDisplay.countPerPage,
     currentPage: state.eventDisplay.currentPage,
-    isLogged: state.isLogged.isLoggedIn,
-    whoIsLogged: state.whoIsLogged.whoIsLoggedIn,
+    cid: state.eventDisplay.cid,
+    rid: state.restProfile.rid,
   };
 };
 
 function mapDispatchToProps(dispatch) {
   return {
-    update: (field, payload) => dispatch(update(field, payload)),
-    login: () => dispatch(login()),
-    logout: () => dispatch(logout()),
-    customerLogin: () => dispatch(customerLogin()),
+
     loadEvents: (countPerPage, payload) => dispatch(loadEvents(countPerPage, payload)),
     loadNewEventPage: (payload) => dispatch(loadNewEventPage(payload)),
     loadExactEventPage: (payload) => dispatch(loadExactEventPage(payload)),
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DisplayEvents);
+export default connect(mapStateToProps, mapDispatchToProps)(DisplayRegistered);

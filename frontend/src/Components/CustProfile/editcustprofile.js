@@ -52,27 +52,27 @@ class Userdash extends Component {
   	  }
     };
 
-      this.usernameChangeHandler = this.usernameChangeHandler.bind(this);
-      this.emailChangeHandler = this.emailChangeHandler.bind(this);
-      this.passwordChangeHandler = this.passwordChangeHandler.bind(this);
-      this.aboutChangeHandler = this.aboutChangeHandler.bind(this);
-      this.phoneChangeHandler = this.phoneChangeHandler.bind(this);
-      this.favrestChangeHandler = this.favrestChangeHandler.bind(this);
-      this.favcuisineChangeHandler = this.favcuisineChangeHandler.bind(this);
+    this.usernameChangeHandler = this.usernameChangeHandler.bind(this);
+    this.emailChangeHandler = this.emailChangeHandler.bind(this);
+    this.passwordChangeHandler = this.passwordChangeHandler.bind(this);
+    this.aboutChangeHandler = this.aboutChangeHandler.bind(this);
+    this.phoneChangeHandler = this.phoneChangeHandler.bind(this);
+    this.favrestChangeHandler = this.favrestChangeHandler.bind(this);
+    this.favcuisineChangeHandler = this.favcuisineChangeHandler.bind(this);
 
-      this.submitOtherChange = this.submitOtherChange.bind(this);
-      this.submitPasswordChange = this.submitPasswordChange.bind(this);
+    this.submitOtherChange = this.submitOtherChange.bind(this);
+    this.submitPasswordChange = this.submitPasswordChange.bind(this);
 
-      this.usernameEditTextFieldHandler = this.usernameEditTextFieldHandler.bind(this);
-      this.emailEditTextFieldHandler = this.emailEditTextFieldHandler.bind(this);
-      this.passwordEditTextFieldHandler = this.passwordEditTextFieldHandler.bind(this);
-      this.aboutEditTextFieldHandler = this.aboutEditTextFieldHandler.bind(this);
-      this.phoneEditTextFieldHandler = this.phoneEditTextFieldHandler.bind(this);
-      this.favrestEditTextFieldHandler = this.favrestEditTextFieldHandler.bind(this);
-      this.favcuisineEditTextFieldHandler = this.favcuisineEditTextFieldHandler.bind(this);
+    this.usernameEditTextFieldHandler = this.usernameEditTextFieldHandler.bind(this);
+    this.emailEditTextFieldHandler = this.emailEditTextFieldHandler.bind(this);
+    this.passwordEditTextFieldHandler = this.passwordEditTextFieldHandler.bind(this);
+    this.aboutEditTextFieldHandler = this.aboutEditTextFieldHandler.bind(this);
+    this.phoneEditTextFieldHandler = this.phoneEditTextFieldHandler.bind(this);
+    this.favrestEditTextFieldHandler = this.favrestEditTextFieldHandler.bind(this);
+    this.favcuisineEditTextFieldHandler = this.favcuisineEditTextFieldHandler.bind(this);
 
-      this.handleFileUpload = this.handleFileUpload.bind(this);
-      this.handleFileChange = this.handleFileChange.bind(this);
+    this.handleFileUpload = this.handleFileUpload.bind(this);
+    this.handleFileChange = this.handleFileChange.bind(this);
   }
 
 

@@ -90,6 +90,13 @@ export const loadExactCustPage = (payload) => ({
 
 export const loadEvents = (countPerPage, payload) => ({
   type: 'LOAD_DATA',
+  countPerPage,
+  payload,
+});
+
+export const addEvent = (countPerPage, payload) => ({
+  type: 'ADD_EVENT',
+  countPerPage,
   payload,
 });
 
