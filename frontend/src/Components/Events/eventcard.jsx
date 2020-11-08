@@ -19,12 +19,12 @@ class Eventcard extends Component {
       <Link to={{
         pathname: '/event',
         query: {
-          eid: `${this.props.event.eid}`,
+          eid: `${this.props.event._id}`,
           ename: `${this.props.event.ename}`,
           edescription: `${this.props.event.edescription}`,
           eaddress: `${this.props.event.eaddress}`,
           edate: `${this.props.event.edate}`,
-          ephoto: `${this.props.event.ephoto}`
+          ephoto: `${this.props.event.ephoto}`,
         }
       }}
       >

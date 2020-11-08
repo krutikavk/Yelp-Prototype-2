@@ -330,12 +330,30 @@ router.post('/:eid/customers', (request, response) => {
     */
 });
 
-/*
+
 // Register a customer for an event
-router.post('/:eid/customers', (request, response) => {
+router.post('/:eid/register', (request, response) => {
   console.log('Endpoint POST: Register customer for event');
   console.log('Request Body: ', request.body);
+  const data = { ...request.params, ...request.body }; 
+
+  kafka.make_request('eventsTopic', 'REGISTERFOREVENT', data, (err, result) => {
+    console.log('Get custs attending an event result: ', result);
+    if (err) {
+      console.log('Register for event Kafka error');
+      response.writeHead(500, {
+        'Content-Type': 'text/plain',
+      });
+      response.end('Register for event Kafka error');
+    } else {
+      response.writeHead(result.status, {
+        'Content-Type': result.header,
+      });
+      console.log(result.content);
+      response.end(result.content);
+    }
+  });
 });
-*/
+
 
 module.exports = router;

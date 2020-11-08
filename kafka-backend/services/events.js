@@ -233,14 +233,58 @@ function getCustomersAttendingEvent(data, callback) {
         callback(null, response);
       } else {
         const response = {
-          status: 400,
+          status: 200,
           header: 'application/json',
           content: JSON.stringify(ecustomers),
         };
-        console.log('Error getting events');
+        console.log('Sending 200');
         callback(null, response);
       }
     });
+}
+
+function registerForEvent(data, callback) {
+  Events.findById(data.eid, (error, event) => {
+    if (error) {
+      const response = {
+        status: 400,
+        header: 'text/plain',
+        content: 'Error finding events',
+      };
+      console.log('Error finding events');
+      callback(null, response);
+    } else if (event) {
+      event.ecustomers.push(data.cid);
+      console.log('event.ecustomers: ', event.ecustomers);
+      Events.findByIdAndUpdate(data.eid, event, { new: true }, (err, updated) => {
+        if (err) {
+          const response = {
+            status: 400,
+            header: 'text/plain',
+            content: 'Error updating event',
+          };
+          console.log('Error finding event');
+          callback(null, response);
+        } else if (updated) {
+          const response = {
+            status: 200,
+            header: 'application/json',
+            content: JSON.stringify(updated),
+          };
+          console.log('Sending 200');
+          callback(null, response);
+        }
+      });
+    } else {
+      const response = {
+        status: 400,
+        header: 'text/plain',
+        content: 'Error getting events',
+      };
+      console.log('Error getting events');
+      callback(null, response);
+    }
+  });
 }
 
 function handleRequest(msg, callback) {
@@ -284,6 +328,13 @@ function handleRequest(msg, callback) {
       console.log('Inside get customers attending an event');
       console.log('Message:', msg);
       getCustomersAttendingEvent(msg.data, callback);
+      break;
+    }
+
+    case 'REGISTERFOREVENT': {
+      console.log('Inside get customers attending an event');
+      console.log('Message:', msg);
+      registerForEvent(msg.data, callback);
       break;
     }
 

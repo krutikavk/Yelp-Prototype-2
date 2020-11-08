@@ -26,8 +26,10 @@ class Event extends Component {
   register = (event) => {
     event.preventDefault();
     axios.defaults.withCredentials = true;
-
-    let url = 'http://localhost:3001/events/' + this.props.location.query.eid + '/customers'
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
+    console.log('this.props: ', this.props);
+    const url = `${process.env.REACT_APP_BACKEND}/events/${this.props.location.query.eid}/register`;
+    // let url = 'http://localhost:3001/events/' + this.props.location.query.eid + '/customers'
     const data = {
       cid: this.props.cid
     }
@@ -50,40 +52,21 @@ class Event extends Component {
   showAttendees = (event) => {
     event.preventDefault();
     axios.defaults.withCredentials = true;
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
+    console.log('this.props: ', this.props);
+    const url = `${process.env.REACT_APP_BACKEND}/events/${this.props.location.query.eid}/customers`;
 
-
-    let url = 'http://localhost:3001/events/' + this.props.location.query.eid + '/customers'
+    //TODO 
+    // let url = 'http://localhost:3001/events/' + this.props.location.query.eid + '/customers'
     axios.get(url)
     .then(response => {
         console.log("Status Code : ",response.status);
-        if(response.status === 200){
-          console.log("customer IDs", response.data);
-          let cidArr = [...response.data]
-          let attendees = []
-          let promiseArray = cidArr.map(cust => axios.get('http://localhost:3001/customers/'+ cust.cid));
-          Promise.all( promiseArray )
-          .then( 
-            results => {
-              let customers = results.filter(entry => 
-                  entry.status === 200)
-
-              if(customers.length > 0) {
-                customers.forEach(cust => {
-                  //rest.data[0] will have each restaurant
-                  attendees.push(cust.data[0]);
-                })
-
-                this.setState ({
-                  attendees: [...attendees]
-                })
-
-                console.log("attendees: ", this.state.attendees)
-              } else {
-                alert("No registered attendees yet")
-              }
-
-          })
-          .catch(console.log)
+        if(response.status === 200) {
+          const temp = JSON.parse(JSON.stringify(response.data));
+          this.props.loadEvents(3, response.data);
+          this.setState({
+            events: [...temp],
+          });
         }
       }).catch(err =>{
         alert("Incorrect credentials")
@@ -97,6 +80,7 @@ class Event extends Component {
 
     let controlButton = null;
     let attendeesDisplay = null;
+
 
     if(this.props.whoIsLogged === false) {
       //Allow customers to register for event
