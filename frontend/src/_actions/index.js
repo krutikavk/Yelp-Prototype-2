@@ -128,3 +128,9 @@ export const updateConversation = (payload) => ({
   type: 'UPDATECONV',
   payload,
 });
+
+export const addFollower = (followercid, followingcid) => ({
+  type: 'ADD_FOLLOWER',
+  followercid,
+  followingcid,
+});

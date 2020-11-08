@@ -52,12 +52,11 @@ const customerDisplayReducer = (state = initialCustState, action) => {
       console.log('filtered before', filtered);
 
       // eslint-disable-next-line no-confusing-arrow
-      filtered = filtered.sort((a, b) => a.cfollowers.length < b.cfollowers.length ? -1 : 1);
+      filtered = filtered.sort((a, b) => a.cfollowers.length < b.cfollowers.length ? 1 : -1);
 
       newState.currentPage = 1;
       // newState.countPerPage = action.countPerPage;
-      newState.displayRestArr = [...filtered].slice(0, newState.countPerPage);
-      //newState.displayRestArr = [...filtered];
+      newState.displayCustArr = [...filtered].slice(0, newState.countPerPage);
       return newState;
     }
 
@@ -98,14 +97,6 @@ const customerDisplayReducer = (state = initialCustState, action) => {
       const upperBound = newState.currentPage * newState.countPerPage;
       const lowerBound = upperBound - newState.countPerPage;
       newState.displayCustArr = [...newState.filteredCustArr].slice(lowerBound, upperBound);
-
-      /*
-      let newState = { ...state };
-      newState.currentPage = action.payload;
-      const upperBound = newState.currentPage * newState.countPerPage;
-      const lowerBound = upperBound - newState.countPerPage;
-      newState.displayRestArr = [...newState.filtered].slice(lowerBound, upperBound);
-      */
       return newState;
     }
 
@@ -116,6 +107,28 @@ const customerDisplayReducer = (state = initialCustState, action) => {
       const lowerBound = upperBound - newState.countPerPage;
       newState.displayCustArr = [...newState.filteredCustArr].slice(lowerBound, upperBound);
       return newState;
+    }
+
+    case 'ADD_FOLLOWER': {
+      let newState = JSON.parse(JSON.stringify(state));
+      console.log('action: ', action);
+      console.log('old state: ', newState);
+      newState.custArr.forEach((item, index) => {
+        // select conversation
+        if (item._id === action.followercid) {
+          item.cfollowing.push(action.followingcid);
+        }
+        if (item._id === action.followingcid) {
+          item.cfollower.push(action.followercid);
+        }
+      });
+      return newState;
+      console.log('new state: ', newState);
+      newState.filteredCustArr = [...newState.custArr];
+      newState.displayCustArr = [...newState.custArr].slice(0, newState.countPerPage);
+      newState.currentPage = 1;
+      console.log('newState: ', newState);
+
     }
 
     default: {

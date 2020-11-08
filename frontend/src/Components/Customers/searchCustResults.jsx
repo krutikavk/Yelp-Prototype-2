@@ -21,11 +21,11 @@ class SearchCustResults extends Component {
     super(props);
     this.state = {
       followFilter: '',
-      followFilterStates: ['All', 'Followers', 'Following', 'Sort by Followers'],
+      followFilterStates: ['All', 'Sort by Followers'],
       nbrAddress: '',
       nbrLatitude: '',
       nbrLongitude: '',
-      restFetched: false,
+      custFetched: false,
     };
 
     this.followFilterHandler = this.followFilterHandler.bind(this);
@@ -88,7 +88,7 @@ class SearchCustResults extends Component {
           nbrLatitude : latLng.lat,
           nbrLongitude : latLng.lng,
         })
-        this.props.filterRestaurantByLocation(latLng.lat, latLng.lng);
+        this.props.filterCustomerByLocation(latLng.lat, latLng.lng);
       })
       .catch(error => console.error('Error', error));
   }
@@ -115,7 +115,7 @@ class SearchCustResults extends Component {
           console.log('response: ', response.data)
           this.props.loadCustomers(3, response.data);
           this.setState({
-            restFetched: true,
+            custFetched: true,
           })
         }
       }).catch((err) => {
@@ -133,7 +133,7 @@ class SearchCustResults extends Component {
           console.log('response: ', response.data)
           this.props.loadCustomers(3, response.data);
           this.setState({
-            restFetched: true,
+            custFetched: true,
           })
         }
       }).catch((err) => {
@@ -152,7 +152,7 @@ class SearchCustResults extends Component {
           this.props.loadCustomers(3, response.data);
           this.props.filterCustomerByLocation(nbrLatitude, nbrLongitude);
           this.setState({
-            restFetched: true,
+            custFetched: true,
           })
         }
       }).catch((err) => {
@@ -213,85 +213,6 @@ class SearchCustResults extends Component {
         </ul>
 
       </div>
-
-      /*
-      
-      <div>
-        <div class="form-inline">
-          <label for="ooption" style={{color:"black"}}>Filter by Service: </label>
-          <select class="form-control" id="ooption" onChange = {this.methodHandler}>>
-            <option value = {this.state.method}> Choose...</option>
-            {this.state.methodStates.map(option => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-          
-          <PlacesAutocomplete
-          value={this.state.nbrAddress}
-          onChange={this.handleAddressChange}
-          onSelect={this.handleSelectAddress}
-          >
-            {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
-              <div>
-                <input
-                  {...getInputProps({
-                  placeholder: 'Enter Neighborhood...',
-                  className: 'form-control mr-sm-0',
-                  })}
-                />
-                <div className="autocomplete-dropdown-container">
-                  {loading && <div>Loading...</div>}
-                  {suggestions.map(suggestion => {
-                    const className = suggestion.active
-                      ? 'suggestion-item--active'
-                      : 'suggestion-item';
-                    // inline style for demonstration purpose
-                    const style = suggestion.active
-                      ? { backgroundColor: '#000000', cursor: 'pointer' }
-                      : { backgroundColor: '#D3D3D3', cursor: 'pointer' };
-                    return (
-                      <div
-                        {...getSuggestionItemProps(suggestion, {
-                          className,
-                          style,
-                        })}
-                      >
-                        <span>{suggestion.description}</span>
-                      </div>
-                    );
-                
-                  })}
-                </div>
-              </div>
-            )}
-          </PlacesAutocomplete>
-        </div>
-        <ul id="page-numbers">
-          <li onClick={this.prevPageHandler}>Prev</li>
-          {renderPageNumbers}
-          <li onClick={this.nextPageHandler}>Next</li>
-        </ul>
-        <div className="left-half">
-          <ul>
-            {this.props.restDisp.displayRestArr.map((listing) => (
-              <div>
-                <Restaurant restaurant={listing} />
-              </div>
-            ))}
-          </ul>
-        </div>
-        <div className="right-half">
-          <div className="map">
-            <div className="google-map">
-              <MapSection location={pins} zoomLevel={17} />
-            </div>
-          </div>
-        </div>
-      </div>
-      */
-      
     )
   }
 }

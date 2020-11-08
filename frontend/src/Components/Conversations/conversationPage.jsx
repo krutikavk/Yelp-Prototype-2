@@ -52,7 +52,6 @@ class conversationPage extends Component {
           // When results return multiple rows, rowdatapacket object needs to be converted to JSON object again
           // use JSON.parse(JSON.stringify()) to convert back to JSON object
           console.log('message sent: ', response.data);
-          alert('Message sent');
 
           let temp = JSON.parse(JSON.stringify(response.data));
           console.log('temp: ', temp);

@@ -3,7 +3,7 @@ import '../../App.css';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { Redirect, Link } from 'react-router-dom';
-import { update, loadConversations } from '../../_actions';
+import { update, loadConversations, addFollower } from '../../_actions';
 import Review from '../Reviews/displayreview';
 import Navbar from '../Navbar/navbar';
 
@@ -29,7 +29,28 @@ class DisplayProfile extends Component {
   }
 
   followHandler = (event) => {
-
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
+    axios.defaults.withCredentials = true;
+    let endpoint = `${process.env.REACT_APP_BACKEND}/customers/${this.props.cid}/follow`;
+    let data = {
+      cid: this.props.location.query.cid,
+    }
+    axios.post(endpoint, data)
+      .then((response) => {
+        console.log('Status Code : ', response.data);
+        if (response.status === 200) {
+          // When results return multiple rows, rowdatapacket object needs to be converted to JSON object again
+          // use JSON.parse(JSON.stringify()) to convert back to JSON object
+          console.log('message sent: ', response.data);
+          //this.props.addMessage(this.props.conv._id, this.state.replyField)
+          let temp = JSON.parse(JSON.stringify(response.data));
+          console.log('temp: ', temp);
+          alert('Now following');
+          this.props.addFollower(this.props.cid, this.props.location.query.cid);
+        }
+      }).catch((err) => {
+        console.log('No response');
+      });
   }
 
   newMessageHandler = () => {
@@ -344,6 +365,7 @@ function mapDispatchToProps(dispatch) {
   return {
     update: (field, payload) => dispatch(update(field, payload)),
     loadConversations: (payload) => dispatch(loadConversations(payload)),
+    addFollower: (followercid, followingcid) => dispatch(addFollower(followercid, followingcid)),
   };
 }
 
