@@ -20,8 +20,32 @@ const conversationReducer = (state = initialConvState, action) => {
 
     case 'ADDMESSAGE': {
       const newState = JSON.parse(JSON.stringify(state));
+      newState.convArr.forEach((item, index) => {
+        // select conversation
+        if (item._id === action.convid) {
+          item.messages.push(action.message);
+        }
+        console.log(item, index);
+      });
       console.log('new state: ', newState);
-      return state;
+      return newState;
+    }
+
+    case 'UPDATECONV': {
+      const newState = JSON.parse(JSON.stringify(state));
+      const newConv = JSON.parse(JSON.stringify(action.payload));
+      newState.convArr.forEach((item, index) => {
+        // select conversation
+        // eslint-disable-next-line no-underscore-dangle
+        if (item._id === newConv._id) {
+          console.log('matched conversation');
+          item.messages = [...newConv.messages];
+        }
+        console.log(item, index);
+      });
+      console.log('incoming conv: ', newConv);
+      console.log('new state: ', newState);
+      return newState;
     }
 
     default: {

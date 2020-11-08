@@ -206,11 +206,6 @@ function getEventsCustReg(data, callback) {
         content: JSON.stringify(eventArr),
       };
       callback(null, response);
-
-      response.writeHead(200, {
-        'Content-Type': 'application/json',
-      });
-      response.end(JSON.stringify(eventArr));
     } else {
       const response = {
         status: 400,

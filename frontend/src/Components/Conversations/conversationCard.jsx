@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { addMessage } from '../../_actions';
+import { updateConversation } from '../../_actions';
 import '../../App.css';
 import axios from 'axios';
 
@@ -49,7 +49,12 @@ class conversationCard extends Component {
           // When results return multiple rows, rowdatapacket object needs to be converted to JSON object again
           // use JSON.parse(JSON.stringify()) to convert back to JSON object
           console.log('message sent: ', response.data);
-          this.props.addMessage(this.props.conv._id, this.state.replyField)
+          alert('Message sent');
+          //this.props.addMessage(this.props.conv._id, this.state.replyField)
+          let temp = JSON.parse(JSON.stringify(response.data));
+          console.log('temp: ', temp);
+          this.props.updateConversation(temp);
+
           this.setState({
             reply: false,
             replyField: '',
@@ -122,6 +127,8 @@ class conversationCard extends Component {
                     pathname: '/conversationPage',
                     query: {
                       convid: `${this.props.conv._id}`,
+                      rid: `${this.props.conv.rid}`,
+                      cid: `${this.props.conv.cid}`,
                     },
                     }}
                     className="btn btn-danger btn-sm"
@@ -136,40 +143,6 @@ class conversationCard extends Component {
           </div>
         </div>
       </div>
-      /*
-      <Link to={{
-        pathname: '/restaurant',
-        query: {
-          convid: `${this.props.conversation._id}`,
-          rid: `${this.props.conversation.rid}`,
-          rname: `${this.props.conversation.rname}`,
-          cid: `${this.props.conversation.cid}`,
-          cname: `${this.props.conversation.cname}`,
-          latest: `${this.props.conversation.latest}`,
-          messages: `${this.props.conversation.messages}`,
-        },
-        }}
-        >
-        <div className="container-fluid style={{height: 100}}">
-          <div className="row">
-            <div className="col-12 mt-3">
-              <div className="card">
-                <div className="card-horizontal">
-                  <div className="card-body">
-                      <p className="card-text">Name: {this.props.conversation.rname}</p>
-                      <p className="card-text">Message: {this.props.conversation.messages[0]}</p>
-                       <p className="card-text">...</p>
-                  </div>
-                </div>
-                <div className="card-footer">
-                    <small className="text-muted">Featured!</small>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Link>
-      */
     )
   }
 
@@ -188,7 +161,7 @@ const mapStateToProps = (state) => {
 
 function mapDispatchToProps(dispatch) {
   return {
-    addMessage: (convid, message) => dispatch(addMessage(convid, message)),
+    updateConversation: (payload) => dispatch(updateConversation(payload)),
   };
 }
 

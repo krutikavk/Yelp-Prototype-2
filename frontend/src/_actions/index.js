@@ -116,8 +116,15 @@ export const loadConversations = (payload) => ({
   payload,
 });
 
+// May not need this
 export const addMessage = (convid, message) => ({
   type: 'ADDMESSAGE',
   convid,
   message,
+});
+
+//Payload has a conversation that needs to be updated
+export const updateConversation = (payload) => ({
+  type: 'UPDATECONV',
+  payload,
 });

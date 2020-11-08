@@ -130,7 +130,8 @@ function addNewMsg(data, callback) {
         latest: tstamp,
         messages,
       };
-      Conversations.findByIdAndUpdate(data.convid, updateData, (err) => {
+      // sending { new: true } as option returns updated object
+      Conversations.findByIdAndUpdate(data.convid, updateData, { new: true }, (err, conv) => {
         if (err) {
           const response = {
             status: 400,
@@ -140,10 +141,11 @@ function addNewMsg(data, callback) {
           console.log('Error adding to conversation');
           callback(null, response);
         } else {
+          console.log('Updated conversation: ', conv);
           const response = {
             status: 200,
-            header: 'text/plain',
-            content: 'Message sent',
+            header: 'application/json',
+            content: JSON.stringify(conv),
           };
           console.log('Message sent');
           callback(null, response);

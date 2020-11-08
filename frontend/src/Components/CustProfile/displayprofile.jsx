@@ -111,6 +111,7 @@ class DisplayProfile extends Component {
       followButton = <button class="btn btn-danger btn-sm" onClick = {this.followHandler}>Edit</button>;
     }
 
+
     return (
       <div>
         <Navbar />
@@ -140,6 +141,8 @@ class DisplayProfile extends Component {
                         Following: {customerprofile.cfollowing.length}
                       </p>
                       {editProfile}
+                      {messageButton}
+                      {followButton}
                     </div>
                   </div>
                   <div className="card-footer">
