@@ -72,6 +72,7 @@ class conversationPage extends Component {
 
   render() {
     console.log(this.props.location.query.convid);
+    console.log('conversations: ', this.props.conversations);
     const selectedConv = this.props.conversations.filter((conv) => conv._id === this.props.location.query.convid);
     const { messages } = selectedConv[0];
 

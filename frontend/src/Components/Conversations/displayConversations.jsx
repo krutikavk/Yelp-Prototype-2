@@ -13,7 +13,7 @@ class displayConversations extends Component {
     super(props);
 
     this.state = {
-      conversations: []
+      conversations: [],
     };
   }
 

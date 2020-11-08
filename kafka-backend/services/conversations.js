@@ -83,17 +83,17 @@ function checkIfConvExists(data, callback) {
       };
       console.log('Error fetching conversation');
       callback(null, response);
-    } else if (conversation) {
+    } else if (conversation.length === 1) {
       const response = {
-        status: 400,
-        header: 'text/plain',
-        content: 'Conversation already exists',
+        status: 200,
+        header: 'application/json',
+        content: JSON.stringify(conversation),
       };
-      console.log('Conversation already exists');
+      console.log('Conversation already exists: ', conversation);
       callback(null, response);
     } else {
       const response = {
-        status: 200,
+        status: 400,
         header: 'text/plain',
         content: 'Conversation not present',
       };

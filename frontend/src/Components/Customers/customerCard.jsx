@@ -7,7 +7,7 @@ import axios from 'axios';
 class CustomerCard extends Component {
   render() {
     const query = {
-      cid: this.props.customer.cid,
+      cid: this.props.customer._id,
       cemail: this.props.customer.cemail,
       cpassword: this.props.customer.cpassword,
       cname: this.props.customer.cname,
@@ -17,8 +17,8 @@ class CustomerCard extends Component {
       cphoto: this.props.customer.cphoto,
       cfavrest: this.props.customer.cfavrest,
       cfavcuisine: this.props.customer.cfavcuisine,
-      cfollowers: [...this.props.customer.cfollowers],
-      cfollowing: [...this.props.customer.cfollowing],
+      cfollowers: this.props.customer.cfollowers === undefined ? [] : [...this.props.customer.cfollowers],
+      cfollowing: this.props.customer.cfollowing === undefined ? [] : [...this.props.customer.cfollowing],
       clatitude: this.props.customer.clatitude,
       clongitude: this.props.customer.clongitude,
       caddress: this.props.customer.caddress,

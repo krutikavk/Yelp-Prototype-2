@@ -3,7 +3,7 @@ import '../../App.css';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { Redirect, Link } from 'react-router-dom';
-import { update } from '../../_actions';
+import { update, loadConversations } from '../../_actions';
 import Review from '../Reviews/displayreview';
 import Navbar from '../Navbar/navbar';
 
@@ -12,13 +12,110 @@ class DisplayProfile extends Component {
     super(props);
     this.state = {
       reviews: [],
+      continueConv: false,
+      createNewConv: false,
+      convid: '',
+      newMessage: false,
+      newMessageField: '',
     };
 
     this.followHandler = this.followHandler.bind(this);
+    this.initiateConv = this.initiateConv.bind(this);
+
+    // These will help initiate a new conversation with a user
+    this.newMessageHandler = this.newMessageHandler.bind(this);
+    this.newMessageFieldHandler = this.newMessageFieldHandler.bind(this);
+    this.sendMessageHandler = this.sendMessageHandler.bind(this);
   }
 
   followHandler = (event) => {
 
+  }
+
+  newMessageHandler = () => {
+    this.setState({
+      reply: true
+    });
+  }
+
+  newMessageFieldHandler = (event) => {
+    this.setState({
+      newMessageField: event.target.value
+    })
+  }
+
+  sendMessageHandler = () => {
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
+    axios.defaults.withCredentials = true;
+    let endpoint = `${process.env.REACT_APP_BACKEND}/conversations`;
+    let data = {
+      rid: this.props.rid,
+      rname: this.props.rname,
+      cid: this.props.location.query.cid,
+      cname: this.props.location.query.cname,
+      flow: this.props.whoIsLogged,   //always true
+      text: this.state.newMessageField,
+    }
+    axios.post(endpoint, data)
+      .then((response) => {
+        console.log('Status Code : ', response.data);
+        if (response.status === 200) {
+          // When results return multiple rows, rowdatapacket object needs to be converted to JSON object again
+          // use JSON.parse(JSON.stringify()) to convert back to JSON object
+          console.log('message sent: ', response.data);
+          alert('Message sent');
+          //this.props.addMessage(this.props.conv._id, this.state.replyField)
+          let temp = JSON.parse(JSON.stringify(response.data));
+          console.log('temp: ', temp);
+          this.props.loadConversations(temp);
+
+          this.setState({
+            createNewConv: true,
+            newMessage: false,
+            convid: response.data[0]._id,
+          })
+        }
+      }).catch((err) => {
+        console.log('No response');
+      });
+  }
+
+
+  initiateConv = (event) => {
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
+    axios.defaults.withCredentials = true;
+    const url = `${process.env.REACT_APP_BACKEND}/conversations/check`;
+    console.log('this.props.location.query.cid', this.props.location.query.cid)
+    console.log('this.props.rid', this.props.rid);
+    const data = {
+      cid: this.props.location.query.cid,
+      rid: this.props.rid,
+    }
+    console.log('data sent: ', data)
+    axios.post(url, data)
+      .then((response) => {
+        console.log('response: ', response.status)
+        if (response.status === 200) {
+          // Conversation exists
+          console.log('Conversation found: ', response.data)
+          // Load conversations first before trying to go to conversations page
+          // Why? Conversations page iterates thorough conversations to select correct conv
+          this.props.loadConversations(response.data);
+          this.setState({
+            continueConv: true, 
+            convid: response.data[0]._id,
+          })
+        } else {
+          // have to create a new conversation
+          
+        }
+      }).catch(() => {
+        //No conversation--400 returned
+        console.log('No Conversation found')
+          this.setState({
+            newMessage: true,
+          })
+      });
   }
 
   componentDidMount() {
@@ -101,14 +198,62 @@ class DisplayProfile extends Component {
     let messageButton = null;
     // Restaurant is logged in 
     if (this.props.isLogged === true && this.props.whoIsLogged === true) {
-      messageButton = <Link to='/conversations/add' class="btn btn-danger">Message</Link>;
+      messageButton = <button class="btn btn-danger btn-sm" onClick = {this.initiateConv}>Message</button>;
     }
 
     //One customer can follow another
     // Show follow page only if another customer visits the profile page
     let followButton = null;
     if (this.props.isLogged === true && this.props.whoIsLogged === false && isMyPage === false) {
-      followButton = <button class="btn btn-danger btn-sm" onClick = {this.followHandler}>Edit</button>;
+      followButton = <button class="btn btn-danger btn-sm" onClick = {this.followHandler}>Follow</button>;
+    }
+
+    let continueConversation = null;
+    if(this.state.continueConv === true) {
+      console.log('conversation id: ', this.state.convid)
+      messageButton = <Link to={{
+                    pathname: '/conversationPage',
+                    query: {
+                      convid: `${this.state.convid}`,
+                      rid: `${this.props.rid}`,
+                      cid: `${this.props.location.query.cid}`,
+                    },
+                    }}
+                    className="btn btn-danger btn-sm"
+                  >
+                    Go to Conversation
+                  </Link>
+    }
+
+    let newConversationStarted = null;
+    if(this.state.createNewConv === true) {
+      messageButton = <Link to={{
+                    pathname: '/conversationPage',
+                    query: {
+                      convid: `${this.state.convid}`,
+                      rid: `${this.props.rid}`,
+                      cid: `${this.props.location.query.cid}`,
+                    },
+                    }}
+                    className="btn btn-danger btn-sm"
+                  >
+                    Go to Conversation
+                  </Link>
+    }
+
+    let newMessageField = null;
+    if(this.state.newMessage === true) {
+      newMessageField = (
+        <div class = 'login-form'>
+        <input onChange = {this.newMessageFieldHandler} 
+                                type="text"  
+                                name="replytext" 
+                                class="form-control"
+                                placeholder="..."
+                                required/>
+        <button class="btn btn-danger btn-sm" onClick = {this.sendMessageHandler}>Send</button>
+        </div>
+      );
     }
 
 
@@ -143,6 +288,8 @@ class DisplayProfile extends Component {
                       {editProfile}
                       {messageButton}
                       {followButton}
+                      {newMessageField}
+                      {newConversationStarted}
                     </div>
                   </div>
                   <div className="card-footer">
@@ -171,6 +318,8 @@ class DisplayProfile extends Component {
 
 const mapStateToProps = (state) => {
   return {
+    rid: state.restProfile.rid,
+    rname: state.restProfile.rname,
     cid: state.custProfile.cid,
     cemail: state.custProfile.cemail,
     cpassword: state.custProfile.cpassword,
@@ -194,6 +343,7 @@ const mapStateToProps = (state) => {
 function mapDispatchToProps(dispatch) {
   return {
     update: (field, payload) => dispatch(update(field, payload)),
+    loadConversations: (payload) => dispatch(loadConversations(payload)),
   };
 }
 
