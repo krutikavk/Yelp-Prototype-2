@@ -288,7 +288,7 @@ router.get('/customers/:cid', (request, response) => {
 });
 
 // Get all customers going to an event
-router.post('/:eid/customers', (request, response) => {
+router.get('/:eid/customers', (request, response) => {
   console.log('Endpoint POST: All customers attending event');
   console.log('Request Body: ', request.body);
   const data = { ...request.params };

@@ -37,9 +37,10 @@ const eventDisplayReducer = (state = initialEventState, action) => {
       let newState = { ...state };
       console.log('action: ', action);
       let filtered = newState.filteredEventArr;
-      console.log('filtered before', filtered);
+      console.log('filtered before', newState.filteredEventArr);
       // eslint-disable-next-line no-confusing-arrow
-      filtered = filtered.sort((a, b) => a.eDate < b.eDate ? -1 : 1);
+      newState.filteredEventArr = newState.filteredEventArr.sort((a, b) => new Date(b.edate) > new Date(a.edate) ? -1 : 1);
+      console.log('filtered after', newState.filteredEventArr);
       newState.currentPage = 1;
       newState.countPerPage = action.countPerPage;
       newState.displayEventArr = [...filtered].slice(0, newState.countPerPage);
@@ -51,9 +52,9 @@ const eventDisplayReducer = (state = initialEventState, action) => {
       let newState = { ...state };
       console.log('action: ', action);
       let filtered = newState.filteredEventArr;
-      console.log('filtered before', filtered);
+      console.log('filtered before', newState.filteredEventArr);
       // eslint-disable-next-line no-confusing-arrow
-      filtered = filtered.sort((a, b) => a.eDate < b.eDate ? 1 : -1);
+      newState.filteredEventArr = newState.filteredEventArr.sort((a, b) => new Date(a.edate) > new Date(b.edate) ? -1 : 1);
       newState.currentPage = 1;
       newState.countPerPage = action.countPerPage;
       newState.displayEventArr = [...filtered].slice(0, newState.countPerPage);

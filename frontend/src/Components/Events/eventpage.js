@@ -62,11 +62,35 @@ class Event extends Component {
     .then(response => {
         console.log("Status Code : ",response.status);
         if(response.status === 200) {
-          const temp = JSON.parse(JSON.stringify(response.data));
-          this.props.loadEvents(3, response.data);
-          this.setState({
-            events: [...temp],
-          });
+          console.log("customer IDs", response.data.ecustomers);
+          let cidArr = [...response.data.ecustomers];
+          console.log('cidArr: ', cidArr);
+          let attendees = [];
+          let promiseArray = cidArr.map(cust => axios.get(`${process.env.REACT_APP_BACKEND}/customers/${cust}`));
+          Promise.all(promiseArray)
+          .then( 
+            results => {
+              let customers = results.filter(entry => 
+                  entry.status === 200)
+
+              if(customers.length > 0) {
+                customers.forEach(cust => {
+                  //rest.data[0] will have each restaurant
+                  console.log('cust: ', cust)
+                  attendees.push(cust.data);
+                })
+
+                console.log("attendees: ", this.state.attendees)
+                this.setState ({
+                  attendees: [...attendees]
+                })
+                
+              } else {
+                alert("No registered attendees yet")
+              }
+
+          })
+          .catch(console.log)
         }
       }).catch(err =>{
         alert("Incorrect credentials")
@@ -100,7 +124,6 @@ class Event extends Component {
       <div>
         <Navbar/>
         <div class="container-fluid style={{height: 100}}">
-            Event description
             <div class="row">
               <div class="col-12 mt-3">
                 <div class="card">

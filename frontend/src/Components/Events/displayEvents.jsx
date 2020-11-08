@@ -7,7 +7,7 @@ import locationIcon from '@iconify/icons-mdi/map-marker';
 import { Icon } from '@iconify/react';
 import GoogleMapReact from 'google-map-react';
 import {
-  update, login, logout, customerLogin, loadEvents, loadNewEventPage, loadExactEventPage,
+  update, login, logout, customerLogin, loadEvents, loadNewEventPage, loadExactEventPage, sortEventsAsc, sortEventsDesc
 } from '../../_actions';
 import Event from './eventcard';
 import '../Map/map.css';
@@ -25,12 +25,16 @@ class DisplayEvents extends Component {
     super(props);
     this.state = {
       events: [],
+      eventFilter: '',
+      eventFilterStates: ['All', 'Ascending', 'Descending']
     };
 
     // Pagination handlers
     this.nextPageHandler = this.nextPageHandler.bind(this);
     this.prevPageHandler = this.prevPageHandler.bind(this);
     this.goToPageHandler = this.goToPageHandler.bind(this);
+
+    this.eventFilterHandler = this.eventFilterHandler.bind(this);
   }
 
   nextPageHandler = () => {
@@ -43,6 +47,19 @@ class DisplayEvents extends Component {
 
   goToPageHandler = (event) => {
     this.props.loadExactEventPage(event.target.id);
+  }
+
+  eventFilterHandler = (event) => {
+    console.log("selected", event.target.value)
+    if(event.target.value === 'Ascending'){
+      this.props.sortEventsAsc();
+    }
+    if(event.target.value === 'Descending') {
+      this.props.sortEventsAsc();
+    }
+    this.setState({
+      method: event.target.value
+    })
   }
 
   componentDidMount() {
@@ -95,6 +112,17 @@ class DisplayEvents extends Component {
           {renderPageNumbers}
           <li onClick={this.nextPageHandler}>Next</li>
         </ul>
+        <div class="form-inline">
+          <label for="ooption" style={{color:"black"}}>Filter by Date: </label>
+          <select class="form-control" id="ooption" onChange = {this.eventFilterHandler}>>
+            <option value = {this.state.eventFilter}> Choose...</option>
+            {this.state.eventFilterStates.map(option => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
         {this.props.displayEventArr.map((event) => (
           <div>
             <Event event={event} />
@@ -126,6 +154,8 @@ function mapDispatchToProps(dispatch) {
     loadEvents: (countPerPage, payload) => dispatch(loadEvents(countPerPage, payload)),
     loadNewEventPage: (payload) => dispatch(loadNewEventPage(payload)),
     loadExactEventPage: (payload) => dispatch(loadExactEventPage(payload)),
+    sortEventsAsc: () => dispatch(sortEventsAsc()),
+    sortEventsDesc: () => dispatch(sortEventsDesc()),
   };
 }
 
