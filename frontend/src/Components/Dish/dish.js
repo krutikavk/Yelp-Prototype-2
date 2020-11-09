@@ -63,7 +63,6 @@ class Dish extends Component {
     this.dpriceChangeHandler = this.dpriceChangeHandler.bind(this);
 
     this.submitDishChange = this.submitDishChange.bind(this);
-
   }
 
   addToCartHandler = (event) => {

@@ -192,37 +192,8 @@ class OrdersDisplay extends Component {
           <div>
             <Order order={order} />
           </div>
-        ))}
-        
+        ))}      
       </div>
-
-      /*
-      <div>
-        <Navbar/>
-        <div>
-          {redirectVar}
-          <div className="container">
-            <OrderListingsProvider id = {id} type = {type} >
-              <OrderListingsConsumer>
-                {function(value) {
-                  const { orderListings, updateFilter } = value
-                  return (
-                    <div>
-                      <Filter updateFilter={updateFilter}/>
-                      <ul>
-                        {orderListings.map(listing => (
-                          <Order order = {listing}/>
-                        ))}
-                      </ul>
-                    </div>
-                  )
-                }}
-              </OrderListingsConsumer>
-            </OrderListingsProvider >
-          </div>
-        </div>
-      </div>
-      */
     )
   }
 }
@@ -243,7 +214,7 @@ function mapDispatchToProps(dispatch) {
     login: () => dispatch(login()),
     logout: () => dispatch(logout()),
     loadOrders: (countPerPage, payload) => dispatch(loadOrders(countPerPage, payload)),
-    loadExactOrderPage: (payload) => dispatch(loadExactOrderPage()),
+    loadExactOrderPage: (payload) => dispatch(loadExactOrderPage(payload)),
     loadNewOrderPage: (payload) => dispatch(loadNewOrderPage(payload)),
     filterOrdersByOption: (payload) => dispatch(filterOrdersByOption(payload)),
     filterOrdersByStatus: (payload) => dispatch(filterOrdersByStatus(payload)),

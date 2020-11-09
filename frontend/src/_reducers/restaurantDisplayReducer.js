@@ -93,7 +93,7 @@ const restaurantDisplayReducer = (state = initialRestState, action) => {
 
     case 'LOAD_EXACT_PAGE': {
       let newState = { ...state };
-      newState.currentPage = action.payload;
+      newState.currentPage = +action.payload;
       const upperBound = newState.currentPage * newState.countPerPage;
       const lowerBound = upperBound - newState.countPerPage;
       newState.displayRestArr = [...newState.filteredRestArr].slice(lowerBound, upperBound);
