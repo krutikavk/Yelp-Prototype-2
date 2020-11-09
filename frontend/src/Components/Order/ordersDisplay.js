@@ -126,7 +126,7 @@ class OrdersDisplay extends Component {
 
     let renderPageNumbers = null;
     
-    const numberOfPages = Math.ceil(this.props.orders.filteredOrderArr.length / this.props.orders.countPerPage);
+    const numberOfPages = Math.ceil(this.props.orders.filteredOrderArr.length / 3);
     for(let i = 1; i <= numberOfPages; i++) {
       pageNumbers.push(i);
     }
