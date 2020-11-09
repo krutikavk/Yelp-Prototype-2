@@ -15,7 +15,7 @@ class Dishes extends Component {
     super(props);
 
     this.state = {
-      dishes: [],
+      //dishes: [],
       rid: '',
       rdelivery: '',
     };
@@ -51,7 +51,7 @@ class Dishes extends Component {
           const temp = JSON.parse(JSON.stringify(response.data));
           console.log('temp: ', temp);
           this.setState({
-            dishes: [...temp],
+            //dishes: [...temp],
             rid: this.props.location.query.rid,
             rdelivery: this.props.location.query.rdelivery,
           });
@@ -71,7 +71,7 @@ class Dishes extends Component {
     }
 
     let warning = null;
-    if (this.state.dishes.length === 0) {
+    if (this.props.dishes.dishArr.length === 0) {
       warning = <p className="card-text font-italic">No dishes added by restaurant</p>
     }
 

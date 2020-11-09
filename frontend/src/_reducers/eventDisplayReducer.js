@@ -10,7 +10,7 @@ const initialEventState = {
 
 const eventDisplayReducer = (state = initialEventState, action) => {
   switch (action.type) {
-    case 'LOAD_DATA': {
+    case 'LOAD_EVENT_DATA': {
       console.log('action: ', action);
 
       let newState = { ...state };
@@ -62,7 +62,7 @@ const eventDisplayReducer = (state = initialEventState, action) => {
       return newState;
     }
 
-    case 'LOAD_NEW_PAGE': {
+    case 'LOAD_NEW_EVENT_PAGE': {
       if (state.currentPage + action.payload.page < 1 ||
         state.currentPage + action.payload.page > Math.ceil(state.filteredEventArr.length / state.countPerPage)) {
         return state;
@@ -76,7 +76,7 @@ const eventDisplayReducer = (state = initialEventState, action) => {
       return newState;
     }
 
-    case 'LOAD_EXACT_PAGE': {
+    case 'LOAD_EXACT_EVENT_PAGE': {
       let newState = { ...state };
       newState.currentPage = +action.payload;
       const upperBound = newState.currentPage * newState.countPerPage;

@@ -11,7 +11,7 @@ const initialOrderState = {
 
 const OrderDisplayReducer = (state = initialOrderState, action) => {
   switch (action.type) {
-    case 'LOAD_DATA': {
+    case 'LOAD_ORDER_DATA': {
       return {
         ...state,
         orderArr: [...action.payload],
@@ -31,7 +31,7 @@ const OrderDisplayReducer = (state = initialOrderState, action) => {
       return newState;
     }
 
-    case 'LOAD_NEW_PAGE': {
+    case 'LOAD_NEW_ORDER_PAGE': {
       if (state.currentPage + action.payload.page < 1 ||
         state.currentPage + action.payload.page > Math.ceil(state.filteredOrderArr.length / state.countPerPage)) {
         return state;
@@ -45,7 +45,7 @@ const OrderDisplayReducer = (state = initialOrderState, action) => {
       return newState;
     }
 
-    case 'LOAD_EXACT_PAGE': {
+    case 'LOAD_EXACT_ORDER_PAGE': {
       let newState = { ...state };
       newState.currentPage = action.payload;
       const upperBound = newState.currentPage * newState.countPerPage;

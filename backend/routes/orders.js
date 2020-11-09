@@ -222,7 +222,7 @@ router.get('/:oid', (request, response) => {
 router.put('/:oid', (request, response) => {
   console.log('\nEndpoint PUT: Order status update');
   console.log('Request Body: ', request.body);
-  const data = { ...request.params, ...request.data };
+  const data = { ...request.params, ...request.body };
   kafka.make_request('ordersTopic', 'UPDATEORDER', data, (err, result) => {
     console.log('Place order result ', result);
     if (err) {

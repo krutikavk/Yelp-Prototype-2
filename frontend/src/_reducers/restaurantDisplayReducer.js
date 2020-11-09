@@ -13,7 +13,7 @@ const initialRestState = {
 
 const restaurantDisplayReducer = (state = initialRestState, action) => {
   switch (action.type) {
-    case 'LOAD_DATA': {
+    case 'LOAD_REST_DATA': {
       console.log('action: ', action);
       return {
         ...state,
@@ -69,7 +69,7 @@ const restaurantDisplayReducer = (state = initialRestState, action) => {
       return newState;
     }
 
-    case 'LOAD_NEW_PAGE': {
+    case 'LOAD_NEW_REST_PAGE': {
       if (state.currentPage + action.payload.page < 1 ||
         state.currentPage + action.payload.page > Math.ceil(state.filteredRestArr.length / state.countPerPage)) {
         return state;
@@ -91,7 +91,7 @@ const restaurantDisplayReducer = (state = initialRestState, action) => {
       return newState;
     }
 
-    case 'LOAD_EXACT_PAGE': {
+    case 'LOAD_EXACT_REST_PAGE': {
       let newState = { ...state };
       newState.currentPage = +action.payload;
       const upperBound = newState.currentPage * newState.countPerPage;

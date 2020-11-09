@@ -7,7 +7,7 @@ const initialOrderState = {
 
 const DishDisplayReducer = (state = initialOrderState, action) => {
   switch (action.type) {
-    case 'LOAD_DATA': {
+    case 'LOAD_DISH_DATA': {
       return {
         ...state,
         dishArr: [...action.payload],
@@ -25,7 +25,7 @@ const DishDisplayReducer = (state = initialOrderState, action) => {
       return newState;
     }
 
-    case 'LOAD_NEW_PAGE': {
+    case 'LOAD_NEW_DISH_PAGE': {
       if (state.currentPage + action.payload.page < 1 ||
         state.currentPage + action.payload.page > Math.ceil(state.filteredOrderArr.length / state.countPerPage)) {
         return state;
@@ -39,7 +39,7 @@ const DishDisplayReducer = (state = initialOrderState, action) => {
       return newState;
     }
 
-    case 'LOAD_EXACT_PAGE': {
+    case 'LOAD_EXACT_DISH_PAGE': {
       let newState = { ...state };
       newState.currentPage = action.payload;
       const upperBound = newState.currentPage * newState.countPerPage;

@@ -10,7 +10,7 @@ const initialCustState = {
 
 const customerDisplayReducer = (state = initialCustState, action) => {
   switch (action.type) {
-    case 'LOAD_DATA': {
+    case 'LOAD_CUST_DATA': {
       console.log('action: ', action);
       return {
         ...state,
@@ -86,7 +86,7 @@ const customerDisplayReducer = (state = initialCustState, action) => {
       return newState;
     }
 
-    case 'LOAD_NEW_PAGE': {
+    case 'LOAD_NEW_CUST_PAGE': {
       if (state.currentPage + action.payload.page < 1 ||
         state.currentPage + action.payload.page > Math.ceil(state.filteredCustArr.length / state.countPerPage)) {
         return state;
@@ -100,7 +100,7 @@ const customerDisplayReducer = (state = initialCustState, action) => {
       return newState;
     }
 
-    case 'LOAD_EXACT_PAGE': {
+    case 'LOAD_EXACT_CUST_PAGE': {
       let newState = { ...state };
       newState.currentPage = +action.payload;
       const upperBound = newState.currentPage * newState.countPerPage;

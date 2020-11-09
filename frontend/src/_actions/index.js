@@ -28,7 +28,7 @@ export const updateCart = (infield, payload) => ({
 });
 
 export const loadRestaurants = (countPerPage, payload) => ({
-  type: 'LOAD_DATA',
+  type: 'LOAD_REST_DATA',
   countPerPage,
   payload,
 });
@@ -45,17 +45,17 @@ export const filterRestaurantByLocation = (nbrLatitude, nbrLongitude) => ({
 });
 
 export const loadNewPage = (payload) => ({
-  type: 'LOAD_NEW_PAGE',
+  type: 'LOAD_NEW_REST_PAGE',
   payload,
 });
 
 export const loadExactPage = (payload) => ({
-  type: 'LOAD_EXACT_PAGE',
+  type: 'LOAD_EXACT_REST_PAGE',
   payload,
 });
 
 export const loadCustomers = (countPerPage, payload) => ({
-  type: 'LOAD_DATA',
+  type: 'LOAD_CUST_DATA',
   countPerPage,
   payload,
 });
@@ -79,17 +79,17 @@ export const filterCustomerByLocation = (nbrLatitude, nbrLongitude) => ({
 });
 
 export const loadNewCustPage = (payload) => ({
-  type: 'LOAD_NEW_PAGE',
+  type: 'LOAD_NEW_CUST_PAGE',
   payload,
 });
 
 export const loadExactCustPage = (payload) => ({
-  type: 'LOAD_EXACT_PAGE',
+  type: 'LOAD_EXACT_CUST_PAGE',
   payload,
 });
 
 export const loadEvents = (countPerPage, payload) => ({
-  type: 'LOAD_DATA',
+  type: 'LOAD_EVENT_DATA',
   countPerPage,
   payload,
 });
@@ -109,17 +109,17 @@ export const sortEventsDesc = () => ({
 });
 
 export const loadNewEventPage = (payload) => ({
-  type: 'LOAD_NEW_PAGE',
+  type: 'LOAD_NEW_EVENT_PAGE',
   payload,
 });
 
 export const loadExactEventPage = (payload) => ({
-  type: 'LOAD_EXACT_PAGE',
+  type: 'LOAD_EXACT_EVENT_PAGE',
   payload,
 });
 
 export const loadConversations = (payload) => ({
-  type: 'LOAD_DATA',
+  type: 'LOAD_CONV_DATA',
   payload,
 });
 
@@ -143,7 +143,7 @@ export const addFollower = (followercid, followingcid) => ({
 });
 
 export const loadOrders = (countPerPage, payload) => ({
-  type: 'LOAD_DATA',
+  type: 'LOAD_ORDER_DATA',
   countPerPage,
   payload,
 });
@@ -170,17 +170,17 @@ export const filterOrdersByStatus = (payload) => ({
 });
 
 export const loadNewOrderPage = (payload) => ({
-  type: 'LOAD_NEW_PAGE',
+  type: 'LOAD_NEW_ORDER_PAGE',
   payload,
 });
 
 export const loadExactOrderPage = (payload) => ({
-  type: 'LOAD_EXACT_PAGE',
+  type: 'LOAD_EXACT_ORDER_PAGE',
   payload,
 });
 
 export const loadDishes = (countPerPage, payload) => ({
-  type: 'LOAD_DATA',
+  type: 'LOAD_DISH_DATA',
   countPerPage,
   payload,
 });
@@ -192,11 +192,11 @@ export const addDish = (countPerPage, payload) => ({
 });
 
 export const loadNewDishPage = (payload) => ({
-  type: 'LOAD_NEW_PAGE',
+  type: 'LOAD_NEW_DISH_PAGE',
   payload,
 });
 
 export const loadExactDishPage = (payload) => ({
-  type: 'LOAD_EXACT_PAGE',
+  type: 'LOAD_EXACT_DISH_PAGE',
   payload,
 });

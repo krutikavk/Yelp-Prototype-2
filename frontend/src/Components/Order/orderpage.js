@@ -86,12 +86,12 @@ class Orderpage extends Component {
       ostatus: this.state.ostatus,
       otype: this.state.otype,
     }
+    console.log('data: ', data);
 
     axios.put(url, data)
       .then(response => {
         console.log("Status Code : ",response.status);
         if(response.status === 200){
-
           this.setState({
             updated: true,
             ostatusToChange: false,

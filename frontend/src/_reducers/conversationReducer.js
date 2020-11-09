@@ -4,7 +4,7 @@ const initialConvState = {
 
 const conversationReducer = (state = initialConvState, action) => {
   switch (action.type) {
-    case 'LOAD_DATA': {
+    case 'LOAD_CONV_DATA': {
       console.log('action: ', action);
       let newState = { ...state };
       newState.convArr = JSON.parse(JSON.stringify(action.payload))
