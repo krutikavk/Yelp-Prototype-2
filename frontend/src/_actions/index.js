@@ -130,7 +130,7 @@ export const addMessage = (convid, message) => ({
   message,
 });
 
-//Payload has a conversation that needs to be updated
+// Payload has a conversation that needs to be updated
 export const updateConversation = (payload) => ({
   type: 'UPDATECONV',
   payload,
@@ -140,4 +140,41 @@ export const addFollower = (followercid, followingcid) => ({
   type: 'ADD_FOLLOWER',
   followercid,
   followingcid,
+});
+
+export const loadOrders = (countPerPage, payload) => ({
+  type: 'LOAD_DATA',
+  countPerPage,
+  payload,
+});
+
+export const addOrder = (countPerPage, payload) => ({
+  type: 'ADD_ORDER',
+  countPerPage,
+  payload,
+});
+
+export const filterOrdersByoption = (payload) => ({
+  type: 'FILTER_BY_OOPTION',
+  payload,
+});
+
+export const filterOrdersByType = (payload) => ({
+  type: 'FILTER_BY_OTYPE',
+  payload,
+});
+
+export const filterOrdersByStatus = (payload) => ({
+  type: 'FILTER_BY_OSTATUS',
+  payload,
+});
+
+export const loadNewOrderPage = (payload) => ({
+  type: 'LOAD_NEW_PAGE',
+  payload,
+});
+
+export const loadExactOrderPage = (payload) => ({
+  type: 'LOAD_EXACT_PAGE',
+  payload,
 });

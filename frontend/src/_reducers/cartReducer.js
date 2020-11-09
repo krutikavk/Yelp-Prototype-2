@@ -5,12 +5,11 @@ const initialCartState = {
 
 const emptyCart = {
   did: '',
-  dname: '',
   rid: '',
-  dquantity: '',
+  dname: '',
   dprice: '',
-  ooption: '',
-  oaddress: '',
+  durl: '',
+  dquantity: '',
 };
 
 const cartReducer = (state = initialCartState, action) => {
@@ -51,7 +50,7 @@ const cartReducer = (state = initialCartState, action) => {
             };
             return newState;
           } else {
-            newcontents= [...state.cartContents];
+            newcontents = [...state.cartContents];
             newcontents[index].dquantity++;
           }
           let newState = {
@@ -70,10 +69,10 @@ const cartReducer = (state = initialCartState, action) => {
           ** (delete entry 0 and then delete 1--will not find state.cartContents[cartid].dquantity)
           */
           // eslint-disable-next-line eqeqeq
-          let index = state.cartContents.findIndex((x) => x.did == did);
+          let index = state.cartContents.findIndex((x) => x.did === did);
           if (state.cartContents[index].dquantity === 1) {
             // Loose equality--match string/number
-            newcontents = newcontents.filter(entry => (entry.did != did))
+            newcontents = newcontents.filter(entry => (entry.did !== did))
           } else {
             newcontents = [...state.cartContents];
             newcontents[index].dquantity--;

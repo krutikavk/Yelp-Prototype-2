@@ -55,7 +55,7 @@ class DisplayEvents extends Component {
       this.props.sortEventsAsc();
     }
     if(event.target.value === 'Descending') {
-      this.props.sortEventsAsc();
+      this.props.sortEventsDesc();
     }
     this.setState({
       method: event.target.value

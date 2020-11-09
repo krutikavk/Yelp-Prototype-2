@@ -3,7 +3,7 @@ import '../../App.css';
 import axios from 'axios';
 import {Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {update, updateCart, login, logout, customerLogin} from '../../_actions';
+import {update, updateCart, login, logout, customerLogin, addOrder} from '../../_actions';
 import Navbar from '../Navbar/navbar';
 
 class Cart extends Component{
@@ -48,9 +48,8 @@ class Cart extends Component{
       cid: this.props.cid, 
       rid: this.props.cartContents[0].rid, 
       ooption: this.state.ooption, 
-      ostatus: 1, 
-      otype: 1,
       oaddress: '', 
+      odishes: [...this.props.cartContents],
     }
 
 
@@ -64,57 +63,20 @@ class Cart extends Component{
       dname: '',
       dquantity: '',
     }
+    axios.defaults.withCredentials = true;
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
 
     let url = `${process.env.REACT_APP_BACKEND}/orders`
-    axios.post('http://localhost:3001/orders', orderdata)
+    axios.post(url, orderdata)
       .then(response => {
         console.log("Status Code : ",response.status);
         if(response.status === 200){
-          console.log("Order entered in table: ")
-          console.log("order id: ", response.data);
-          //call props action
-          oid = response.data[0]['MAX(oid)'];
-          console.log("Order id received: ", oid);
-
-          let data = [];
-          this.props.cartContents.forEach(dish => {
-            console.log("Dish name: ", dish.dname)
-            console.log("Dish quantity: ", dish.dquantity)
-            let temp = {
-              oid: oid,
-              did: dish.did,
-              dname: dish.dname,
-              odquantity: dish.dquantity
-            }
-
-            data.push(temp)
-
-          });
-          console.log(data);
-
-          //For each array entry as data, have to place an axios request
-          //Axios is asynchronous so have to use promise all to gather all responses and then process them
-          //Reference: https://stackoverflow.com/questions/44402079/how-to-make-multiple-axios-requests-using-a-dynamic-array-of-links-in-javascript/44403848 
-          let promiseArray = data.map(dataarr => axios.post('http://localhost:3001/orders/dishes', dataarr));
-          Promise.all( promiseArray )
-          .then(
-            results => {
-              let err = results.filter(entry => 
-                entry.status !== 200
-              )
-
-              if(err.length === 0) {
-                this.props.updateCart('ORDER');
-                this.setState({
-                  placed: true
-                })
-                console.log("Order placed")
-                alert("Order Placed")
-
-              }
-            }
-          )
-          .catch(console.log)
+          console.log("response: ", response.data);
+          this.props.addOrder(3, response.data);
+          alert('Placed Order');
+          this.setState({
+            placed: true,
+          })
         }
       }).catch(err =>{
         alert("Incorrect credentials")
@@ -187,7 +149,7 @@ class Cart extends Component{
                           <tr>
                             <th scope="row" class="border-0">
                               <div class="p-2">
-                                <img src="https://res.cloudinary.com/mhmd/image/upload/v1556670479/product-1_zrifhn.jpg" alt="" width="70" class="img-fluid rounded shadow-sm"></img>
+                                <img src={entry.durl} alt="" width="70" class="img-fluid rounded shadow-sm"></img>
                                 <div class="ml-3 d-inline-block align-middle">
                                   <h5 class="mb-0"> <a href="#" class="text-dark d-inline-block align-middle">{entry.dname}</a></h5><span class="text-muted font-weight-normal font-italic d-block">Restaurant: {entry.rid}</span>
                                 </div>
@@ -284,7 +246,8 @@ function mapDispatchToProps(dispatch) {
     login: () => dispatch(login()),
     logout: () => dispatch(logout()),
     customerLogin: () => dispatch(customerLogin()),
-    updateCart: (field, payload) => dispatch(updateCart(field, payload))
+    updateCart: (field, payload) => dispatch(updateCart(field, payload)),
+    addOrder: (countPerPage, payload) => dispatch(addOrder(countPerPage, payload)),
   }
   
 }

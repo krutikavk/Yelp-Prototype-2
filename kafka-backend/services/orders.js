@@ -33,7 +33,7 @@ function placeOrder(data, callback) {
     otype: data.otype,
     otime: ordertime,
     oaddress: data.oaddress,
-    odishes: (data.odidhes === undefined ? [] : [...data.odishes]),
+    odishes: (data.odishes === undefined ? [] : [...data.odishes]),
   });
 
   newOrder.save((error) => {

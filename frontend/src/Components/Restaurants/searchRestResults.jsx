@@ -102,7 +102,8 @@ class SearchRestResults extends Component {
   }
 
   getAllRestaurants() {
-
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
+    axios.defaults.withCredentials = true;
     const url = `${process.env.REACT_APP_BACKEND}/restaurants`;
     axios.get(url)
       .then((response) => {

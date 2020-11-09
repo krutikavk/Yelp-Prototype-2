@@ -112,10 +112,6 @@ class SearchRest extends Component {
 
   submitSearch = (event) => {
     event.preventDefault();
-    //set the with credentials to true
-    axios.defaults.withCredentials = true;
-
-    //searchStates: ['Location', 'Cuisine', 'Delivery Type', 'Dish Name']
     this.setState({
       searchStarted: true
     })

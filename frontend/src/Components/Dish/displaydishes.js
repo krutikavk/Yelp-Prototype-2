@@ -23,13 +23,9 @@ class Dishes extends Component {
   }
 
   componentDidMount(props) {
-    // console.log("rest id: ", this.props.location.query.rid)
-    // console.log("rest id: ", this.props.location.query.rname)
-    // console.log("rest id: ", this.props.location.query.rphone)
-    // console.log("rest id: ", this.props.location.query.rdelivery)
-    // get all dishes for a restaurant
-    // const url = 'http://localhost:3001/dishes/' + this.props.location.query.rid;
-    const url = `${process.env.REACT_APP_BACKEND}/dishes/${this.props.location.query.rid}`
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
+    axios.defaults.withCredentials = true;
+    const url = `${process.env.REACT_APP_BACKEND}/dishes/${this.props.location.query.rid}`;
     console.log('query: ', this.props.location.query);
     axios.get(url)
       .then((response) => {
@@ -41,7 +37,7 @@ class Dishes extends Component {
           this.setState({
             dishes: [...temp],
             rid: this.props.location.query.rid,
-            rdelivery: this.props.location.query.rdelivery
+            rdelivery: this.props.location.query.rdelivery,
           });
         }
       }).catch((err) => {

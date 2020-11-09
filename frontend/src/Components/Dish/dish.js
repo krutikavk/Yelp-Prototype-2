@@ -76,12 +76,11 @@ class Dish extends Component {
       } else {
         let data = {
           did: this.props.dish.did,
-          dname: this.props.dish.dname,            //dish name
-          rid: this.props.rid,              //restaurant
-          dquantity: 1,        //dish quantity
-          dprice: this.props.dish.dprice,           //dish price
-          ooption: this.props.rdelivery,          //Delivery/Pickup
-          oaddress: ''
+          rid: this.props.dish.rid,
+          dname: this.props.dish.dname,
+          dprice: this.props.dish.dprice,
+          durl: this.props.dish.durl,
+          dquantity: 1,    
         }
         
         this.props.updateCart('ADD', data);
@@ -199,11 +198,12 @@ class Dish extends Component {
 
   submitDishChange = (event) => {
     event.preventDefault();
+    axios.defaults.headers.common.authorization = localStorage.getItem('token');
     axios.defaults.withCredentials = true;
 
-
     console.log(this.state.dataToChange);
-    let url = 'http://localhost:3001/dishes/' + this.props.dish.did;
+    // let url = 'http://localhost:3001/dishes/' + this.props.dish.did;
+    let url = `${process.env.REACT_APP_BACKEND}/dishes/${this.props.dish.did}`;
     console.log("Update dish at ", url)
 
     axios.put(url, this.state.dataToChange)
