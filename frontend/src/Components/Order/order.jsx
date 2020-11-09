@@ -14,13 +14,14 @@ class Order extends Component {
       <Link to={{
         pathname: '/orderpage',
         query: {
-          oid: `${this.props.order.oid}`,
+          oid: `${this.props.order._id}`,
           rid: `${this.props.order.rid}`,
           ooption: `${this.props.order.ooption}`,
           ostatus: `${this.props.order.ostatus}`,
           otype: `${this.props.order.otype}`,
           otime: `${this.props.order.otime}`,
           oaddress: `${this.props.order.oaddress}`,
+          odishes: `${this.props.order.odishes}`,
         },
       }}
       >
@@ -30,7 +31,7 @@ class Order extends Component {
               <div className="card">
                 <div className="card-horizontal">
                   <div className="card-body">
-                      <p className="card-text">Order ID: {this.props.order.oid}</p>
+                      <p className="card-text">Order ID: {this.props.order._id}</p>
                       <p className="card-text">Restaurant ID: {this.props.order.rid}</p>
                       <p className="card-text">Service: {this.props.order.ooption}</p>
                       <p className="card-text">Status: {this.props.order.ostatus}</p>

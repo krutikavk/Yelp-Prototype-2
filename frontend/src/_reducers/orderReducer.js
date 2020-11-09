@@ -55,13 +55,52 @@ const OrderDisplayReducer = (state = initialOrderState, action) => {
     }
 
     case 'FILTER_BY_OOPTION': {
-      return state;
+      let newState = { ...state };
+      console.log('action: ', action);
+      let filtered = newState.filteredOrderArr;
+      if (action.payload !== 'All') {
+        filtered = filtered.filter((item) => item.ooption === action.payload);
+        newState.displayOrderArr = [...filtered].slice(0, newState.countPerPage);
+        newState.currentPage = 1;
+      } else {
+        filtered = [...newState.orderArr];
+        newState.currentPage = 1;
+        // newState.countPerPage = action.countPerPage;
+        newState.displayOrderArr = [...filtered].slice(0, newState.countPerPage);
+      }
+      return newState;
     }
     case 'FILTER_BY_OTYPE': {
-      return state;
+      let newState = { ...state };
+      console.log('action: ', action);
+      let filtered = newState.filteredOrderArr;
+      if (action.payload !== 'All') {
+        filtered = filtered.filter((item) => item.otype === action.payload);
+        newState.displayOrderArr = [...filtered].slice(0, newState.countPerPage);
+        newState.currentPage = 1;
+      } else {
+        filtered = [...newState.orderArr];
+        newState.currentPage = 1;
+        // newState.countPerPage = action.countPerPage;
+        newState.displayOrderArr = [...filtered].slice(0, newState.countPerPage);
+      }
+      return newState;
     }
     case 'FILTER_BY_OSTATUS': {
-      return state;
+      let newState = { ...state };
+      console.log('action: ', action);
+      let filtered = newState.filteredOrderArr;
+      if (action.payload !== 'All') {
+        filtered = filtered.filter((item) => item.ostatus === action.payload);
+        newState.displayOrderArr = [...filtered].slice(0, newState.countPerPage);
+        newState.currentPage = 1;
+      } else {
+        filtered = [...newState.orderArr];
+        newState.currentPage = 1;
+        // newState.countPerPage = action.countPerPage;
+        newState.displayOrderArr = [...filtered].slice(0, newState.countPerPage);
+      }
+      return newState;
     }
     default: {
       return state;

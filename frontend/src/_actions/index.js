@@ -154,7 +154,7 @@ export const addOrder = (countPerPage, payload) => ({
   payload,
 });
 
-export const filterOrdersByoption = (payload) => ({
+export const filterOrdersByOption = (payload) => ({
   type: 'FILTER_BY_OOPTION',
   payload,
 });

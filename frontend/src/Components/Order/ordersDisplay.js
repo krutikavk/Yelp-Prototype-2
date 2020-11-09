@@ -6,7 +6,10 @@ import axios from 'axios';
 import Filter from '../Filter/orderfilter';
 import {Redirect} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {update, login, logout, loadOrders, loadNewOrderPage, loadExactOrderPage} from '../../_actions';
+import {
+  update, login, logout, loadOrders, loadNewOrderPage, loadExactOrderPage, 
+  filterOrdersByOption, filterOrdersByType, filterOrdersByStatus,
+} from '../../_actions';
 import Navbar from '../Navbar/navbar';
 
 class OrdersDisplay extends Component {
@@ -15,7 +18,7 @@ class OrdersDisplay extends Component {
 
     this.state = {
       ooption: '',
-      ooptionStates: ['All', 'Pickup', 'Delivery'],
+      ooptionStates: ['All', 'Pickup', 'Delivery', 'Dine in'],
       ostatus: '',
       ostatusStates: ['All', 'Order received', 'Preparing', 'Pickup ready','Picked up', 'On the way', 'Delivered'],
       otype: '',
@@ -26,21 +29,25 @@ class OrdersDisplay extends Component {
     this.ooptionHandler = this.ooptionHandler.bind(this);
     this.ostatusHandler = this.ostatusHandler.bind(this);
     this.otypeHandler = this.otypeHandler.bind(this);
+
+    //Pagination handlers
+    this.nextPageHandler = this.nextPageHandler.bind(this);
+    this.prevPageHandler = this.prevPageHandler.bind(this);
+    this.goToPageHandler = this.goToPageHandler.bind(this);
   }
 
   ooptionHandler = (event) => {
     console.log("selected", event.target.value)
-
+    this.props.filterOrdersByOption(event.target.value)
     this.setState({
       ooption: event.target.value
     })
-
   }
 
 
   ostatusHandler = (event) => {
     console.log("selected", event.target.value)
-
+    this.props.filterOrdersByStatus(event.target.value)
     this.setState({
       ostatus: event.target.value
     })
@@ -49,10 +56,22 @@ class OrdersDisplay extends Component {
 
   otypeHandler = (event) => {
     console.log("selected", event.target.value)
-
+    this.props.filterOrdersByType(event.target.value)
     this.setState({
       otype: event.target.value
     })
+  }
+
+  nextPageHandler = () => {
+    this.props.loadNewOrderPage({page: 1})
+  }
+
+  prevPageHandler = () => {
+    this.props.loadNewOrderPage({page: -1})
+  }
+
+  goToPageHandler = (event) => {
+    this.props.loadExactOrderPage(event.target.id);
   }
 
   componentDidMount() {
@@ -127,40 +146,42 @@ class OrdersDisplay extends Component {
     return (
       <div>
         <Navbar />
-        <div className="form-group">
-          <label for="ooption">Filter by Service: </label>
-          <select className="form-control" id="ooption" onChange = {this.ooptionHandler}>>
-            <option value = {this.state.ooption}> Choose...</option>
-            {this.state.ooptionStates.map(option => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-        </div>
+        <div class="form-inline">
+          <div className="form-group">
+            <label for="ooption">Filter by Service: </label>
+            <select className="form-control" id="ooption" onChange = {this.ooptionHandler}>>
+              <option value = {this.state.ooption}> Choose...</option>
+              {this.state.ooptionStates.map(option => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <div className="form-group">
-          <label for="ostatus">Filter by Order Status: </label>
-          <select className="form-control" id="ooption" onChange = {this.ostatusHandler}>>
-            <option value = {this.state.ostatus}> Choose...</option>
-            {this.state.ostatusStates.map(option => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-        </div>
+          <div className="form-group">
+            <label for="ostatus">Filter by Order Status: </label>
+            <select className="form-control" id="ooption" onChange = {this.ostatusHandler}>>
+              <option value = {this.state.ostatus}> Choose...</option>
+              {this.state.ostatusStates.map(option => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <div className="form-group">
-          <label for="otype">Filter by Order Type: </label>
-          <select className="form-control" id="ooption" onChange = {this.otypeHandler}>>
-            <option value = {this.state.otype}> Choose...</option>
-            {this.state.otypeStates.map(option => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
+          <div className="form-group">
+            <label for="otype">Filter by Order Type: </label>
+            <select className="form-control" id="ooption" onChange = {this.otypeHandler}>>
+              <option value = {this.state.otype}> Choose...</option>
+              {this.state.otypeStates.map(option => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
         <ul id="page-numbers">
           <li onClick={this.prevPageHandler}>Prev</li>
@@ -224,7 +245,9 @@ function mapDispatchToProps(dispatch) {
     loadOrders: (countPerPage, payload) => dispatch(loadOrders(countPerPage, payload)),
     loadExactOrderPage: (payload) => dispatch(loadExactOrderPage()),
     loadNewOrderPage: (payload) => dispatch(loadNewOrderPage(payload)),
-
+    filterOrdersByOption: (payload) => dispatch(filterOrdersByOption(payload)),
+    filterOrdersByStatus: (payload) => dispatch(filterOrdersByStatus(payload)),
+    filterOrdersByType: (payload) => dispatch(filterOrdersByType(payload)),
   } 
 }
 

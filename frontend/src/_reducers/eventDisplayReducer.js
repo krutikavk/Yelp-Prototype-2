@@ -42,7 +42,7 @@ const eventDisplayReducer = (state = initialEventState, action) => {
       let filtered = newState.filteredEventArr;
       console.log('filtered after', newState.filteredEventArr);
       newState.currentPage = 1;
-      newState.countPerPage = action.countPerPage;
+      // newState.countPerPage = action.countPerPage;
       newState.displayEventArr = [...filtered].slice(0, newState.countPerPage);
       // newState.displayEventArr = [...filtered];
       return newState;
@@ -56,7 +56,7 @@ const eventDisplayReducer = (state = initialEventState, action) => {
       newState.filteredEventArr = newState.filteredEventArr.sort((a, b) => new Date(a.edate) > new Date(b.edate) ? -1 : 1);
       let filtered = newState.filteredEventArr;
       newState.currentPage = 1;
-      newState.countPerPage = action.countPerPage;
+      // newState.countPerPage = action.countPerPage;
       newState.displayEventArr = [...filtered].slice(0, newState.countPerPage);
       // newState.displayEventArr = [...filtered];
       return newState;
@@ -73,14 +73,6 @@ const eventDisplayReducer = (state = initialEventState, action) => {
       const upperBound = newState.currentPage * newState.countPerPage;
       const lowerBound = upperBound - newState.countPerPage;
       newState.displayEventArr = [...newState.filteredEventArr].slice(lowerBound, upperBound);
-
-      /*
-      let newState = { ...state };
-      newState.currentPage = action.payload;
-      const upperBound = newState.currentPage * newState.countPerPage;
-      const lowerBound = upperBound - newState.countPerPage;
-      newState.displayRestArr = [...newState.filtered].slice(lowerBound, upperBound);
-      */
       return newState;
     }
 
