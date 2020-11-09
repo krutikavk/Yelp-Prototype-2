@@ -178,3 +178,25 @@ export const loadExactOrderPage = (payload) => ({
   type: 'LOAD_EXACT_PAGE',
   payload,
 });
+
+export const loadDishes = (countPerPage, payload) => ({
+  type: 'LOAD_DATA',
+  countPerPage,
+  payload,
+});
+
+export const addDish = (countPerPage, payload) => ({
+  type: 'ADD_DISH',
+  countPerPage,
+  payload,
+});
+
+export const loadNewDishPage = (payload) => ({
+  type: 'LOAD_NEW_PAGE',
+  payload,
+});
+
+export const loadExactDishPage = (payload) => ({
+  type: 'LOAD_EXACT_PAGE',
+  payload,
+});

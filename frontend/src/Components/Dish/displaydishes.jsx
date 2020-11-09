@@ -4,9 +4,8 @@ import axios from 'axios';
 import { Redirect, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import {
-  update, login, logout, restaurantLogin 
+  loadDishes, loadNewDishPage, loadExactDishPage,
 } from '../../_actions';
-import { nachospic } from './nachospic.png';
 import Dish from './dish';
 import Navbar from '../Navbar/navbar';
 
@@ -20,6 +19,23 @@ class Dishes extends Component {
       rid: '',
       rdelivery: '',
     };
+
+     //Pagination handlers
+    this.nextPageHandler = this.nextPageHandler.bind(this);
+    this.prevPageHandler = this.prevPageHandler.bind(this);
+    this.goToPageHandler = this.goToPageHandler.bind(this);
+  }
+
+  nextPageHandler = () => {
+    this.props.loadNewDishPage({page: 1})
+  }
+
+  prevPageHandler = () => {
+    this.props.loadNewDishPage({page: -1})
+  }
+
+  goToPageHandler = (event) => {
+    this.props.loadExactDishPage(event.target.id);
   }
 
   componentDidMount(props) {
@@ -39,6 +55,7 @@ class Dishes extends Component {
             rid: this.props.location.query.rid,
             rdelivery: this.props.location.query.rdelivery,
           });
+          this.props.loadDishes(5, response.data);
         }
       }).catch((err) => {
         console.log('No response');
@@ -58,6 +75,27 @@ class Dishes extends Component {
       warning = <p className="card-text font-italic">No dishes added by restaurant</p>
     }
 
+    //Pagination part
+    const pageNumbers = [];
+
+    let renderPageNumbers = null;
+    const numberOfPages = Math.ceil(this.props.dishes.dishArr.length / this.props.dishes.countPerPage);
+    for (let i = 1; i <= numberOfPages; i++) {
+      pageNumbers.push(i);
+    }
+    console.log('pageNumbers: ', pageNumbers);
+    renderPageNumbers = pageNumbers.map((number) => {
+      return (
+        <li key={number}
+          id={number}
+          onClick= {this.goToPageHandler}
+          class={`${this.props.dishes.currentPage === number ? 'active' : ''}`}
+        >
+        {number}
+        </li>
+      )
+    })
+    console.log('==> ', this.props.dishes.displayDishArr);
     return (
 
       <div>
@@ -78,8 +116,13 @@ class Dishes extends Component {
                 </div>
                 <div className="card-footer">
                   {warning}
+                  <ul id="page-numbers">
+                    <li onClick={this.prevPageHandler}>Prev</li>
+                    {renderPageNumbers}
+                    <li onClick={this.nextPageHandler}>Next</li>
+                  </ul>
                     <p className="card-text">
-                      {this.state.dishes.map (dish => (
+                      {this.props.dishes.displayDishArr.map (dish => (
                         <Dish dish={dish} rid={this.state.rid} rdelivery={this.state.rdelivery} />
                       ))}
                     </p>
@@ -97,7 +140,16 @@ const mapStateToProps = (state) => {
   return {
     isLogged: state.isLogged.isLoggedIn,
     whoIsLogged: state.whoIsLogged.whoIsLoggedIn,
+    dishes: state.dishes,
   };
 };
 
-export default connect(mapStateToProps)(Dishes);
+function mapDispatchToProps(dispatch) {
+  return {
+    loadDishes: (countPerPage, payload) => dispatch(loadDishes(countPerPage, payload)),
+    loadExactDishPage: (payload) => dispatch(loadExactDishPage(payload)),
+    loadNewDishPage: (payload) => dispatch(loadNewDishPage(payload)),
+  } 
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dishes);

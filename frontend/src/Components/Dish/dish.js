@@ -352,35 +352,6 @@ class Dish extends Component {
 
       </div>
       </div>
-
-      /*
-      <td class="border-0 align-middle"><button onClick={()=>this.removeEntryHandler({dname:entry.dname, dprice:entry.dprice})}  class="btn btn-primary">Remove</button></td>
-
-      
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-12 mt-3">
-            <div class="card">
-              <div class="card-horizontal">
-                <div class="img-square-wrapper">
-                    <img class="img-responsive" src={nachospic} alt="dish"></img>
-                </div>
-                <div class="card-body">
-                    <p class="card-text">{this.props.dish.ddescription}</p>
-                    <p class="card-text">Category: {this.props.dish.dcategory}</p>
-                    <p class="card-text">Ingredients: {this.props.dish.dingredients}</p>
-                    <p class="card-text"><h4>Price: {this.props.dish.dprice}$</h4></p>
-                    <button class="btn btn-primary">Add to Cart</button>
-                </div>
-              </div>
-              <div class="card-footer">
-                  <small class="text-muted">Featured!</small>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      */
     )
   }
 

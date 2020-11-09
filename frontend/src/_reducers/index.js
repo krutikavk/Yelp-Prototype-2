@@ -9,6 +9,7 @@ import customerDisplayReducer from './customerDisplayReducer';
 import eventDisplayReducer from './eventDisplayReducer';
 import conversationReducer from './conversationReducer';
 import orderReducer from './orderReducer';
+import dishReducer from './dishDisplayReducer';
 
 const allReducer = combineReducers({
   // equivalent: counterReducer: counterReducer
@@ -23,6 +24,7 @@ const allReducer = combineReducers({
   eventDisplay: eventDisplayReducer,
   conversation: conversationReducer,
   orders: orderReducer,
+  dishes: dishReducer,
 });
 
 export default allReducer;
