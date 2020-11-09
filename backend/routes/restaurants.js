@@ -9,7 +9,7 @@ auth();
 const router = express.Router();
 
 // get all restaurants kafka done
-router.get('/', (request, response) => {
+router.get('/', checkAuth, (request, response) => {
   console.log('\nEndpoint GET: all restaurants');
   console.log('Req Body: ', request.body);
   kafka.make_request('restaurantsTopic', 'GETALL', request.body, (err, result) => {
@@ -31,7 +31,7 @@ router.get('/', (request, response) => {
 });
 
 // Get one restaurant
-router.get('/:rid', (request, response) => {
+router.get('/:rid', checkAuth, (request, response) => {
   console.log('\nEndpoint GET: Get a restaurant');
   console.log('Req Body: ', request.body);
   const data = { ...request.params };
@@ -114,7 +114,7 @@ router.post('/login', (request, response) => {
 });
 
 // Update profile
-router.put('/:rid', (request, response) => {
+router.put('/:rid', checkAuth, (request, response) => {
   console.log('\nEndpoint PUT: Restaurant fields update');
   console.log('Req Body: ', request.body);
   const data = { ...request.params, ...request.body };
@@ -138,7 +138,7 @@ router.put('/:rid', (request, response) => {
 });
 
 // Update password
-router.put('/:rid/password', (request, response) => {
+router.put('/:rid/password', checkAuth, (request, response) => {
   console.log('\nEndpoint PUT: Restaurant password update');
   console.log('Req Body: ', request.body);
   const data = { ...request.params, ...request.body };
@@ -163,7 +163,7 @@ router.put('/:rid/password', (request, response) => {
 });
 
 // Reviews--add review
-router.post('/:rid/reviews', (request, response) => {
+router.post('/:rid/reviews', checkAuth, (request, response) => {
   console.log('\nEndpoint POST: Restaurant add review');
   console.log('Req Body: ', request.body);
   const data = { ...request.params, ...request.body };
@@ -188,7 +188,7 @@ router.post('/:rid/reviews', (request, response) => {
 });
 
 // View reviews for restaurant
-router.get('/:rid/reviews', (request, response) => {
+router.get('/:rid/reviews', checkAuth, (request, response) => {
   console.log('\nEndpoint GET: restaurant reviews get');
   console.log('Req Body: ', request.body);
   const data = { ...request.params };
@@ -212,7 +212,7 @@ router.get('/:rid/reviews', (request, response) => {
 });
 
 // Get average rating for restaurant
-router.get('/:rid/average', (request, response) => {
+router.get('/:rid/average', checkAuth, (request, response) => {
   console.log('\nEndpoint GET: restaurant reviews get');
   console.log('Req Body: ', request.body);
   const data = { ...request.params };
@@ -238,7 +238,7 @@ router.get('/:rid/average', (request, response) => {
 /* ************ Search queries ***************** */
 
 // Get restaurant ID serving a dish by dishname
-router.post('/search/dish', (request, response) => {
+router.post('/search/dish', checkAuth, (request, response) => {
   console.log('\nEndpoint POST: Search restaurant by dish');
   console.log('Req Body: ', request.body);
   const data = { ...request.body };
@@ -263,7 +263,7 @@ router.post('/search/dish', (request, response) => {
 
 // Get restuarants serving a cuisine
 // changed get to post--axios did not like get requests with a body
-router.post('/search/cuisine', (request, response) => {
+router.post('/search/cuisine', checkAuth, (request, response) => {
   console.log('\nEndpoint POST: Search restaurants by cuisine');
   console.log('Req Body: ', request.body);
   const data = { ...request.body };
@@ -287,7 +287,7 @@ router.post('/search/cuisine', (request, response) => {
 });
 
 // Get restuarants serving by delivery
-router.post('/search/rdelivery', (request, response) => {
+router.post('/search/rdelivery', checkAuth, (request, response) => {
   console.log('\nEndpoint POST: Search restaurants by delivery');
   console.log('Req Body: ', request.body);
   const data = { ...request.body };

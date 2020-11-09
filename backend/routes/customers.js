@@ -9,7 +9,7 @@ auth();
 const router = express.Router();
 
 // get all customers kafka done
-router.get('/', (request, response) => {
+router.get('/', checkAuth, (request, response) => {
   console.log('\nEndpoint GET: all customers');
   console.log('Req Body: ', request.body);
   kafka.make_request('customersTopic', 'GETALL', request.body, (err, result) => {
@@ -91,7 +91,7 @@ router.post('/login', (request, response) => {
 });
 
 // Get one customer kafka done
-router.get('/:cid', (request, response) => {
+router.get('/:cid', checkAuth, (request, response) => {
   console.log('\nEndpoint GET: one customer');
   console.log('Req Body: ', request.body);
   const data = { ...request.params };
@@ -115,7 +115,7 @@ router.get('/:cid', (request, response) => {
 });
 
 // Update customer profile--works kafka done
-router.put('/:cid', (request, response) => {
+router.put('/:cid', checkAuth, (request, response) => {
   console.log('\nEndpoint PUT: Customer fields update');
   console.log('Req Body: ', request.body);
   const data = { ...request.params, ...request.body };
@@ -139,7 +139,7 @@ router.put('/:cid', (request, response) => {
 });
 
 // Update customer password
-router.put('/:cid/password', (request, response) => {
+router.put('/:cid/password', checkAuth, (request, response) => {
   console.log('\nEndpoint PUT: customer password update');
   console.log('Req Body: ', request.body);
   const data = { ...request.params, ...request.body };
@@ -165,7 +165,7 @@ router.put('/:cid/password', (request, response) => {
 
 // Follow another customer
 // request.params.cid follows customer in request.body
-router.post('/:cid/follow', (request, response) => {
+router.post('/:cid/follow', checkAuth, (request, response) => {
   console.log('\nEndpoint POST: customer follow');
   console.log('Req Body: ', request.body);
   const data = {
@@ -193,7 +193,7 @@ router.post('/:cid/follow', (request, response) => {
 });
 
 // View reviews added by a customer
-router.get('/:cid/reviews', (request, response) => {
+router.get('/:cid/reviews', checkAuth, (request, response) => {
   console.log('\nEndpoint GET: Customer reviews get');
   console.log('Req Body: ', request.body);
   const data = { ...request.params };
@@ -218,7 +218,7 @@ router.get('/:cid/reviews', (request, response) => {
 });
 
 // Search by name
-router.post('/search/cname', (request, response) => {
+router.post('/search/cname', checkAuth, (request, response) => {
   console.log('\nEndpoint POST: Customer reviews get');
   console.log('Req Body: ', request.body);
   const data = { ...request.body };

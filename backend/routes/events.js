@@ -7,7 +7,7 @@ auth();
 const router = express.Router();
 
 // Add event
-router.post('/', (request, response) => {
+router.post('/', checkAuth, (request, response) => {
   console.log('Endpoint POST: Add event');
   console.log('Request Body: ', request.body);
   const data = { ...request.body };
@@ -112,7 +112,7 @@ router.post('/', (request, response) => {
 });
 
 // Get all events
-router.get('/', (request, response) => {
+router.get('/', checkAuth, (request, response) => {
   console.log('Endpoint GET: Get all events');
   console.log('Request Body: ', request.body);
 
@@ -151,7 +151,7 @@ router.get('/', (request, response) => {
 });
 
 // Get particular event
-router.get('/:eid', (request, response) => {
+router.get('/:eid', checkAuth, (request, response) => {
   console.log('Endpoint GET: Get particular event');
   console.log('Request Body: ', request.body);
   const data = { ...request.params };
@@ -192,7 +192,7 @@ router.get('/:eid', (request, response) => {
 });
 
 // Get all events by a restaurant
-router.get('/restaurants/:rid', (request, response) => {
+router.get('/restaurants/:rid', checkAuth, (request, response) => {
   console.log('Endpoint GET: Get all events by a restaurant');
   console.log('Request Body: ', request.body);
   const data = { ...request.params };
@@ -232,7 +232,7 @@ router.get('/restaurants/:rid', (request, response) => {
 });
 
 // Get all events customer is attending
-router.get('/customers/:cid', (request, response) => {
+router.get('/customers/:cid', checkAuth, (request, response) => {
   console.log('Endpoint GET: All events customer is attending');
   console.log('Request Body: ', request.body);
   const data = { ...request.params };
@@ -288,7 +288,7 @@ router.get('/customers/:cid', (request, response) => {
 });
 
 // Get all customers going to an event
-router.get('/:eid/customers', (request, response) => {
+router.get('/:eid/customers', checkAuth, (request, response) => {
   console.log('Endpoint POST: All customers attending event');
   console.log('Request Body: ', request.body);
   const data = { ...request.params };
@@ -332,7 +332,7 @@ router.get('/:eid/customers', (request, response) => {
 
 
 // Register a customer for an event
-router.post('/:eid/register', (request, response) => {
+router.post('/:eid/register', checkAuth, (request, response) => {
   console.log('Endpoint POST: Register customer for event');
   console.log('Request Body: ', request.body);
   const data = { ...request.params, ...request.body }; 

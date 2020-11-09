@@ -7,7 +7,7 @@ auth();
 const router = express.Router();
 
 // Add a dish
-router.post('/', (request, response) => {
+router.post('/', checkAuth, (request, response) => {
   console.log('\nEndpoint POST: Add a dish');
   console.log('Req Body: ', request.body);
   const data = { ...request.body };
@@ -62,7 +62,7 @@ router.post('/', (request, response) => {
 });
 
 // Get all dishes for a restaurant
-router.get('/:rid', (request, response) => {
+router.get('/:rid', checkAuth, (request, response) => {
   console.log('\nEndpoint GET: Get all dishes for a restaurant');
   console.log('Req Body: ', request.body);
   const data = { ...request.params};
@@ -108,7 +108,7 @@ router.get('/:rid', (request, response) => {
 });
 
 // Edit a dish
-router.put('/:did', (request, response) => {
+router.put('/:did', checkAuth, (request, response) => {
   console.log('\nEndpoint PUT: Edit a dish');
   console.log('Req Body: ', request.body);
   const data = { ...request.params, ...request.body };

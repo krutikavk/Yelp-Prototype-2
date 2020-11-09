@@ -7,7 +7,7 @@ auth();
 const router = express.Router();
 
 // Place a new order
-router.post('/', (request, response) => {
+router.post('/', checkAuth, (request, response) => {
   console.log('Endpoint POST: Place a new order');
   console.log('Request Body: ', request.body);
   const data = { ...request.body };
@@ -87,7 +87,7 @@ router.post('/', (request, response) => {
 });
 
 // Get all orders for a restaurant
-router.get('/restaurants/:rid', (request, response) => {
+router.get('/restaurants/:rid', checkAuth, (request, response) => {
   console.log('Endpoint GET: Get all orders for rest');
   console.log('Request Body: ', request.body);
   const data = { ...request.params, ...request.body };
@@ -131,7 +131,7 @@ router.get('/restaurants/:rid', (request, response) => {
 });
 
 // Get all orders for a customer
-router.get('/customers/:cid', (request, response) => {
+router.get('/customers/:cid', checkAuth, (request, response) => {
   console.log('Endpoint GET: Get all orders for cust');
   console.log('Request Body: ', request.body);
   const data = { ...request.params, ...request.body };
@@ -175,7 +175,7 @@ router.get('/customers/:cid', (request, response) => {
 });
 
 // get an order
-router.get('/:oid', (request, response) => {
+router.get('/:oid', checkAuth, (request, response) => {
   console.log('Endpoint GET: Get a particular order');
   console.log('Request Body: ', request.body);
   const data = { ...request.params };
@@ -219,7 +219,7 @@ router.get('/:oid', (request, response) => {
 });
 
 // Update an order's status
-router.put('/:oid', (request, response) => {
+router.put('/:oid', checkAuth, (request, response) => {
   console.log('\nEndpoint PUT: Order status update');
   console.log('Request Body: ', request.body);
   const data = { ...request.params, ...request.body };

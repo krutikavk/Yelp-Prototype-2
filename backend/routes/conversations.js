@@ -7,7 +7,7 @@ auth();
 const router = express.Router();
 
 // Initiate a conversation
-router.post('/', (request, response) => {
+router.post('/', checkAuth, (request, response) => {
   // Need from body:
   /*
     rid
@@ -85,7 +85,7 @@ router.post('/', (request, response) => {
 });
 
 // Check if conversation between rid/cid already exists
-router.post('/check', (request, response) => {
+router.post('/check', checkAuth, (request, response) => {
   console.log('\nEndpoint POST: check if conversation exists');
   console.log('Req Body: ', request.body);
   const data = { ...request.body };
@@ -129,7 +129,7 @@ router.post('/check', (request, response) => {
 });
 
 // Add a message to an existing conversation
-router.post('/:convid', (request, response) => {
+router.post('/:convid', checkAuth, (request, response) => {
   console.log('\nEndpoint POST: Add to a conversation');
   console.log('Req Body: ', request.body);
   const data = { ...request.params, ...request.body };
@@ -201,7 +201,7 @@ router.post('/:convid', (request, response) => {
 });
 
 // Get particular conversation
-router.get('/:convid', (request, response) => {
+router.get('/:convid', checkAuth, (request, response) => {
   console.log('\nEndpoint GET: particular conversation');
   console.log('Req Body: ', request.body);
   const data = { ...request.params };
@@ -246,7 +246,7 @@ router.get('/:convid', (request, response) => {
 });
 
 // Get all conversations for a customer
-router.get('/customers/:cid', (request, response) => {
+router.get('/customers/:cid', checkAuth, (request, response) => {
   console.log('\nEndpoint GET: all conversations for customer');
   console.log('Req Body: ', request.body);
   const data = { ...request.params };
@@ -295,7 +295,7 @@ router.get('/customers/:cid', (request, response) => {
 });
 
 // Get all conversations for a restaurant
-router.get('/restaurants/:rid', (request, response) => {
+router.get('/restaurants/:rid', checkAuth, (request, response) => {
   console.log('\nEndpoint GET: all conversations for restaurant');
   console.log('Req Body: ', request.body);
   const data = { ...request.params };
