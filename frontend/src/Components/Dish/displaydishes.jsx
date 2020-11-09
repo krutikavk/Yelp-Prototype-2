@@ -18,6 +18,7 @@ class Dishes extends Component {
       //dishes: [],
       rid: '',
       rdelivery: '',
+      change : 1,
     };
 
      //Pagination handlers
@@ -28,14 +29,19 @@ class Dishes extends Component {
 
   nextPageHandler = () => {
     this.props.loadNewDishPage({page: 1})
+    this.setState({change : this.state.change+1})
   }
 
   prevPageHandler = () => {
     this.props.loadNewDishPage({page: -1})
+        this.setState({change : this.state.change+1})
+
   }
 
   goToPageHandler = (event) => {
     this.props.loadExactDishPage(event.target.id);
+    this.setState({change : this.state.change+1})
+
   }
 
   componentDidMount(props) {
@@ -55,7 +61,7 @@ class Dishes extends Component {
             rid: this.props.location.query.rid,
             rdelivery: this.props.location.query.rdelivery,
           });
-          this.props.loadDishes(5, response.data);
+          this.props.loadDishes(3, response.data);
         }
       }).catch((err) => {
         console.log('No response');
@@ -64,7 +70,7 @@ class Dishes extends Component {
 
   render() {
     // {this.state.dishes.length > 0 && <displayDishes dishes={this.state.dishes} />}
-
+    console.log("Change :")
     let addDishes = null;
     if (this.props.isLogged === true && this.props.whoIsLogged === true) {
       addDishes = <Link to='/dishes/add'> <button id="btnLogin" className="btn btn-danger">Add Dishes</button></Link>
@@ -121,11 +127,12 @@ class Dishes extends Component {
                     {renderPageNumbers}
                     <li onClick={this.nextPageHandler}>Next</li>
                   </ul>
+                  {this.state.change % 2 == 1 ?
                     <p className="card-text">
                       {this.props.dishes.displayDishArr.map (dish => (
                         <Dish dish={dish} rid={this.state.rid} rdelivery={this.state.rdelivery} />
                       ))}
-                    </p>
+                    </p> : null}
                 </div>
               </div>
             </div>
